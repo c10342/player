@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: microsoft yahei, helvetica, simhei, simsun, sans-serif;
+    font-size: 14px;
+}
+
+body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+     -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+fontsize12 {
+    font-size: 12px;
+}
+
+fontsize14 {
+    font-size: 14px;
+}
+
+fontsize16 {
+    font-size: 16px;
+}
+
+.flexrowcenter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+ul{
+    list-style: none;
+}
+
+.router-enter-active, .router-leave-active {
+    transition: opacity 0.5s;
+}
+
+.router-enter, .router-leave-to {
+    opacity: 0;
+}
