@@ -51,3 +51,10 @@ ul{
 .router-enter, .router-leave-to {
     opacity: 0;
 }
+
+.flexbetween{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

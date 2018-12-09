@@ -7,36 +7,36 @@
                 <span ref="icon" class="fa fa-angle-down my-angle-down"></span>
             </div>
             <transition name="router" mode="out-in">
-            <ul v-if="isShowMenu" class="my-menu">
-                <li>
-                    <span class="fa fa-list-alt"></span>
-                    访问官网
-                </li>
-                <li>
-                    <span class="fa fa-cloud-upload"></span>
-                    在线升级
-                </li>
-                <li>
-                    <span class="fa fa-question-circle-o"></span>
-                    在线帮助
-                </li>
-                <li>
-                    <span class="fa fa-envelope-open-o"></span>
-                    意见反馈
-                </li>
-                <li class="set">
-                    <span class="fa fa-cog fa-fw"></span>
-                    设置
-                </li>
-                <li>
-                    <span class="fa fa-user-circle"></span>
-                    关于
-                </li>
-                <li class="set">
-                    <span class="fa fa-sign-out"></span>
-                    退出
-                </li>
-            </ul>
+                <ul v-if="isShowMenu" class="my-menu">
+                    <li>
+                        <span class="fa fa-list-alt"></span>
+                        访问官网
+                    </li>
+                    <li>
+                        <span class="fa fa-cloud-upload"></span>
+                        在线升级
+                    </li>
+                    <li>
+                        <span class="fa fa-question-circle-o"></span>
+                        在线帮助
+                    </li>
+                    <li>
+                        <span class="fa fa-envelope-open-o"></span>
+                        意见反馈
+                    </li>
+                    <li class="set">
+                        <span class="fa fa-cog fa-fw"></span>
+                        设置
+                    </li>
+                    <li>
+                        <span class="fa fa-user-circle"></span>
+                        关于
+                    </li>
+                    <li class="set">
+                        <span class="fa fa-sign-out"></span>
+                        退出
+                    </li>
+                </ul>
             </transition>
         </div>
         <div class="middle"></div>
@@ -61,8 +61,10 @@
         name: "my-header",
         data() {
             return {
+                // 是否显示最大化
                 isMaxed: false,
-                isShowMenu:false
+                // 是否显示左上角的菜单
+                isShowMenu: false
             }
         },
         methods: {
@@ -80,22 +82,22 @@
                 winUtil.close()
             },
             // 点击播放器后显示菜单
-            showMenu(){
+            showMenu() {
                 document.body.click()
-                this.isShowMenu= !this.isShowMenu
-                if(!this.isShowMenu){
-                    window.removeEventListener('click',this.onClick)
-                }else{
-                    window.addEventListener('click',this.onClick)
+                this.isShowMenu = !this.isShowMenu
+                if (!this.isShowMenu) {
+                    window.removeEventListener('click', this.onClick)
+                } else {
+                    window.addEventListener('click', this.onClick)
                 }
             },
-            onClick(){
+            onClick() {
                 this.isShowMenu = false
-                window.removeEventListener('click',this.onClick)
+                window.removeEventListener('click', this.onClick)
             }
         },
-        beforeDestroy(){
-            window.removeEventListener('click',this.onClick)
+        beforeDestroy() {
+            window.removeEventListener('click', this.onClick)
         }
     };
 </script>
@@ -121,7 +123,7 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            .my-menu{
+            .my-menu {
                 padding: 5px 0;
                 position: absolute;
                 font-size: 13px;
@@ -132,7 +134,7 @@
                 z-index: 1;
                 width: 150px;
                 border-radius: 5px;
-                &:before{
+                &:before {
                     position: absolute;
                     top: -10px;
                     left: 10px;
@@ -143,12 +145,12 @@
                     border-bottom-color: #252528;
 
                 }
-                >li{
+                > li {
                     cursor: pointer;
                     padding: 10px 15px;
                     color: #878788;
                     position: relative;
-                    &.set:before{
+                    &.set:before {
                         content: '';
                         height: 1px;
                         position: absolute;
@@ -157,7 +159,7 @@
                         left: 0;
                         background-color: #2E2E30;
                     }
-                    &:hover{
+                    &:hover {
                         background-color: #373333;
                         color: #5DEE00;
                     }
@@ -180,7 +182,7 @@
                     font-size: 16px;
                 }
                 &:hover {
-                    >span {
+                    > span {
                         color: #ffffff;
                     }
                 }

@@ -24,7 +24,7 @@
       data(){
         return {
             isShowArrow:false,
-            playListHeight:null
+            playListHeight:null,
         }
       },
       mounted(){
@@ -48,10 +48,13 @@
           ...mapGetters(['currentVideo'])
       },
       watch:{
-          currentVideo(){
-              this.$nextTick(()=>{
-                  this.initPlayListHeight()
-              })
+          currentVideo:{
+              immediate:true,
+              handler:function(){
+                  this.$nextTick(()=>{
+                      this.initPlayListHeight()
+                  })
+              }
           }
       },
       beforeDestroy(){

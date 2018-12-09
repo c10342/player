@@ -24,7 +24,9 @@
         name: "video-progress",
         data() {
             return {
+                // 进度条的百分比
                 videoPercent: 0,
+                // 最内层进度条长度
                 inLineWidth: 0
             }
         },

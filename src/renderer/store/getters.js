@@ -24,3 +24,6 @@ export const playMode = state => state.playMode
 
 // 获取排序模式
 export const sortMode = state => state.sortMode
+
+// 获取保存播放的视频
+export const oldVideo = state => state.oldVideo

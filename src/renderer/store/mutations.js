@@ -1,5 +1,5 @@
 // 修改音量最内层进度条宽度
-import {speed} from "./getters";
+// import {speed} from "./getters";
 
 export const setInWidth = (state, inWidth)=>{
     state.inWidth = inWidth
@@ -47,4 +47,9 @@ export const setPlayMode = (state,playMode) =>{
 // 修改排序模式
 export const setSortMode = (state,sortMode) => {
     state.sortMode = sortMode
+}
+
+// 设置保存播放的视频
+export const setOldVideo = (state,oldVideo) => {
+    state.oldVideo = oldVideo
 }

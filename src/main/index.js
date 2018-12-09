@@ -1,5 +1,6 @@
 import {app, BrowserWindow} from 'electron'
 import WindowUtil from './api/window'
+import OpenDialog from './api/OpenDialog'
 
 /**
  * Set `__static` path to static files in production
@@ -42,6 +43,10 @@ function createWindow() {
     const winUtil = new WindowUtil()
     // 初始化窗口状态
     winUtil.initWin()
+
+    const openDialog = new OpenDialog();
+
+    openDialog.init()
 }
 
 app.on('ready', createWindow)

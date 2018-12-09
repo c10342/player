@@ -37,8 +37,11 @@
                 </transition>
             </div>
             <div class="middle">
-                <span class="fa fa-stop"></span>
-                <span title="上一个文件" class="fa fa-step-backward"></span>
+                <span :style="{'color':currentVideo?'':'#454548'}" title="停止" class="fa fa-stop" @click="stop"></span>
+                <span
+                        @click="prev"
+                        title="上一个文件"
+                        class="fa fa-step-backward"></span>
                 <span
                         @click.stop="switchPlaying(true)"
                         v-if="!isPlaying"
@@ -51,7 +54,10 @@
                         class="fa fa-pause-circle-o"
                         style="font-size: 50px;"
                         @click.stop="switchPlaying(false)"></span>
-                <span title="下一个文件" class="fa fa-step-forward"></span>
+                <span
+                        @click="next"
+                        title="下一个文件"
+                        class="fa fa-step-forward"></span>
                 <span
                         title="静音"
                         v-if="isVolumeOn"
@@ -81,6 +87,7 @@
         name: "my-footer",
         data() {
             return {
+                // 是否展开播放模式列表
                 isShowPlayMode:false
             }
         },
@@ -88,13 +95,23 @@
             window.addEventListener('keyup', this.onKeyUp)
         },
         methods: {
-            ...mapMutations(['setIsVolumeOn', 'setPlaying', 'setPlayMode']),
+            ...mapMutations(['setIsVolumeOn', 'setPlaying', 'setPlayMode','setCurrentVideo','setCurrentVideoIndex']),
             // 点击音量图标，开启或者关闭
             setVolume(flag) {
                 this.setIsVolumeOn(flag)
             },
             // 切换播放状态
             switchPlaying(flag) {
+                if(flag && !this.currentVideo){
+                    if(this.videoList.length == 0){
+                        return;
+                    }
+                    if(this.oldVideo){
+                        this.setCurrentVideo(this.oldVideo)
+                    }else{
+                        this.setCurrentVideo(this.videoList[0])
+                    }
+                }
                 this.setPlaying(flag)
             },
             // 监听键盘
@@ -121,10 +138,43 @@
             onClick(){
                 this.isShowPlayMode = false
                 window.removeEventListener('click',this.onClick)
+            },
+            // 停止播放
+            stop(){
+                this.setCurrentVideo(null)
+                this.setPlaying(false)
+            },
+            // 下一个视频
+            next(){
+                if(this.playMode==5){
+                    let index = Math.floor(Math.random()*this.videoList.length)
+                    this.setCurrentVideoIndex(index)
+                    return
+                }
+                if(this.videoList.length-1 == this.currentVideoIndex){
+                    this.setCurrentVideoIndex(0)
+                }else{
+                    let index = this.currentVideoIndex+1
+                    this.setCurrentVideoIndex(index)
+                }
+            },
+            // 上一个视频
+            prev(){
+                if(this.playMode==5){
+                    let index = Math.floor(Math.random()*this.videoList.length)
+                    this.setCurrentVideoIndex(index)
+                    return
+                }
+                if(this.currentVideoIndex == 0){
+                    this.setCurrentVideoIndex(this.videoList.length-1)
+                }else{
+                    let index = this.currentVideoIndex-1
+                    this.setCurrentVideoIndex(index)
+                }
             }
         },
         computed: {
-            ...mapGetters(['isVolumeOn', 'isPlaying', 'currentVideo', 'playMode']),
+            ...mapGetters(['isVolumeOn', 'isPlaying', 'currentVideo', 'playMode','currentVideoIndex','videoList','playMode','oldVideo']),
             title(){
                 if(this.playMode==1){
                     return '单个播放'
@@ -137,6 +187,12 @@
                 }else if(this.playMode==5){
                     return '随机播放'
                 }
+            }
+        },
+        watch:{
+            currentVideoIndex(newVal){
+                const currentVideo = this.videoList[newVal]
+                this.setCurrentVideo(currentVideo)
             }
         },
         beforeDestroy() {
@@ -199,6 +255,7 @@
                 color: #999999;
                 padding: 3px 0;
                 border-radius: 5px;
+                z-index: 1000;
                 &:after {
                     content: '';
                     position: absolute;

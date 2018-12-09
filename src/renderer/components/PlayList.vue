@@ -6,7 +6,7 @@
             :style="{'height':currentVideo?`${playListHeight}px`:'100%'}">
         <div class="my-arrow" v-if="isShowArrow">
             <span
-                    @click.stop="hideList"
+                    @click="hideList"
                     v-if="!isHidenList&&!currentVideo"
                     title="收起列表"
                     class="fa fa-arrow-circle-o-right"></span>
@@ -26,69 +26,78 @@
                     class="fa fa-unlock"
                     title="释放列表"></span>
         </div>
-        <div class="top" v-if="isShowOther">
-            <span>播放列表</span>
-            <button @click.stop="setCurrentVideo(!currentVideo)">点击</button>
-            <div class="my-icon">
-                <span title="添加" class="fa fa-plus-square-o"></span>
-                <span title="删除" class="fa fa-trash-o fa-lg delete"></span>
-                <span @click.stop="showExtendMenu" title="扩展菜单" class="fa fa-angle-double-down"></span>
-                <transition name="router" mode="out-in">
-                    <ul class="extend-menu" v-if="isShowExtendMenu">
-                        <li class="line">清空此列表</li>
-                        <li @click="changeSoreMode(1)">
-                            <span v-if="sortMode==1" class="fa fa-check"></span>
-                            默认排序
-                        </li>
-                        <li class="line" @click="changeSoreMode(2)">
-                            <span v-if="sortMode==2" class="fa fa-check"></span>
-                            名称排序
-                        </li>
-                        <li @click="changeMode(1)">
-                            <span v-if="playMode==1" class="fa fa-check"></span>
-                            单个播放
-                        </li>
-                        <li @click="changeMode(2)">
-                            <span v-if="playMode==2" class="fa fa-check"></span>
-                            单个循环
-                        </li>
-                        <li @click="changeMode(3)">
-                            <span v-if="playMode==3" class="fa fa-check"></span>
-                            顺序播放
-                        </li>
-                        <li @click="changeMode(4)">
-                            <span v-if="playMode==4" class="fa fa-check"></span>
-                            顺序循环
-                        </li>
-                        <li @click="changeMode(5)">
-                            <span v-if="playMode==5" class="fa fa-check"></span>
-                            随机播放
-                        </li>
-                    </ul>
-                </transition>
-            </div>
-        </div>
-        <div class="file" v-if="isShowOther">
-            <div class="no-file">
-                <span class="fa fa-file-o"></span>
-                <p>没有符合条件的文件</p>
-            </div>
-            <div class="open-file">
-                <div class="flexrowcenter">
-                    <span class="fa fa-folder-open-o"></span>
-                    <span>添加文件</span>
+        <div class="content-container">
+            <div class="top">
+                <span>播放列表</span>
+                <div class="my-icon">
+                    <span title="添加" class="fa fa-plus-square-o"></span>
+                    <span title="删除" class="fa fa-trash-o fa-lg delete"></span>
+                    <span @click.stop="showExtendMenu" title="扩展菜单" class="fa fa-angle-double-down"></span>
                 </div>
-                <span @click.stop="showMenu" class="fa fa-angle-down"></span>
-                <ul v-if="isShowFileMenu" class="my-file">
-                    <li>
-                        <span class="fa fa-file-excel-o"></span>
-                        添加文件夹
+                <div class="file" v-if="isShowOther && videoList.length==0">
+                    <div class="no-file">
+                        <span class="fa fa-file-o"></span>
+                        <p>没有符合条件的文件</p>
+                    </div>
+                    <div class="open-file">
+                        <div class="flexrowcenter">
+                            <span class="fa fa-folder-open-o"></span>
+                            <span>添加文件</span>
+                        </div>
+                        <span @click.stop="showMenu" class="fa fa-angle-down"></span>
+                        <ul v-if="isShowFileMenu" class="my-file">
+                            <li>
+                                <span class="fa fa-file-excel-o"></span>
+                                添加文件夹
+                            </li>
+                            <li>
+                                <span class="fa fa-link"></span>
+                                添加URL
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <transition name="router" mode="out-in">
+                <ul class="extend-menu" v-if="isShowExtendMenu">
+                    <li class="line">清空此列表</li>
+                    <li @click="changeSoreMode(1)">
+                        <span v-if="sortMode==1" class="fa fa-check"></span>
+                        默认排序
                     </li>
-                    <li>
-                        <span class="fa fa-link"></span>
-                        添加URL
+                    <li class="line" @click="changeSoreMode(2)">
+                        <span v-if="sortMode==2" class="fa fa-check"></span>
+                        名称排序
+                    </li>
+                    <li @click="changeMode(1)">
+                        <span v-if="playMode==1" class="fa fa-check"></span>
+                        单个播放
+                    </li>
+                    <li @click="changeMode(2)">
+                        <span v-if="playMode==2" class="fa fa-check"></span>
+                        单个循环
+                    </li>
+                    <li @click="changeMode(3)">
+                        <span v-if="playMode==3" class="fa fa-check"></span>
+                        顺序播放
+                    </li>
+                    <li @click="changeMode(4)">
+                        <span v-if="playMode==4" class="fa fa-check"></span>
+                        顺序循环
+                    </li>
+                    <li @click="changeMode(5)">
+                        <span v-if="playMode==5" class="fa fa-check"></span>
+                        随机播放
                     </li>
                 </ul>
+            </transition>
+            <div ref="scroll" class="list-content" :style="{'height':`${playListHeight-40}px`}">
+                <div style="padding-bottom: 10px;">
+                    <ListItem
+                            :item="video"
+                            v-for="(video,index) in videoList"
+                            :key="index"/>
+                </div>
             </div>
         </div>
     </div>
@@ -96,6 +105,7 @@
 
 <script>
     import {mapGetters, mapMutations} from 'vuex'
+    import BScroll from 'better-scroll'
 
     export default {
         name: "play-list",
@@ -126,10 +136,15 @@
             }
         },
         mounted() {
+            this.scroll = null
             this.savePlayListWidth = 300
             this.timer = null
             this.playListTimer = null
             this.$refs.playList.addEventListener('mouseleave', this.onMouseLeave)
+            this.$refs.playList.addEventListener('mouseenter', this.onMouseEnter)
+            setTimeout(() => {
+                this.initScroll()
+            }, 20)
         },
         methods: {
             ...mapMutations(['setPlayMode', 'setSortMode', 'setCurrentVideo']),
@@ -160,12 +175,10 @@
             // 隐藏播放列表
             hidenList() {
                 this.isShowOther = false
-                this.$refs.playList.style.padding = '0px'
                 this.$refs.playList.style.width = '0px'
             },
             // 显示播放列表
             showList() {
-                this.$refs.playList.style.padding = '15px'
                 this.$refs.playList.style.width = this.savePlayListWidth + 'px'
                 this.$refs.playList.addEventListener('transitionend', this.onTransitionEnd)
             },
@@ -207,6 +220,7 @@
                     return
                 }
                 this.isHidenList = true
+                this.isShowExtendMenu = false
                 this.hidenList()
                 clearTimeout(this.playListTimer)
             },
@@ -215,27 +229,41 @@
                 this.isLock = false
             },
             onMouseEnter() {
-                if (this.playListTimer&&this.currentVideo&&!this.isLock&&!this.isHidenList) {
+                if (this.playListTimer && this.currentVideo && !this.isLock && !this.isHidenList) {
                     clearTimeout(this.playListTimer)
                 }
             },
             onMouseLeave() {
-                if (this.currentVideo&&!this.isLock&&!this.isHidenList) {
+                if(this.playListTimer){
+                    clearTimeout(this.playListTimer)
+                }
+                if (this.currentVideo && !this.isLock && !this.isHidenList) {
                     this.playListTimer = setTimeout(this.createTimeOut, this.time)
                 }
-            }
+            },
+            // 初始化better-scroll
+            initScroll() {
+                this.$nextTick(() => {
+                    const wrapper = this.$refs.scroll
+                    this.scroll = new BScroll(wrapper,{
+                        probeType:1
+                    })
+                })
+            },
+            // 强制 scroll 重新计算
+            refresh() {
+                this.scroll && this.scroll.refresh();
+            },
         },
         computed: {
-            ...mapGetters(['playMode', 'sortMode', 'currentVideo'])
+            ...mapGetters(['playMode', 'sortMode', 'currentVideo','videoList'])
         },
         watch: {
-            currentVideo: {
-                immediate: true,
-                handler: function (val) {
-                    if (!val) {
-                        this.isHidenList = false
-                    }
-                }
+            videoList(){
+                this.$nextTick(()=>{
+                    this.onMouseLeave()
+                    this.refresh()
+                })
             }
         },
         beforeDestroy() {
@@ -246,8 +274,10 @@
                 clearTimeout(this.playListTimer)
             }
             this.$refs.playList.removeEventListener('mouseleave', this.onMouseLeave)
+            this.$refs.playList.removeEventListener('mouseenter', this.onMouseLeave)
             this.$refs.playList.removeEventListener('transitionend', this.onTransitionEnd)
             window.removeEventListener('click', this.onClick)
+            this.scroll = null
         }
     }
 </script>
@@ -274,7 +304,12 @@
         border-left: 1px solid #2F2F31;
         position: relative;
         transition: width 1s;
-        padding: 15px;
+        .content-container{
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
         .my-arrow {
             position: absolute;
             top: 50%;
@@ -302,6 +337,7 @@
             }
         }
         .top {
+            padding: 15px 15px 5px;
             display: flex;;
             flex-direction: row;
             justify-content: space-between;
@@ -328,50 +364,50 @@
                 > .delete {
                     font-size: 14px;
                 }
-                > .extend-menu {
-                    position: absolute;
-                    right: -10px;
-                    bottom: -250px;
-                    background-color: #27272A;
-                    z-index: 5;
-                    width: 100px;
-                    color: #999999;
-                    padding: 3px 0;
-                    border-radius: 5px;
-                    > .line {
-                        border-bottom: 1px solid #303032;
-                    }
-                    &:after {
-                        content: '';
-                        position: absolute;
-                        left: 80%;
-                        top: -10px;
-                        height: 0;
-                        width: 0;
-                        border: 5px solid transparent;
-                        border-bottom-color: #252528;
-                    }
-                    > li {
-                        height: 30px;
-                        text-align: center;
-                        line-height: 30px;
-                        font-size: 12px;
-                        cursor: pointer;
-                        &:hover {
-                            background-color: #373333;
-                            color: #1BB017;
-                            > span {
-                                color: #1BB017;
-                            }
-                        }
-                        > span {
-                            font-size: 10px;
-                            padding: 0;
-                            color: #999999;
-                            margin-left: -10px;
-                        }
-                    }
-                }
+                /*> .extend-menu {*/
+                    /*position: absolute;*/
+                    /*right: -10px;*/
+                    /*bottom: -250px;*/
+                    /*background-color: #27272A;*/
+                    /*z-index: 5;*/
+                    /*width: 100px;*/
+                    /*color: #999999;*/
+                    /*padding: 3px 0;*/
+                    /*border-radius: 5px;*/
+                    /*> .line {*/
+                        /*border-bottom: 1px solid #303032;*/
+                    /*}*/
+                    /*&:after {*/
+                        /*content: '';*/
+                        /*position: absolute;*/
+                        /*left: 80%;*/
+                        /*top: -10px;*/
+                        /*height: 0;*/
+                        /*width: 0;*/
+                        /*border: 5px solid transparent;*/
+                        /*border-bottom-color: #252528;*/
+                    /*}*/
+                    /*> li {*/
+                        /*height: 30px;*/
+                        /*text-align: center;*/
+                        /*line-height: 30px;*/
+                        /*font-size: 12px;*/
+                        /*cursor: pointer;*/
+                        /*&:hover {*/
+                            /*background-color: #373333;*/
+                            /*color: #1BB017;*/
+                            /*> span {*/
+                                /*color: #1BB017;*/
+                            /*}*/
+                        /*}*/
+                        /*> span {*/
+                            /*font-size: 10px;*/
+                            /*padding: 0;*/
+                            /*color: #999999;*/
+                            /*margin-left: -10px;*/
+                        /*}*/
+                    /*}*/
+                /*}*/
             }
         }
         .file {
@@ -451,6 +487,60 @@
                         color: #5DEE00;
                     }
                 }
+            }
+        }
+    }
+
+    .list-content {
+        overflow: hidden;
+    }
+    .top{
+        max-height: 40px;
+        transition: width 1s;
+        overflow: hidden;
+    }
+
+    .extend-menu {
+        position: absolute;
+        right: 5px;
+        top: 40px;
+        background-color: #27272A;
+        z-index: 5;
+        width: 100px;
+        color: #999999;
+        padding: 3px 0;
+        border-radius: 5px;
+        > .line {
+            border-bottom: 1px solid #303032;
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            left: 80%;
+            top: -10px;
+            height: 0;
+            width: 0;
+            border: 5px solid transparent;
+            border-bottom-color: #252528;
+        }
+        > li {
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            &:hover {
+                background-color: #373333;
+                color: #1BB017;
+                > span {
+                    color: #1BB017;
+                }
+            }
+            > span {
+                font-size: 10px;
+                padding: 0;
+                color: #999999;
+                margin-left: -10px;
             }
         }
     }

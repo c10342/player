@@ -10,6 +10,8 @@ let state = {
     isPlaying:false,
     // 视频播放速度
     speed:1,
+    // 保存播放的视频
+    oldVideo:null,
     // 当前正在播放的视频
     currentVideo:null,
     // 当前视频的索引

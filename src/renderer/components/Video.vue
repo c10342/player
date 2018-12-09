@@ -1,8 +1,11 @@
 <template>
     <div class="video-container">
-        <video controls class="my-video" src="E:\BaiduNetdiskDownload\Javascript 设计模式系统讲解与应用\第1章 课程介绍\1-1导学.mp4"></video>
-        <div class="open-file">
-            <div class="flexrowcenter">
+        <video
+                ref="video"
+                class="my-video"
+                :src="currentVideo?currentVideo.src:''"></video>
+        <div class="open-file" v-if="!currentVideo">
+            <div class="flexrowcenter" @click="openFile">
                 <span class="fa fa-folder-open-o"></span>
                 <span>打开文件</span>
             </div>
@@ -24,17 +27,18 @@
 </template>
 
 <script>
-    const fs = require('fs')
-    const path = require('path')
+    import {mapGetters,mapMutations} from 'vuex'
+    import OpenDialog from '../api/OpenDialog'
+    const openDialog = new OpenDialog()
     export default {
         data() {
             return {
-                filePath: 'E:\\BaiduNetdiskDownload\\Javascript 设计模式系统讲解与应用\\第1章 课程介绍\\1-1导学.mp4',
                 isShowFileMenu:false
             }
         },
         name: "my-video",
         methods:{
+            ...mapMutations(['setPlaying','setCurrentVideoIndex']),
             // 点击按钮后显示菜单
             showMenu(){
                 document.body.click()
@@ -48,6 +52,35 @@
             onClick(){
                 this.isShowFileMenu = false
                 window.removeEventListener('click',this.onClick)
+            },
+            // 打开文件
+            openFile(){
+                openDialog.openFile()
+            }
+        },
+        computed:{
+            ...mapGetters(['currentVideo','isPlaying','videoList'])
+        },
+        watch:{
+            isPlaying(newVal){
+                this.$nextTick(()=>{
+                    if(newVal){
+                        this.$refs.video.play()
+                    }else {
+                        this.$refs.video.pause()
+                    }
+                })
+            },
+            currentVideo(newVal){
+                if(!newVal){
+                    return
+                }
+                const index = this.videoList.findIndex(i=>i.id==newVal.id)
+                this.setCurrentVideoIndex(index)
+                this.$nextTick(()=>{
+                    this.setPlaying(true)
+                    this.$refs.video.play()
+                })
             }
         },
         beforeDestroy(){
@@ -66,7 +99,7 @@
     .my-video {
         width: 100%;
         height: 100%;
-        object-fit: fill;
+        /*object-fit: fill;*/
         background-color: #000000;
     }
     .open-file{

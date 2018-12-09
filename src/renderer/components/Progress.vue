@@ -21,6 +21,7 @@
         name: "my-progress",
         data() {
             return {
+                // 音量的百分比
                 volumePercent: 0
             }
         },
