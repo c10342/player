@@ -58,3 +58,18 @@ export const setOldVideo = (state,oldVideo) => {
 export const clearVideoList = (state) =>{
     state.videoList = []
 }
+
+// 修改播放列表
+export const changeList = (state,list) => {
+    state.videoList = list
+}
+
+// 设置当前播放进度
+export const setCurrentTime = (state,currentTime) => {
+    state.currentTime = currentTime
+}
+
+// 设置视频总时长
+export const setTotalTime = (state,totalTime) => {
+    state.totalTime = totalTime
+}

@@ -27,3 +27,9 @@ export const sortMode = state => state.sortMode
 
 // 获取保存播放的视频
 export const oldVideo = state => state.oldVideo
+
+// 获取当前播放进度
+export const currentTime = state => state.currentTime
+
+// 获取视频总时长
+export const totalTime = state => state.totalTime

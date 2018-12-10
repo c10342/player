@@ -10,7 +10,7 @@
                         :title="title"
                         @click.stop="showPlayMode"
                         class="fa fa-random"></span>
-                <span v-if="currentVideo" class="video-time">01:43/07:44</span>
+                <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
                 <transition name="router" mode="out-in">
                 <ul class="play-mode" v-if="isShowPlayMode">
                     <li @click="changeMode(1)">
@@ -82,6 +82,7 @@
 
 <script>
     import {mapMutations, mapGetters} from 'vuex'
+    import {formatTime} from '../api/util'
 
     export default {
         name: "my-footer",
@@ -174,7 +175,7 @@
             }
         },
         computed: {
-            ...mapGetters(['isVolumeOn', 'isPlaying', 'currentVideo', 'playMode','currentVideoIndex','videoList','playMode','oldVideo']),
+            ...mapGetters(['isVolumeOn', 'isPlaying', 'currentVideo', 'playMode','currentVideoIndex','videoList','playMode','oldVideo','currentTime','totalTime']),
             title(){
                 if(this.playMode==1){
                     return '单个播放'
@@ -187,13 +188,22 @@
                 }else if(this.playMode==5){
                     return '随机播放'
                 }
+            },
+            getCurrentTime(){
+                return formatTime(this.currentTime)
+            },
+            getTotalTime(){
+                return formatTime(this.totalTime)
             }
         },
         watch:{
             currentVideoIndex(newVal){
                 const currentVideo = this.videoList[newVal]
                 this.setCurrentVideo(currentVideo)
-            }
+            },
+            // currentTime(newVal){
+            //     formatTime(newVal)
+            // }
         },
         beforeDestroy() {
             window.removeEventListener('keyup', this.onKeyUp)
@@ -232,6 +242,8 @@
             }
             &.video-time {
                 font-size: 14px;
+                max-height: 19px;
+                width: 150px;
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);

@@ -13,6 +13,9 @@ class OpenDialog{
             return
         }
         const arr = this.getFileStat(path)
+        if(arr.length == 0){
+            return
+        }
         if(store.state.videoList.length == 0){
             store.commit('setCurrentVideo',arr[0])
             store.commit('setOldVideo',arr[0])
@@ -24,7 +27,7 @@ class OpenDialog{
         let arr = []
         for(let i=0;i<path.length;i++){
             const result = fs.statSync(path[i])
-            const index = store.state.videoList.findIndex(i=>i.id==result.ino)
+            const index = store.state.videoList.findIndex(j=>j.src==path[i])
             if(result && result.dev && index<0){
                 let obj = Object.assign({},result,{src:path[i]})
                 arr.push(this.formatData(obj))
@@ -33,6 +36,7 @@ class OpenDialog{
         return arr
     }
     formatData(data){
+        const result = fs.existsSync(data.src)
         return {
             id:(+new Date())+Math.random(),
             // 创建时间
@@ -54,7 +58,7 @@ class OpenDialog{
             // 文件名,
             filename:path.basename(data.src),
             // 文件是否有效
-            msg:''
+            msg:result?'':'无效文件'
         }
     }
 }

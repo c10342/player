@@ -6,7 +6,7 @@
                 @click="onClick($event)"
                 class="video-out-line"
                 ref="outLine">
-            <div class="in-line" :style="{'width':getInLineWidth}">
+            <div class="in-line" :style="{'width':`${videoPercent}%`}">
             <span
                     @mousedown.stop="ballMouseDown"
                     @click.stop
@@ -37,7 +37,7 @@
             this.mousedown = false
         },
         methods: {
-            ...mapMutations(['setSpeed']),
+            ...mapMutations(['setSpeed','setCurrentTime']),
             // 点击最外层进度条
             onClick(e) {
                 this.inLineWidth = e.offsetX
@@ -90,15 +90,26 @@
             }
         },
         computed: {
-            ...mapGetters(['speed']),
+            ...mapGetters(['speed','totalTime','currentTime']),
             // 计算里面进度条的宽度
-            getInLineWidth() {
-                // 一开始的时候最外层元素是不存在的
-                if(!this.$refs.outLine){
-                    return `${this.inLineWidth}px`
-                }
+            // getInLineWidth() {
+            //     // 一开始的时候最外层元素是不存在的
+            //     if(!this.$refs.outLine){
+            //         return `${this.inLineWidth}px`
+            //     }
+            //     let outLineWidth = this.$refs.outLine.getBoundingClientRect().width
+            //     this.videoPercent = this.inLineWidth/outLineWidth*100
+            //     return `${this.inLineWidth/outLineWidth*100}%`
+            // }
+        },
+        watch:{
+            currentTime(newVal){
+                this.videoPercent = newVal/this.totalTime*100
+            },
+            inLineWidth(){
                 let outLineWidth = this.$refs.outLine.getBoundingClientRect().width
-                return `${this.inLineWidth/outLineWidth*100}%`
+                this.videoPercent = this.inLineWidth/outLineWidth*100
+                // this.setCurrentTime(this.totalTime*(this.inLineWidth/outLineWidth))
             }
         },
         beforeDestroy() {
