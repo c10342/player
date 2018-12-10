@@ -33,6 +33,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import OpenDialog from "../api/OpenDialog";
 const openDialog = new OpenDialog();
+ import connect from '../api/bus.js'
 export default {
   data() {
     return {
@@ -68,6 +69,11 @@ export default {
     durationchange(e){
         this.setTotalTime(e.target.duration)
     }
+  },
+  mounted(){
+      connect.$on('setCurrentTime',()=>{
+          this.$refs.video.currentTime = this.currentTime
+      })
   },
   computed: {
     ...mapGetters(["currentVideo", "isPlaying", "videoList",'currentTime'])

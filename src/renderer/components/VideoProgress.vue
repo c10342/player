@@ -20,6 +20,7 @@
 
 <script>
     import {mapMutations,mapGetters} from 'vuex'
+    import connect from '../api/bus.js'
     export default {
         name: "video-progress",
         data() {
@@ -27,7 +28,9 @@
                 // 进度条的百分比
                 videoPercent: 0,
                 // 最内层进度条长度
-                inLineWidth: 0
+                inLineWidth: 0,
+                // 鼠标在进度条上移动时候显示的内容
+                subTitle:0
             }
         },
         mounted() {
@@ -35,6 +38,9 @@
             this.oldInWidth = null
             // 鼠标是否按下
             this.mousedown = false
+
+            window.addEventListener('mousemove',this.mouseMove)
+
         },
         methods: {
             ...mapMutations(['setSpeed','setCurrentTime']),
@@ -87,6 +93,21 @@
                 }
                 let speed = parseFloat(((this.speed*10+1)/10).toString().substring(0,3))
                 this.setSpeed(speed)
+            },
+            mouseMove(e){
+                // 最外层进度条距离窗口最左边距离
+                    let outLineX = this.$refs.outLine.getBoundingClientRect().x
+                    // 最外层进度条的宽度
+                    let outLineWidth = this.$refs.outLine.getBoundingClientRect().width
+                    // 获取鼠标移动距离相对最外层进度条的距离
+                    let offsetX = e.pageX - outLineX
+                    if (offsetX <= 0) {
+                        offsetX = 0
+                    } else if (offsetX > outLineWidth) {
+                        offsetX = outLineWidth
+                    }
+                    this.inLineWidth = offsetX
+                    let currentTime = 
             }
         },
         computed: {
@@ -109,7 +130,8 @@
             inLineWidth(){
                 let outLineWidth = this.$refs.outLine.getBoundingClientRect().width
                 this.videoPercent = this.inLineWidth/outLineWidth*100
-                // this.setCurrentTime(this.totalTime*(this.inLineWidth/outLineWidth))
+                this.setCurrentTime(this.totalTime*(this.inLineWidth/outLineWidth))
+                connect.$emit('setCurrentTime')
             }
         },
         beforeDestroy() {
