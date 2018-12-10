@@ -53,3 +53,8 @@ export const setSortMode = (state,sortMode) => {
 export const setOldVideo = (state,oldVideo) => {
     state.oldVideo = oldVideo
 }
+
+// 清空播放列表
+export const clearVideoList = (state) =>{
+    state.videoList = []
+}

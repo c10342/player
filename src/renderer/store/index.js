@@ -10,6 +10,8 @@ import * as getters from './getters'
 
 import * as mutations from './mutations'
 
+import * as actions from './actions'
+
 
 Vue.use(Vuex)
 
@@ -19,6 +21,7 @@ export default new Vuex.Store({
     state,
     getters,
     mutations,
+    actions,
     strict: debug,
     plugins: debug ? [createLogger()] : []
 })

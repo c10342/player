@@ -52,7 +52,9 @@ class OpenDialog{
             // 视频路径
             src:data.src,
             // 文件名,
-            filename:path.basename(data.src)
+            filename:path.basename(data.src),
+            // 文件是否有效
+            msg:''
         }
     }
 }
