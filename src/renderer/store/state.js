@@ -3,9 +3,11 @@
 // 仓库
 let state = {
     // 音量大小
-    inWidth:30,
+    inWidth:31,
     // 是否关闭音量
     isVolumeOn:true,
+    // 音量百分比
+    volumePercent:0.5,
     // 当前是否正在播放视频
     isPlaying:false,
     // 视频播放速度
@@ -25,7 +27,7 @@ let state = {
     // 当前视频播放的进度(时间)
     currentTime:0,
     // 视频总时长
-    totalTime:0
+    totalTime:0,
 }
 
 

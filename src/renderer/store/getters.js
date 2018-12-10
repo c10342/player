@@ -33,3 +33,6 @@ export const currentTime = state => state.currentTime
 
 // 获取视频总时长
 export const totalTime = state => state.totalTime
+
+// 获取音量百分比
+export const volumePercent = state => state.volumePercent

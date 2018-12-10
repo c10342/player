@@ -16,7 +16,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-
+import connect from "../api/bus.js";
 export default {
   name: "my-progress",
   data() {
@@ -38,7 +38,7 @@ export default {
     this.mousedown = false;
   },
   methods: {
-    ...mapMutations(["setInWidth", "setIsVolumeOn"]),
+    ...mapMutations(["setInWidth", "setIsVolumeOn",'setVolumePercent']),
     // 点击最外层进度条
     onClick(e) {
       // 小于0则关闭音量图标
@@ -100,6 +100,15 @@ export default {
           //开启
           this.setInWidth(this.oldInWidth || this.inWidth);
         }
+      }
+    },
+    inWidth: {
+      immediate: true,
+      handler: function(newVal) {
+        let volumePercent = Math.round(
+        this.inWidth / parseInt(this.width) * 100
+      )/100;
+        this.setVolumePercent(volumePercent);
       }
     }
   },

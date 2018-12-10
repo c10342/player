@@ -73,3 +73,8 @@ export const setCurrentTime = (state,currentTime) => {
 export const setTotalTime = (state,totalTime) => {
     state.totalTime = totalTime
 }
+
+// 设置音量百分比
+export const setVolumePercent = (state,volumePercent) => {
+    state.volumePercent = volumePercent
+}

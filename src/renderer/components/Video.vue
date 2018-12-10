@@ -78,8 +78,10 @@ export default {
     }
   },
   mounted() {
-    connect.$on("setCurrentTime", () => {
-      this.$refs.video.currentTime = this.currentTime;
+    this.$nextTick(() => {
+      connect.$on("setCurrentTime", () => {
+        this.$refs.video.currentTime = this.currentTime;
+      });
     });
   },
   computed: {
@@ -89,7 +91,9 @@ export default {
       "videoList",
       "currentTime",
       "speed",
-      "oldVideo"
+      "oldVideo",
+      "inWidth",
+      "volumePercent"
     ])
   },
   watch: {
@@ -104,12 +108,15 @@ export default {
     },
     currentVideo(newVal, oldVal) {
       this.changeVideoList(
-        Object.assign({}, this.oldVideo, { currentTime: this.currentTime,speed:this.speed })
+        Object.assign({}, this.oldVideo, {
+          currentTime: this.currentTime,
+          speed: this.speed
+        })
       );
       if (newVal) {
         this.setOldVideo(newVal);
         this.setCurrentTime(newVal.currentTime);
-        this.setSpeed(newVal.speed)
+        this.setSpeed(newVal.speed);
         const index = this.videoList.findIndex(i => i.id == newVal.id);
         this.setCurrentVideoIndex(index);
         this.$nextTick(() => {
@@ -122,9 +129,17 @@ export default {
     speed(newVal) {
       this.setOldVideo(Object.assign({}, this.oldVideo, { speed: newVal }));
       this.changeVideoList(this.oldVideo);
-      this.$nextTick(()=>{
-          this.$refs.video.playbackRate = newVal
-      })
+      this.$nextTick(() => {
+        this.$refs.video.playbackRate = newVal;
+      });
+    },
+    volumePercent: {
+      immediate: true,
+      handler: function(newVal) {
+        this.$nextTick(() => {
+          this.$refs.video.volume = newVal;
+        });
+      }
     }
   },
   beforeDestroy() {
