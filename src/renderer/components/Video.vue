@@ -122,6 +122,7 @@ export default {
         this.$nextTick(() => {
           this.setPlaying(true);
           this.$refs.video.play();
+          this.$refs.video.playbackRate = newVal.speed;
           this.$refs.video.currentTime = this.currentTime;
         });
       }

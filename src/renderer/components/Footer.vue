@@ -125,7 +125,7 @@ export default {
     onKeyUp(e) {
       // 按下空格键
       if (e.keyCode == 32) {
-        this.setPlaying(!this.isPlaying);
+        this.switchPlaying(!this.isPlaying)
       }
     },
     // 切换播放模式
