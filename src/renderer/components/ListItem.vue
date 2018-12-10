@@ -79,7 +79,8 @@ export default {
       "currentVideoIndex",
       "videoList",
       "isPlaying",
-      "oldVideo"
+      "oldVideo",
+      "currentTime"
     ]),
     // 是否为当前的歌曲
     isCurrentVideo() {
@@ -87,11 +88,6 @@ export default {
     }
   },
   watch: {
-    currentVideo(newVal) {
-      if (newVal) {
-        this.setOldVideo(newVal);
-      }
-    }
   }
 };
 </script>

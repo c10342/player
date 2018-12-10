@@ -3,7 +3,6 @@
         <video
         @timeupdate='timeupdate'
         @durationchange='durationchange'
-        controls
                 ref="video"
                 class="my-video"
                 :src="currentVideo?currentVideo.src:''"></video>
@@ -30,10 +29,10 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import OpenDialog from "../api/OpenDialog";
 const openDialog = new OpenDialog();
- import connect from '../api/bus.js'
+import connect from "../api/bus.js";
 export default {
   data() {
     return {
@@ -42,7 +41,15 @@ export default {
   },
   name: "my-video",
   methods: {
-    ...mapMutations(["setPlaying", "setCurrentVideoIndex",'setCurrentTime','setTotalTime']),
+    ...mapMutations([
+      "setPlaying",
+      "setCurrentVideoIndex",
+      "setCurrentTime",
+      "setTotalTime",
+      "setSpeed",
+      "setOldVideo"
+    ]),
+    ...mapActions(["changeVideoList"]),
     // 点击按钮后显示菜单
     showMenu() {
       document.body.click();
@@ -62,21 +69,28 @@ export default {
       openDialog.openFile();
     },
     // 播放进度
-    timeupdate(e){
-        this.setCurrentTime(e.target.currentTime)
+    timeupdate(e) {
+      this.setCurrentTime(e.target.currentTime);
     },
     // 视频长度发生变化
-    durationchange(e){
-        this.setTotalTime(e.target.duration)
+    durationchange(e) {
+      this.setTotalTime(e.target.duration);
     }
   },
-  mounted(){
-      connect.$on('setCurrentTime',()=>{
-          this.$refs.video.currentTime = this.currentTime
-      })
+  mounted() {
+    connect.$on("setCurrentTime", () => {
+      this.$refs.video.currentTime = this.currentTime;
+    });
   },
   computed: {
-    ...mapGetters(["currentVideo", "isPlaying", "videoList",'currentTime'])
+    ...mapGetters([
+      "currentVideo",
+      "isPlaying",
+      "videoList",
+      "currentTime",
+      "speed",
+      "oldVideo"
+    ])
   },
   watch: {
     isPlaying(newVal) {
@@ -88,19 +102,29 @@ export default {
         }
       });
     },
-    currentVideo(newVal) {
-      if (!newVal) {
-        return;
+    currentVideo(newVal, oldVal) {
+      this.changeVideoList(
+        Object.assign({}, this.oldVideo, { currentTime: this.currentTime,speed:this.speed })
+      );
+      if (newVal) {
+        this.setOldVideo(newVal);
+        this.setCurrentTime(newVal.currentTime);
+        this.setSpeed(newVal.speed)
+        const index = this.videoList.findIndex(i => i.id == newVal.id);
+        this.setCurrentVideoIndex(index);
+        this.$nextTick(() => {
+          this.setPlaying(true);
+          this.$refs.video.play();
+          this.$refs.video.currentTime = this.currentTime;
+        });
       }
-      const index = this.videoList.findIndex(i => i.id == newVal.id);
-      this.setCurrentVideoIndex(index);
-      this.$nextTick(() => {
-        this.setPlaying(true);
-        this.$refs.video.play();
-      });
     },
-    currentTime(newVal){
-        // this.$refs.video.currentTime = newVal
+    speed(newVal) {
+      this.setOldVideo(Object.assign({}, this.oldVideo, { speed: newVal }));
+      this.changeVideoList(this.oldVideo);
+      this.$nextTick(()=>{
+          this.$refs.video.playbackRate = newVal
+      })
     }
   },
   beforeDestroy() {
