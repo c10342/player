@@ -285,6 +285,7 @@ export default {
     videoList() {
       this.$nextTick(() => {
         this.onMouseLeave();
+        // 重新计算列表的高度
         this.refresh();
       });
     }
@@ -390,50 +391,6 @@ export default {
       > .delete {
         font-size: 14px;
       }
-      /*> .extend-menu {*/
-      /*position: absolute;*/
-      /*right: -10px;*/
-      /*bottom: -250px;*/
-      /*background-color: #27272A;*/
-      /*z-index: 5;*/
-      /*width: 100px;*/
-      /*color: #999999;*/
-      /*padding: 3px 0;*/
-      /*border-radius: 5px;*/
-      /*> .line {*/
-      /*border-bottom: 1px solid #303032;*/
-      /*}*/
-      /*&:after {*/
-      /*content: '';*/
-      /*position: absolute;*/
-      /*left: 80%;*/
-      /*top: -10px;*/
-      /*height: 0;*/
-      /*width: 0;*/
-      /*border: 5px solid transparent;*/
-      /*border-bottom-color: #252528;*/
-      /*}*/
-      /*> li {*/
-      /*height: 30px;*/
-      /*text-align: center;*/
-      /*line-height: 30px;*/
-      /*font-size: 12px;*/
-      /*cursor: pointer;*/
-      /*&:hover {*/
-      /*background-color: #373333;*/
-      /*color: #1BB017;*/
-      /*> span {*/
-      /*color: #1BB017;*/
-      /*}*/
-      /*}*/
-      /*> span {*/
-      /*font-size: 10px;*/
-      /*padding: 0;*/
-      /*color: #999999;*/
-      /*margin-left: -10px;*/
-      /*}*/
-      /*}*/
-      /*}*/
     }
   }
   .file {

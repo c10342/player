@@ -23,11 +23,11 @@
                     </li>
                     <li @click="changeMode(3)">
                         <span v-if="playMode==3" class="fa fa-check"></span>
-                        顺序播放
+                        循环列表
                     </li>
                     <li @click="changeMode(4)">
                         <span v-if="playMode==4" class="fa fa-check"></span>
-                        顺序循环
+                        顺序播放
                     </li>
                     <li @click="changeMode(5)">
                         <span v-if="playMode==5" class="fa fa-check"></span>
@@ -39,6 +39,7 @@
             <div class="middle">
                 <span :style="{'color':currentVideo?'':'#454548'}" title="停止" class="fa fa-stop" @click="stop"></span>
                 <span
+                :style="{'color':(videoList.length<=1)?'#454548':''}"
                         @click="prev"
                         title="上一个文件"
                         class="fa fa-step-backward"></span>
@@ -55,6 +56,7 @@
                         style="font-size: 50px;"
                         @click.stop="switchPlaying(false)"></span>
                 <span
+                :style="{'color':(videoList.length<=1)?'#454548':''}"
                         @click="next"
                         title="下一个文件"
                         class="fa fa-step-forward"></span>
@@ -109,15 +111,18 @@ export default {
     },
     // 切换播放状态，播放或者暂停
     switchPlaying(flag) {
-      if (flag && !this.currentVideo) { //播放状态，但是当前没有视频被暂停
+      if (flag && !this.currentVideo) {
+        //播放状态，但是当前没有视频被暂停
         if (this.videoList.length == 0) {
           return;
         }
-        if (this.oldVideo) { //点击停止按钮后，被停止前的视频被保存下来
-        // 把被保存的视频设置为当前播放的视频，即还原被停止前的视频状态
+        if (this.oldVideo) {
+          //点击停止按钮后，被停止前的视频被保存下来
+          // 把被保存的视频设置为当前播放的视频，即还原被停止前的视频状态
           this.setCurrentVideo(this.oldVideo);
-        } else { //没有视频被保存下来
-        // 把播放列表中的第一项设置为当前播放的视频
+        } else {
+          //没有视频被保存下来
+          // 把播放列表中的第一项设置为当前播放的视频
           this.setCurrentVideo(this.videoList[0]);
         }
       }
@@ -126,9 +131,12 @@ export default {
     },
     // 监听键盘
     onKeyUp(e) {
+      if (!this.currentVideo) {
+        return;
+      }
       // 按下空格键
       if (e.keyCode == 32) {
-        this.switchPlaying(!this.isPlaying)
+        this.switchPlaying(!this.isPlaying);
       }
     },
     // 切换播放模式
@@ -155,8 +163,8 @@ export default {
     // 停止播放
     stop() {
       // 当前没有视频正在播放
-      if(!this.currentVideo){
-        return
+      if (!this.currentVideo) {
+        return;
       }
       // 清空当前正在播放的视频
       this.setCurrentVideo(null);
@@ -165,10 +173,19 @@ export default {
     },
     // 下一个视频
     next() {
+      // 当播放列表中只有一个视频或者没有
+      if (this.videoList.length <= 1) {
+        return;
+      }
       // 随机播放模式
       if (this.playMode == 5) {
         // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
+        // 随机出来的索引等于当前视频索引
+        while(index == this.currentVideoIndex){
+          // 重新生成一个，防止随机的是同一个视频
+          index = Math.floor(Math.random() * this.videoList.length);
+        }
         // 设置视频索引
         this.setCurrentVideoIndex(index);
         return;
@@ -185,15 +202,23 @@ export default {
     },
     // 上一个视频
     prev() {
+      // 当播放列表中只有一个视频或者没有
+      if (this.videoList.length <= 1) {
+        return;
+      }
       // 随机播放模式
       if (this.playMode == 5) {
         // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
+        while(index == this.currentVideoIndex){
+          index = Math.floor(Math.random() * this.videoList.length);
+        }
         this.setCurrentVideoIndex(index);
         return;
       }
-      if (this.currentVideoIndex == 0) { //当前视频索引是第一个
-      // 设置当前视频索引的最后一个
+      if (this.currentVideoIndex == 0) {
+        //当前视频索引是第一个
+        // 设置当前视频索引的最后一个
         this.setCurrentVideoIndex(this.videoList.length - 1);
       } else {
         // 视频索引减一
@@ -279,7 +304,7 @@ export default {
     font-size: 18px;
     color: white;
     cursor: pointer;
-    &:hover {
+    &:hover:not(.video-time) {
       color: #5dee00;
     }
     &.video-time {

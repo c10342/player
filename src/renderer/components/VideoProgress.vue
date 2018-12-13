@@ -48,13 +48,15 @@ export default {
     // 点击最外层进度条
     onClick(e) {
       // 过渡
-      this.$refs.inLine.style.transition = 'width .2s'
+      this.$refs.inLine.style.transition = "width .2s";
       this.inLineWidth = e.offsetX;
+      this.$refs.inLine.addEventListener("transitionend", () => {
+        // 取消过渡
+        this.$refs.inLine.style.transition = "";
+      });
     },
     // 鼠标在进度球按下
     ballMouseDown() {
-      // 取消过渡
-      this.$refs.inLine.style.transition = ''
       this.mousedown = true;
       window.addEventListener("mousemove", this.onMouseMove);
       window.addEventListener("mouseup", this.onMouseUp);
@@ -116,22 +118,35 @@ export default {
       } else if (offsetX > outLineWidth) {
         offsetX = outLineWidth;
       }
+      // 内层进度条占外层进度条的比例
       let videoPercent = offsetX / outLineWidth;
+      // 计算出当前播放的进度，并格式化时间
       let currentTime = formatTime(this.totalTime * videoPercent);
       this.subTitle = currentTime;
     }
   },
   computed: {
-    ...mapGetters(["speed", "totalTime", "currentTime", "oldVideo",'currentVideo'])
+    ...mapGetters([
+      "speed",
+      "totalTime",
+      "currentTime",
+      "oldVideo",
+      "currentVideo"
+    ])
   },
   watch: {
     currentTime(newVal) {
+      // 计算出内层占外层进度条的百分比
       this.videoPercent = newVal / this.oldVideo.totalTime * 100;
     },
     inLineWidth() {
+      // 最外层进度条宽度
       let outLineWidth = this.$refs.outLine.getBoundingClientRect().width;
+      // 最内层进度条占最外层进度条的百分比
       this.videoPercent = this.inLineWidth / outLineWidth * 100;
+      // 设置当前时间
       this.setCurrentTime(this.totalTime * (this.inLineWidth / outLineWidth));
+      // 发射事件修改video的当前播放进度
       connect.$emit("setCurrentTime");
     }
   },

@@ -1,9 +1,12 @@
 <template>
-    <div class="video-container">
+    <div 
+    class="video-container" 
+    @click.stop.prevent="changePlayingMode">
         <video
         @loadedmetadata='loadedmetadata'
         @timeupdate='timeupdate'
         @durationchange='durationchange'
+        @ended='ended'
                 ref="video"
                 class="my-video"
                 :src="currentVideo?currentVideo.src:''"></video>
@@ -49,7 +52,8 @@ export default {
       "setCurrentTime",
       "setTotalTime",
       "setSpeed",
-      "setOldVideo"
+      "setOldVideo",
+      "setCurrentVideo"
     ]),
     ...mapActions(["changeVideoList"]),
     // 点击按钮后显示或者隐藏菜单
@@ -94,6 +98,75 @@ export default {
       // 还原上一次的播放状态
       this.$refs.video.playbackRate = this.currentVideo.speed;
       this.$refs.video.currentTime = this.currentVideo.currentTime;
+    },
+    // 播放或者暂停视频
+    changePlayingMode() {
+      // 当前没有视频在播放
+      if (!this.currentVideo) {
+        return;
+      }
+      this.setPlaying(!this.isPlaying);
+    },
+    // 视频播放结束
+    ended() {
+      // 暂停播放
+      this.setPlaying(false);
+      // 重置进度
+      this.setCurrentTime(0);
+      switch (this.playMode) {
+        // 单个播放
+        case 1:
+          this.setCurrentVideo(null);
+          break;
+        // 单个循环
+        case 2:
+          this.$nextTick(() => {
+            this.setPlaying(true);
+          });
+          break;
+        // 循环播放列表
+        case 3:
+          // 当前视频索引是最后一个
+          if (this.videoList.length - 1 == this.currentVideoIndex) {
+            // 设置视频索引为第一个
+            this.setCurrentVideoIndex(0);
+          } else {
+            // 否则视频索引加一
+            let index = this.currentVideoIndex + 1;
+            this.setCurrentVideoIndex(index);
+          }
+          break;
+        // 顺序播放
+        case 4:
+          // 当前视频索引是最后一个
+          if (this.videoList.length - 1 == this.currentVideoIndex) {
+            // 设置视频索引为第一个
+            this.setCurrentVideo(null);
+          } else {
+            // 否则视频索引加一
+            let index = this.currentVideoIndex + 1;
+            this.setCurrentVideoIndex(index);
+          }
+          break;
+        // 随机播放
+        case 5:
+          // 当播放列表中只有一个视频
+          if (this.videoList.length <= 1) {
+            this.$nextTick(() => {
+              this.setPlaying(true);
+            });
+          } else {
+            // 随机选取一个视频
+            let index = Math.floor(Math.random() * this.videoList.length);
+            // 随机出来的索引等于当前视频索引
+            while (index == this.currentVideoIndex) {
+              // 重新生成一个，防止随机的是同一个视频
+              index = Math.floor(Math.random() * this.videoList.length);
+            }
+            this.setCurrentVideoIndex(index);
+          }
+          break;
+      }
     }
   },
   mounted() {
@@ -113,7 +186,9 @@ export default {
       "speed",
       "oldVideo",
       "inWidth",
-      "volumePercent"
+      "volumePercent",
+      "playMode",
+      "currentVideoIndex"
     ])
   },
   watch: {

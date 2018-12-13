@@ -1,9 +1,12 @@
 <template>
     <div
             class="flexbetween my-list-item"
+            :class="isCurrentVideo?'currentVideo':''"
             :title="item.msg?item.msg:item.src"
          @dblclick="dblPlaying"
          :style="{'color': isCurrentVideo?'#00B400':''}">
+         <div class="out-progress" v-if="isCurrentVideo"></div>
+         <div :style="{'width':currentVideoPercent}" class="in-progress" v-if="isCurrentVideo"></div>
         <div class="left">
             <span class="fa fa-caret-right" v-if="isCurrentVideo"></span>
             <span class="fa fa-eye" v-if="oldVideo && oldVideo.id == item.id && !isPlaying && !currentVideo"></span>
@@ -11,7 +14,7 @@
         </div>
         <span class="msg" v-if="item.msg">{{item.msg}}</span>
         <div class="flexrowcenter right" v-if="!item.msg">
-            <span class="time">12:15</span>
+            <span class="time" v-if="item.totalTime>0">{{item.totalTime | formatTime}}</span>
             <span
                     @click.stop="playing"
                     v-if="!isPlaying || !isCurrentVideo" title="播放"
@@ -29,6 +32,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 const fs = require("fs");
+import { formatTime } from "../api/util";
 
 export default {
   name: "list-item",
@@ -40,6 +44,9 @@ export default {
         return {};
       }
     }
+  },
+  filters: {
+    formatTime
   },
   data() {
     return {
@@ -101,6 +108,10 @@ export default {
     // 是否为当前的歌曲
     isCurrentVideo() {
       return this.currentVideo ? this.item.id == this.currentVideo.id : false;
+    },
+    // 计算当前视频进度占中时间的百分比
+    currentVideoPercent(){
+      return `${this.currentTime/this.oldVideo.totalTime*100}%`
     }
   }
 };
@@ -117,6 +128,24 @@ export default {
   padding: 0 15px;
   transition: width 1s;
   color: #cccccc;
+  position: relative;
+  >.in-progress{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .2);
+    z-index: -1;
+  }
+  >.out-progress{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #5d5d5e;
+    z-index: -1;
+  }
   .left {
     overflow: hidden;
     white-space: nowrap;
@@ -126,9 +155,11 @@ export default {
     padding: 0 5px;
     cursor: pointer;
   }
-  &:hover {
+  &:hover:not(.currentVideo) {
     color: white;
     background-color: #5d5d5e;
+  }
+  &:hover {
     .right {
       .time {
         display: none;
@@ -139,11 +170,6 @@ export default {
     }
   }
   .right {
-    /*.time{*/
-    /*overflow: hidden;*/
-    /*white-space: nowrap;*/
-    /*text-overflow: ellipsis;*/
-    /*}*/
     > span:not(.time) {
       display: none;
     }

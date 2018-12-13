@@ -26,6 +26,7 @@ export default {
     };
   },
   props: {
+    // 音量进度条最外层的宽度
     width: {
       type: String,
       default: "100%"
@@ -47,6 +48,7 @@ export default {
       } else {
         this.setIsVolumeOn(true);
       }
+      // 记录鼠标点击的位置距离最外层进度条最左边的距离
       this.oldInWidth = e.offsetX;
       this.setInWidth(e.offsetX);
     },
@@ -66,7 +68,7 @@ export default {
         let outLineWidth = this.$refs.outLine.getBoundingClientRect().width;
         // 获取鼠标移动距离相对最外层进度条的距离
         let offsetX = e.pageX - outLineX;
-        if (offsetX <= 0) {
+        if (offsetX <= 0) { //小于0关闭音量
           offsetX = 0;
           this.setIsVolumeOn(false);
         } else if (offsetX > outLineWidth) {
@@ -75,7 +77,7 @@ export default {
         if (offsetX > 0) {
           this.setIsVolumeOn(true);
         }
-
+        // 记录鼠标点击的位置距离最外层进度条最左边的距离
         this.oldInWidth = offsetX;
         this.setInWidth(offsetX);
       }
@@ -89,6 +91,7 @@ export default {
   watch: {
     // 监听音量图标的关闭和开启
     isVolumeOn: {
+      // 初始化的时候执行一次是因为需要在播放器初始化的时候初始化音量图标的状态
       immediate: true,
       handler: function(newVal) {
         if (!newVal) {
@@ -103,8 +106,10 @@ export default {
       }
     },
     inWidth: {
+      // 初始化的时候执行一次是因为需要在播放器初始化的时候初始化最内层进度条的宽度
       immediate: true,
       handler: function(newVal) {
+        // 四舍五入
         let volumePercent = Math.round(
         this.inWidth / parseInt(this.width) * 100
       )/100;
