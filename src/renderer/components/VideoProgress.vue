@@ -6,7 +6,7 @@
                 @click="onClick($event)"
                 class="video-out-line"
                 ref="outLine">
-            <div class="in-line" :style="{'width':`${videoPercent}%`}">
+            <div ref="inLine" class="in-line" :style="{'width':`${videoPercent}%`}">
             <span
                     @mousedown.stop="ballMouseDown"
                     @click.stop
@@ -47,10 +47,14 @@ export default {
     ...mapActions(["changeVideoList"]),
     // 点击最外层进度条
     onClick(e) {
+      // 过渡
+      this.$refs.inLine.style.transition = 'width .2s'
       this.inLineWidth = e.offsetX;
     },
     // 鼠标在进度球按下
     ballMouseDown() {
+      // 取消过渡
+      this.$refs.inLine.style.transition = ''
       this.mousedown = true;
       window.addEventListener("mousemove", this.onMouseMove);
       window.addEventListener("mouseup", this.onMouseUp);
@@ -122,7 +126,7 @@ export default {
   },
   watch: {
     currentTime(newVal) {
-      this.videoPercent = newVal / this.totalTime * 100;
+      this.videoPercent = newVal / this.oldVideo.totalTime * 100;
     },
     inLineWidth() {
       let outLineWidth = this.$refs.outLine.getBoundingClientRect().width;

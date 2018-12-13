@@ -88,7 +88,7 @@ export default {
   name: "my-footer",
   data() {
     return {
-      // 是否展开播放模式列表
+      // 是否展开播放模式列表菜单
       isShowPlayMode: false
     };
   },
@@ -107,18 +107,21 @@ export default {
     setVolume(flag) {
       this.setIsVolumeOn(flag);
     },
-    // 切换播放状态
+    // 切换播放状态，播放或者暂停
     switchPlaying(flag) {
-      if (flag && !this.currentVideo) {
+      if (flag && !this.currentVideo) { //播放状态，但是当前没有视频被暂停
         if (this.videoList.length == 0) {
           return;
         }
-        if (this.oldVideo) {
+        if (this.oldVideo) { //点击停止按钮后，被停止前的视频被保存下来
+        // 把被保存的视频设置为当前播放的视频，即还原被停止前的视频状态
           this.setCurrentVideo(this.oldVideo);
-        } else {
+        } else { //没有视频被保存下来
+        // 把播放列表中的第一项设置为当前播放的视频
           this.setCurrentVideo(this.videoList[0]);
         }
       }
+      // 设置播放状态
       this.setPlaying(flag);
     },
     // 监听键盘
@@ -132,9 +135,11 @@ export default {
     changeMode(mode) {
       this.setPlayMode(mode);
     },
-    // 显示播放模式列表
+    // 显示或者隐藏播放模式列表
     showPlayMode() {
+      // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
       document.body.click();
+      // 选择完播放模式后就隐藏播放模式列表菜单
       this.isShowPlayMode = !this.isShowPlayMode;
       if (this.isShowPlayMode) {
         window.addEventListener("click", this.onClick);
@@ -143,38 +148,55 @@ export default {
       }
     },
     onClick() {
+      // 隐藏播放模式列表菜单
       this.isShowPlayMode = false;
       window.removeEventListener("click", this.onClick);
     },
     // 停止播放
     stop() {
+      // 当前没有视频正在播放
+      if(!this.currentVideo){
+        return
+      }
+      // 清空当前正在播放的视频
       this.setCurrentVideo(null);
+      // 停止播放
       this.setPlaying(false);
     },
     // 下一个视频
     next() {
+      // 随机播放模式
       if (this.playMode == 5) {
+        // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
+        // 设置视频索引
         this.setCurrentVideoIndex(index);
         return;
       }
+      // 当前视频索引是最后一个
       if (this.videoList.length - 1 == this.currentVideoIndex) {
+        // 设置视频索引为第一个
         this.setCurrentVideoIndex(0);
       } else {
+        // 否则视频索引加一
         let index = this.currentVideoIndex + 1;
         this.setCurrentVideoIndex(index);
       }
     },
     // 上一个视频
     prev() {
+      // 随机播放模式
       if (this.playMode == 5) {
+        // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
         this.setCurrentVideoIndex(index);
         return;
       }
-      if (this.currentVideoIndex == 0) {
+      if (this.currentVideoIndex == 0) { //当前视频索引是第一个
+      // 设置当前视频索引的最后一个
         this.setCurrentVideoIndex(this.videoList.length - 1);
       } else {
+        // 视频索引减一
         let index = this.currentVideoIndex - 1;
         this.setCurrentVideoIndex(index);
       }
@@ -206,16 +228,22 @@ export default {
         return "随机播放";
       }
     },
+    // 当前视频播放状态
     getCurrentTime() {
+      // 格式化事件
       return formatTime(this.currentTime);
     },
+    // 当前视频总时长
     getTotalTime() {
+      // 格式化时间
       return formatTime(this.totalTime);
     }
   },
   watch: {
     currentVideoIndex(newVal) {
+      // 视频索引发生变化时查找出索引对应的视频
       const currentVideo = this.videoList[newVal];
+      // 设置当前播放的视频
       this.setCurrentVideo(currentVideo);
     }
   },

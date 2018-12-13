@@ -81,9 +81,11 @@ export default {
     close() {
       winUtil.close();
     },
-    // 点击播放器后显示菜单
+    // 点击左上角播放器文字后显示或者隐藏菜单
     showMenu() {
+      // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
       document.body.click();
+      // 隐藏左上角的菜单
       this.isShowMenu = !this.isShowMenu;
       if (!this.isShowMenu) {
         window.removeEventListener("click", this.onClick);
@@ -92,6 +94,7 @@ export default {
       }
     },
     onClick() {
+      // 隐藏左上角的菜单
       this.isShowMenu = false;
       window.removeEventListener("click", this.onClick);
     }

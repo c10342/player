@@ -1,4 +1,4 @@
-//获取屏幕个宽度和高度
+//获取屏幕的宽度和高度
 export function client() {
     if (window.innerWidth != null) {   //ie
         return {
@@ -17,6 +17,7 @@ export function client() {
     }
 }
 
+// 格式化时间
 export const formatTime = (time) =>{
     let h = parseInt(time/60/60)
     let m = parseInt(time/60%60)

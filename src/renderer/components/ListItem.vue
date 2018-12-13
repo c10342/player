@@ -33,6 +33,7 @@ const fs = require("fs");
 export default {
   name: "list-item",
   props: {
+    // 播放列表中的一项
     item: {
       type: Object,
       default: function() {
@@ -42,6 +43,7 @@ export default {
   },
   data() {
     return {
+      // 点击停止后是否显示停止的视频
       isShowEye: false
     };
   },
@@ -50,19 +52,29 @@ export default {
     ...mapActions(["changeVideoList"]),
     setplaying() {
       if (!fs.existsSync(this.item.src)) {
+        //文件不存在
         if (this.item.msg) {
+          //存在文件错误信息
           return;
         }
+        // 保存文件错误信息
         let video = Object.assign({}, this.item, { msg: "无效文件" });
+        // 修改播放列表
         this.changeVideoList(video);
       } else {
         if (!this.isCurrentVideo) {
+          //不是当前播放的视频
+          // 设置当前播放的视频为该视频
           this.setCurrentVideo(this.item);
         }
+        // 存在文件错误信息
         if (this.item.msg) {
+          // 清空文件错误信息
           let video = Object.assign({}, this.item, { msg: "" });
+          // 修改播放列表
           this.changeVideoList(video);
         }
+        // 设置为播放状态
         this.setPlaying(true);
       }
     },
@@ -70,6 +82,10 @@ export default {
       this.setplaying();
     },
     dblPlaying() {
+      // 要播放的视频是当前正在播放的视频
+      if (this.isCurrentVideo) {
+        return;
+      }
       this.setplaying();
     }
   },
@@ -86,8 +102,6 @@ export default {
     isCurrentVideo() {
       return this.currentVideo ? this.item.id == this.currentVideo.id : false;
     }
-  },
-  watch: {
   }
 };
 </script>

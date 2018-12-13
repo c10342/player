@@ -5,13 +5,13 @@
 #### Build Setup
 
 ``` bash
-# install dependencies
+# install dependencies(安装依赖)
 npm install
 
-# serve with hot reload at localhost:9080
+# serve with hot reload at localhost:9080(运行开发环境)
 npm run dev
 
-# build electron application for production
+# build electron application for production(打包生产环境)
 npm run build
 
 

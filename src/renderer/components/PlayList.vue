@@ -110,10 +110,12 @@ import BScroll from "better-scroll";
 export default {
   name: "play-list",
   props: {
+    // 是否显示列表最左边的按钮
     isShowArrow: {
       type: Boolean,
       default: false
     },
+    // 列表高度
     playListHeight: {
       type: Number,
       default: 0
@@ -137,18 +139,21 @@ export default {
   },
   mounted() {
     this.scroll = null;
+    // 保存列表原有的的宽度
     this.savePlayListWidth = 300;
+    // 定时器
     this.timer = null;
     this.playListTimer = null;
     this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
     this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
     setTimeout(() => {
+      // 初始化better-scroll
       this.initScroll();
-    }, 20);
+    }, 40);
   },
   methods: {
     ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo"]),
-    // 点击按钮后显示菜单
+    // 显示或者隐藏列表最中间菜单
     showMenu() {
       document.body.click();
       this.isShowFileMenu = !this.isShowFileMenu;
@@ -159,11 +164,13 @@ export default {
       }
     },
     onClick() {
+      // 隐藏列表右上角的扩展菜单
       this.isShowExtendMenu = false;
+      // 隐藏列表最中间的菜单
       this.isShowFileMenu = false;
       window.removeEventListener("click", this.onClick);
     },
-    // 隐藏播放列表
+    // 隐藏或者显示播放列表
     hideList() {
       this.isHidenList = !this.isHidenList;
       if (this.isHidenList) {
@@ -176,12 +183,15 @@ export default {
     },
     // 隐藏播放列表
     hidenList() {
+      // 隐藏列表中间的内容
       this.isShowOther = false;
       this.$refs.playList.style.width = "0px";
     },
     // 显示播放列表
     showList() {
+      // 还原列表的宽度
       this.$refs.playList.style.width = this.savePlayListWidth + "px";
+      // 监听过渡结束
       this.$refs.playList.addEventListener(
         "transitionend",
         this.onTransitionEnd
@@ -191,6 +201,7 @@ export default {
       if (this.isHidenList) {
         return;
       }
+      // 显示列表中间的内容
       this.isShowOther = true;
     },
     // 切换播放模式
@@ -201,7 +212,7 @@ export default {
     changeSoreMode(mode) {
       this.setSortMode(mode);
     },
-    // 显示扩展菜单
+    // 显示或者隐藏右上角的扩展菜单
     showExtendMenu() {
       document.body.click();
       this.isShowExtendMenu = !this.isShowExtendMenu;
@@ -220,11 +231,13 @@ export default {
     },
     // 定时器方法
     createTimeOut() {
-      if (!this.currentVideo) {
+      if (!this.currentVideo) {  //当前没有正在播放的视频就不用隐藏列表
         clearTimeout(this.playListTimer);
         return;
       }
+      // 隐藏列表
       this.isHidenList = true;
+      // 隐藏列表中间的内容
       this.isShowExtendMenu = false;
       this.hidenList();
       clearTimeout(this.playListTimer);
@@ -256,7 +269,7 @@ export default {
       this.$nextTick(() => {
         const wrapper = this.$refs.scroll;
         this.scroll = new BScroll(wrapper, {
-          probeType: 1
+          probeType: 1 //节流
         });
       });
     },

@@ -8,14 +8,17 @@ import store from '../store'
 
 class OpenDialog{
     openFile(){
+        // 向主进程发送消息并等待回复
         const path = ipcRenderer.sendSync('openFile')
         if(!path){
             return
         }
+        // 获取文件信息
         const arr = this.getFileStat(path)
         if(arr.length == 0){
             return
         }
+        // 第一次添加，即播放列表没有数据
         if(store.state.videoList.length == 0){
             store.commit('setCurrentVideo',arr[0])
             store.commit('setOldVideo',arr[0])

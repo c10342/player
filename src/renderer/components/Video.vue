@@ -1,6 +1,7 @@
 <template>
     <div class="video-container">
         <video
+        @loadedmetadata='loadedmetadata'
         @timeupdate='timeupdate'
         @durationchange='durationchange'
                 ref="video"
@@ -36,6 +37,7 @@ import connect from "../api/bus.js";
 export default {
   data() {
     return {
+      // 是否显示文件菜单
       isShowFileMenu: false
     };
   },
@@ -50,8 +52,9 @@ export default {
       "setOldVideo"
     ]),
     ...mapActions(["changeVideoList"]),
-    // 点击按钮后显示菜单
+    // 点击按钮后显示或者隐藏菜单
     showMenu() {
+      // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
       document.body.click();
       this.isShowFileMenu = !this.isShowFileMenu;
       if (!this.isShowFileMenu) {
@@ -61,6 +64,7 @@ export default {
       }
     },
     onClick() {
+      // 隐藏菜单
       this.isShowFileMenu = false;
       window.removeEventListener("click", this.onClick);
     },
@@ -68,16 +72,32 @@ export default {
     openFile() {
       openDialog.openFile();
     },
-    // 播放进度
+    // 视频播放进度改变
     timeupdate(e) {
       this.setCurrentTime(e.target.currentTime);
     },
     // 视频长度发生变化
     durationchange(e) {
       this.setTotalTime(e.target.duration);
+    },
+    // 当浏览器已加载音频/视频的元数据时,只触发一次，只有在视频发生变化时才触发
+    loadedmetadata() {
+      // 保存当前视频的总时长
+      this.setOldVideo(
+        Object.assign({}, this.currentVideo, {
+          totalTime: this.$refs.video.duration
+        })
+      );
+      // 修改播放状态
+      this.setPlaying(true);
+      this.$refs.video.play();
+      // 还原上一次的播放状态
+      this.$refs.video.playbackRate = this.currentVideo.speed;
+      this.$refs.video.currentTime = this.currentVideo.currentTime;
     }
   },
   mounted() {
+    // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
     this.$nextTick(() => {
       connect.$on("setCurrentTime", () => {
         this.$refs.video.currentTime = this.currentTime;
@@ -98,6 +118,7 @@ export default {
   },
   watch: {
     isPlaying(newVal) {
+      // 同步video和store中的isPlaying的状态
       this.$nextTick(() => {
         if (newVal) {
           this.$refs.video.play();
@@ -107,34 +128,33 @@ export default {
       });
     },
     currentVideo(newVal, oldVal) {
+      // 当前视频发生变化时把旧的视频覆盖掉播放列表中对应的视频
       this.changeVideoList(
         Object.assign({}, this.oldVideo, {
           currentTime: this.currentTime,
           speed: this.speed
         })
       );
+      // 新的视频不为空·
       if (newVal) {
-        this.setOldVideo(newVal);
+        // 获取该视频以前的播放进度
         this.setCurrentTime(newVal.currentTime);
+        // 获取该视频以前的视频速度
         this.setSpeed(newVal.speed);
+        // 找出新的视频在播放列表中的索引
         const index = this.videoList.findIndex(i => i.id == newVal.id);
+        // 设置视频的索引
         this.setCurrentVideoIndex(index);
-        this.$nextTick(() => {
-          this.setPlaying(true);
-          this.$refs.video.play();
-          this.$refs.video.playbackRate = newVal.speed;
-          this.$refs.video.currentTime = this.currentTime;
-        });
       }
     },
     speed(newVal) {
-      this.setOldVideo(Object.assign({}, this.oldVideo, { speed: newVal }));
-      this.changeVideoList(this.oldVideo);
+      // 视频速度发生变化时修改video的速度
       this.$nextTick(() => {
         this.$refs.video.playbackRate = newVal;
       });
     },
     volumePercent: {
+      // 立刻触发是因为需要在播放器初始化时初始化音量
       immediate: true,
       handler: function(newVal) {
         this.$nextTick(() => {
