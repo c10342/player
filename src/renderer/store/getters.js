@@ -36,3 +36,6 @@ export const totalTime = state => state.totalTime
 
 // 获取音量百分比
 export const volumePercent = state => state.volumePercent
+
+// 获取全屏状态
+export const isFullScreen = state => state.isFullScreen

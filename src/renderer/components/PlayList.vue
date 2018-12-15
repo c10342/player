@@ -10,6 +10,11 @@
                     v-if="!isHidenList&&!currentVideo"
                     title="收起列表"
                     class="fa fa-arrow-circle-o-right"></span>
+                    <span
+                    @click="hideList"
+                    v-if="!isHidenList&&isFullScreen"
+                    title="收起列表"
+                    class="fa fa-arrow-circle-o-right"></span>
             <span
                     @click.stop="hideList"
                     v-if="isHidenList"
@@ -17,7 +22,7 @@
                     class="fa fa-arrow-circle-o-left"></span>
             <span
                     @click="lockList"
-                    v-if="currentVideo&&!isLock&&!isHidenList"
+                    v-if="currentVideo&&!isLock&&!isHidenList&&!isFullScreen"
                     class="fa fa-lock"
                     title="锁定列表"></span>
             <span
@@ -65,8 +70,20 @@
                         <span v-if="sortMode==1" class="fa fa-check"></span>
                         默认排序
                     </li>
-                    <li class="line" @click="changeSoreMode(2)">
+                    <li @click="changeSoreMode(2)">
                         <span v-if="sortMode==2" class="fa fa-check"></span>
+                        大小排序
+                    </li>
+                    <li @click="changeSoreMode(3)">
+                        <span v-if="sortMode==3" class="fa fa-check"></span>
+                        时间排序
+                    </li>
+                    <li @click="changeSoreMode(4)">
+                        <span v-if="sortMode==4" class="fa fa-check"></span>
+                        随机排序
+                    </li>
+                    <li class="line" @click="changeSoreMode(5)">
+                        <span v-if="sortMode==5" class="fa fa-check"></span>
                         名称排序
                     </li>
                     <li @click="changeMode(1)">
@@ -104,8 +121,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import BScroll from "better-scroll";
+import connect from "../api/bus.js";
 
 export default {
   name: "play-list",
@@ -134,7 +152,7 @@ export default {
       // 是否锁定播放列表
       isLock: false,
       // 定时器时间
-      time: 2000
+      time: 3000
     };
   },
   mounted() {
@@ -150,9 +168,17 @@ export default {
       // 初始化better-scroll
       this.initScroll();
     }, 40);
+
+    connect.$on("showFooterAndHeader", () => {
+      this.showFooterAndHeader();
+    });
+    connect.$on("hideFooterAndHeader", () => {
+      this.hideFooterAndHeader();
+    });
   },
   methods: {
     ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo"]),
+    ...mapActions(["sortVideoList"]),
     // 显示或者隐藏列表最中间菜单
     showMenu() {
       document.body.click();
@@ -174,6 +200,9 @@ export default {
     hideList() {
       this.isHidenList = !this.isHidenList;
       if (this.isHidenList) {
+        if (this.playListTimer) {
+          clearTimeout(this.playListTimer);
+        }
         //隐藏
         this.hidenList();
       } else {
@@ -231,7 +260,8 @@ export default {
     },
     // 定时器方法
     createTimeOut() {
-      if (!this.currentVideo) {  //当前没有正在播放的视频就不用隐藏列表
+      if (!this.currentVideo) {
+        //当前没有正在播放的视频就不用隐藏列表
         clearTimeout(this.playListTimer);
         return;
       }
@@ -276,10 +306,32 @@ export default {
     // 强制 scroll 重新计算
     refresh() {
       this.scroll && this.scroll.refresh();
+    },
+    // 全屏的时候显示头部和脚部，调整播放列表高度
+    showFooterAndHeader() {
+      if (!this.isLock) {
+        this.$refs.playList.style.top = "36px";
+        this.$refs.playList.style.bottom = "56px";
+        this.$refs.playList.style.height = `${this.playListHeight}px`;
+        this.refresh();
+      }
+    },
+    // 全屏的时候隐藏头部和脚部，调整播放列表高度
+    hideFooterAndHeader() {
+      this.$refs.playList.style.top = "0";
+      this.$refs.playList.style.bottom = "0";
+      this.$refs.playList.style.height = "100%";
+      this.refresh();
     }
   },
   computed: {
-    ...mapGetters(["playMode", "sortMode", "currentVideo", "videoList"])
+    ...mapGetters([
+      "playMode",
+      "sortMode",
+      "currentVideo",
+      "videoList",
+      "isFullScreen"
+    ])
   },
   watch: {
     videoList() {
@@ -288,6 +340,28 @@ export default {
         // 重新计算列表的高度
         this.refresh();
       });
+    },
+    sortMode: {
+      immediate: true,
+      handler: function(newVal) {
+        this.sortVideoList(newVal);
+      }
+    },
+    isFullScreen(newVal) {
+      if (!newVal) {
+        this.showFooterAndHeader();
+      } else {
+        this.isLock = false;
+      }
+    },
+    isLock(newVal) {
+      if (newVal) {
+        this.$refs.playList.style.top = "0";
+        this.$refs.playList.style.bottom = "0";
+      } else {
+        this.$refs.playList.style.top = "36px";
+        this.$refs.playList.style.bottom = "56px";
+      }
     }
   },
   beforeDestroy() {

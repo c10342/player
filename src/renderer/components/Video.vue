@@ -1,7 +1,7 @@
 <template>
     <div 
     class="video-container" 
-    @click.stop.prevent="changePlayingMode">
+    @click="changePlayingMode">
         <video
         @loadedmetadata='loadedmetadata'
         @timeupdate='timeupdate'
@@ -246,15 +246,13 @@ export default {
 
 <style lang="less" scoped>
 .video-container {
-  /*width: 100%;*/
-  /*height: 100%;*/
   flex: 1;
   position: relative;
 }
 .my-video {
   width: 100%;
   height: 100%;
-  /*object-fit: fill;*/
+  vertical-align: top;
   background-color: #000000;
 }
 .open-file {

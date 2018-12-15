@@ -1,15 +1,24 @@
 <template>
-  <div id="app">
-    <div ref="header" class="app-header">
+  <div id="app" ref="app">
+    <div 
+    :class="{'header-fullScreen':isFullScreen}"
+    ref="header" 
+    class="app-header">
       <my-header />
     </div>
-    <div class="video" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+    <div 
+    class="video" 
+    @mouseenter="onMouseEnter" 
+    @mouseleave="onMouseLeave">
       <my-video />
       <play-list
               :play-list-height="playListHeight"
               :is-show-arrow="isShowArrow" />
     </div>
-    <div ref="footer" class="app-footer">
+    <div 
+    :class="{'footer-fullScreen':isFullScreen}"
+    ref="footer" 
+    class="app-footer">
       <my-footer />
     </div>
   </div>
@@ -17,6 +26,7 @@
 
 <script>
 import { client } from "./api/util";
+import connect from "./api/bus.js";
 import { mapGetters } from "vuex";
 
 export default {
@@ -29,6 +39,8 @@ export default {
   },
   mounted() {
     this.initPlayListHeight();
+    this.mouseMoveTimer = null;
+    this.FullScreenTimer = null;
     window.addEventListener("resize", this.initPlayListHeight);
   },
   methods: {
@@ -38,14 +50,52 @@ export default {
     onMouseLeave() {
       this.isShowArrow = false;
     },
+    // 初始化播放列表高度
     initPlayListHeight() {
       let footerHeight = this.$refs.footer.getBoundingClientRect().height;
       let headerHeight = this.$refs.header.getBoundingClientRect().height;
-      this.playListHeight = client().height - footerHeight - headerHeight + 1;
+      this.playListHeight = client().height - footerHeight - headerHeight;
+    },
+    // 显示头部和脚部
+    showFooterAndHeader() {
+      this.$refs.footer.style.height = "auto";
+      this.$refs.header.style.height = "auto";
+      this.$refs.footer.style.overflow = "";
+      this.$refs.header.style.overflow = "";
+    },
+    // 隐藏头部和脚部
+    hideFooterAndHeader() {
+      this.$refs.footer.style.height = "0";
+      this.$refs.header.style.height = "0";
+      this.$refs.footer.style.overflow = "hiden";
+      this.$refs.header.style.overflow = "hiden";
+    },
+    onMouseMove(e) {
+      if (!this.isFullScreen) {
+        return;
+      }
+      if (this.mouseMoveTimer) {
+        clearTimeout(this.mouseMoveTimer);
+      }
+      if (this.FullScreenTimer) {
+        clearTimeout(this.FullScreenTimer);
+      }
+      this.mouseMoveTimer = setTimeout(() => {
+        if (e.screenY <= 36 || client().height - e.screenY <= 85) {
+          this.showFooterAndHeader();
+          connect.$emit("showFooterAndHeader");
+        } else {
+          this.FullScreenTimer = setTimeout(() => {
+            this.hideFooterAndHeader();
+            connect.$emit("hideFooterAndHeader");
+            clearTimeout(this.FullScreenTimer);
+          }, 2000);
+        }
+      }, 100);
     }
   },
   computed: {
-    ...mapGetters(["currentVideo"])
+    ...mapGetters(["currentVideo", "isFullScreen"])
   },
   watch: {
     currentVideo: {
@@ -55,10 +105,33 @@ export default {
           this.initPlayListHeight();
         });
       }
+    },
+    isFullScreen(newVal) {
+      if (newVal) {
+        this.$refs.app.addEventListener("mousemove", this.onMouseMove);
+        if (this.FullScreenTimer) {
+          clearTimeout(this.FullScreenTimer);
+        }
+        this.FullScreenTimer = setTimeout(() => {
+          this.hideFooterAndHeader();
+          connect.$emit("hideFooterAndHeader");
+          clearTimeout(this.FullScreenTimer);
+        }, 2000);
+      } else {
+        this.$refs.app.removeEventListener("mousemove", this.onMouseMove);
+        this.showFooterAndHeader();
+      }
     }
   },
   beforeDestroy() {
+    if (this.mouseMoveTimer) {
+      clearTimeout(this.mouseMoveTimer);
+    }
+    if (this.FullScreenTimer) {
+      clearTimeout(this.FullScreenTimer);
+    }
     window.removeEventListener("resize", this.initialInputHeight);
+    this.$refs.app.removeEventListener("mousemove", this.onMouseMove);
   }
 };
 </script>
@@ -70,7 +143,9 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
   .app-header {
+    background-color: #1e1e20;
     border-bottom: 1px solid #2f2f31;
   }
   .video {
@@ -79,7 +154,27 @@ export default {
     flex: 1;
   }
   .app-footer {
+    background-color: #151616;
     border-top: 1px solid #2f2f31;
+  }
+  .header-fullScreen {
+    // height: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+  .footer-fullScreen {
+    // height: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
   }
 }
 </style>

@@ -1,11 +1,12 @@
 <template>
     <div class="header">
-        <div class="left">
+        <div class="left"  v-if="!isFullScreen">
             <span class="fa fa-youtube-play"></span>
             <div @click.stop="showMenu">
-                <span ref="title" class="title">播放器</span>
-                <span ref="icon" class="fa fa-angle-down my-angle-down"></span>
+                <span ref="title" class="title" v-if="!currentVideo">播放器</span>
+                <span ref="icon" class="fa fa-angle-down my-angle-down" :style="{'margin-left':currentVideo?'10px':''}"></span>
             </div>
+            <span v-if="currentVideo" :title="currentVideo.filename" class="filename">{{currentVideo.filename}}</span>
             <transition name="router" mode="out-in">
                 <ul v-if="isShowMenu" class="my-menu">
                     <li>
@@ -39,8 +40,8 @@
                 </ul>
             </transition>
         </div>
-        <div class="middle"></div>
-        <div class="right">
+        <div class="middle" v-if="!isFullScreen"></div>
+        <div class="right" v-if="!isFullScreen">
             <span title="用户" class="fa fa-user-o"></span>
             <span title="更换皮肤" class="fa fa-tv"></span>
             <span title="播放记录" class="fa fa-clock-o"></span>
@@ -49,11 +50,17 @@
             <span v-else @click="maxWindow" title="还原窗口" class="fa fa-window-restore"></span>
             <span @click="close" title="关闭" class="fa fa-close"></span>
         </div>
+        <div  v-if="isFullScreen" class="fullScreen-title">{{currentVideo.filename}}</div>
+        <div class="flexbetween" v-if="isFullScreen">
+          <span class="fullScreen-title">11:53</span>
+          <span class="fullScreen-title exit-fullScreen">退出全屏</span>
+        </div>
     </div>
 </template>
 
 <script>
 import WindowUtil from "../api/window";
+import { mapGetters } from "vuex";
 
 const winUtil = new WindowUtil();
 
@@ -99,6 +106,14 @@ export default {
       window.removeEventListener("click", this.onClick);
     }
   },
+  computed: {
+    ...mapGetters(["isFullScreen", "currentVideo"])
+  },
+  watch: {
+    isFullScreen(newVal) {
+      winUtil.setFullScreen(newVal);
+    }
+  },
   beforeDestroy() {
     window.removeEventListener("click", this.onClick);
   }
@@ -114,7 +129,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   height: 36px;
-  background-color: #1e1e20;
+  // background-color: #1e1e20;
   padding: 0 10px;
   .middle {
     -webkit-app-region: drag;
@@ -205,6 +220,32 @@ export default {
         color: #5dee00;
       }
     }
+  }
+}
+
+.filename {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #b0b0b0;
+  font-size: 14px;
+  padding: 0 10px;
+  max-width: 200px;
+  cursor: default;
+}
+.fullScreen-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #b0b0b0;
+  font-size: 14px;
+  padding: 0 10px;
+  cursor: default;
+}
+.exit-fullScreen{
+  cursor: pointer;
+  &:hover{
+    color: #5dee00;
   }
 }
 </style>

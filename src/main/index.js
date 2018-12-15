@@ -23,11 +23,12 @@ function createWindow() {
         height: 589,
         useContentSize: true,
         width: 866,
-        minWidth:633,
-        minHeight:400,
+        minWidth:700,
+        minHeight:450,
         webPreferences: {
             webSecurity: false
         },
+        // 初始化时的背景颜色
         backgroundColor: '#2e2c29',
         frame:false //关闭最大化那一栏
     })

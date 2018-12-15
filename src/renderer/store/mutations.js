@@ -33,8 +33,10 @@ export const setCurrentVideoIndex = (state,currentVideoIndex) =>{
 // 设置当前视频播放列表
 export const setVideoList = (state,list) =>{
     if(list instanceof Array){
+        state.oldVideoList.push(...list)
         state.videoList.push(...list)
     }else{
+        state.oldVideoList.push(list)
         state.videoList.push(list)
     }
 }
@@ -64,6 +66,11 @@ export const changeList = (state,list) => {
     state.videoList = list
 }
 
+// 修改默认排序播放列表
+export const changeOldList = (state,list) => {
+    state.oldVideoList = list
+}
+
 // 设置当前播放进度
 export const setCurrentTime = (state,currentTime) => {
     state.currentTime = currentTime
@@ -77,4 +84,9 @@ export const setTotalTime = (state,totalTime) => {
 // 设置音量百分比
 export const setVolumePercent = (state,volumePercent) => {
     state.volumePercent = volumePercent
+}
+
+// 设置是否全屏
+export const setFullScreen = (state,isFullScreen) => {
+    state.isFullScreen = isFullScreen
 }

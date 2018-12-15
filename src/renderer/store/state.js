@@ -20,14 +20,18 @@ let state = {
     currentVideoIndex:null,
     // 视频播放列表
     videoList:[],
+    // 保存默认排序列表
+    oldVideoList:[],
     // 播放模式 1:单个播放,2:单个循环,3:循环播放列表,4:顺序播放,5:随机播放
     playMode:1,
-    // 排序模式 1:默认排序,2:名称排序
+    // 排序模式 1:默认排序,2:大小排序,3:时间排序,4:随机排序,5:名称排序
     sortMode:1,
     // 当前视频播放的进度(时间)
     currentTime:0,
     // 视频总时长
     totalTime:0,
+    // 是否全屏
+    isFullScreen:false
 }
 
 

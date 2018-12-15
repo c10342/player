@@ -25,15 +25,22 @@ class WindowUtil{
     }
     // 是否允许缩放窗口
     setResizable(){
-        ipcMain.on('setResizable',(resizable)=>{
+        ipcMain.on('setResizable',(e,resizable)=>{
             this.mainWin.setResizable(resizable)
         })
     }
 
     // 把窗口设置为在最前端显示
     setAlwaysOnTop(){
-        ipcMain.on('setAlwaysOnTop',(top)=>{
+        ipcMain.on('setAlwaysOnTop',(e,top)=>{
             this.mainWin.setAlwaysOnTop(top)
+        })
+    }
+
+    // 设置窗口是否为全屏
+    setFullScreen(){
+        ipcMain.on('setFullScreen',(e,isFullScreen)=>{
+            this.mainWin.setFullScreen(isFullScreen)
         })
     }
 
@@ -51,6 +58,7 @@ class WindowUtil{
         this.close()
         this.setAlwaysOnTop(false)
         this.setResizable(true)
+        this.setFullScreen()
     }
 }
 

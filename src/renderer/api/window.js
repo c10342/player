@@ -31,6 +31,11 @@ class WindowUtil {
         ipcRenderer.send('setAlwaysOnTop',top)
     }
 
+    // 设置是否全屏
+    setFullScreen(isFullScreen){
+        ipcRenderer.send('setFullScreen',isFullScreen)
+    }
+
     // 关闭窗口
     close() {
         ipcRenderer.send('close')

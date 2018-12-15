@@ -43,7 +43,7 @@ class OpenDialog{
         return {
             id:(+new Date())+Math.random(),
             // 创建时间
-            createTime:data.birthtime,
+            createTime:+new Date(data.birthtime),
             // 视频大小
             size:data.size,
             // 视频是否播放状态

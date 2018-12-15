@@ -76,7 +76,11 @@
             </div>
             <div class="right">
                 <span title="无痕模式" class="fa fa-snowflake-o"></span>
-                <span title="全屏" class="fa fa-expand my-expand"></span>
+                <span 
+                :style="{'color':currentVideo?'':'#454548'}"
+                @click="fullScreen" 
+                :title="isFullScreen?'退出全屏':'全屏'" 
+                class="fa fa-expand my-expand"></span>
             </div>
         </div>
     </div>
@@ -103,7 +107,8 @@ export default {
       "setPlaying",
       "setPlayMode",
       "setCurrentVideo",
-      "setCurrentVideoIndex"
+      "setCurrentVideoIndex",
+      "setFullScreen"
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
@@ -133,6 +138,10 @@ export default {
     onKeyUp(e) {
       if (!this.currentVideo) {
         return;
+      }
+      // 按下Esc键
+      if (e.keyCode == 27 && this.isFullScreen == true) {
+        this.setFullScreen(false);
       }
       // 按下空格键
       if (e.keyCode == 32) {
@@ -182,7 +191,7 @@ export default {
         // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
         // 随机出来的索引等于当前视频索引
-        while(index == this.currentVideoIndex){
+        while (index == this.currentVideoIndex) {
           // 重新生成一个，防止随机的是同一个视频
           index = Math.floor(Math.random() * this.videoList.length);
         }
@@ -210,7 +219,7 @@ export default {
       if (this.playMode == 5) {
         // 随机选取一个视频
         let index = Math.floor(Math.random() * this.videoList.length);
-        while(index == this.currentVideoIndex){
+        while (index == this.currentVideoIndex) {
           index = Math.floor(Math.random() * this.videoList.length);
         }
         this.setCurrentVideoIndex(index);
@@ -225,6 +234,13 @@ export default {
         let index = this.currentVideoIndex - 1;
         this.setCurrentVideoIndex(index);
       }
+    },
+    // 进入或者退出全屏
+    fullScreen() {
+      if (!this.currentVideo) {
+        return;
+      }
+      this.setFullScreen(!this.isFullScreen);
     }
   },
   computed: {
@@ -238,7 +254,8 @@ export default {
       "playMode",
       "oldVideo",
       "currentTime",
-      "totalTime"
+      "totalTime",
+      "isFullScreen"
     ]),
     title() {
       if (this.playMode == 1) {
@@ -268,6 +285,10 @@ export default {
     currentVideoIndex(newVal) {
       // 视频索引发生变化时查找出索引对应的视频
       const currentVideo = this.videoList[newVal];
+      // 判断是否为同一首歌，排序可能会使当前歌曲索引改变
+      if (this.oldVideo.id == currentVideo.id) {
+        return;
+      }
       // 设置当前播放的视频
       this.setCurrentVideo(currentVideo);
     }
@@ -285,7 +306,7 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background-color: #151616;
+  // background-color: #151616;
   .video-progress {
     width: 100%;
     padding: 0 5px;
