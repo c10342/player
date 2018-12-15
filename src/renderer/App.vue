@@ -60,15 +60,14 @@ export default {
     showFooterAndHeader() {
       this.$refs.footer.style.height = "auto";
       this.$refs.header.style.height = "auto";
-      this.$refs.footer.style.overflow = "";
-      this.$refs.header.style.overflow = "";
+      this.initPlayListHeight();
     },
     // 隐藏头部和脚部
     hideFooterAndHeader() {
+      this.$refs.footer.click()
       this.$refs.footer.style.height = "0";
       this.$refs.header.style.height = "0";
-      this.$refs.footer.style.overflow = "hiden";
-      this.$refs.header.style.overflow = "hiden";
+      this.initPlayListHeight();
     },
     onMouseMove(e) {
       if (!this.isFullScreen) {
@@ -95,17 +94,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["currentVideo", "isFullScreen"])
+    ...mapGetters(["currentVideo", "isFullScreen",'videoList'])
   },
   watch: {
-    currentVideo: {
-      immediate: true,
-      handler: function() {
-        this.$nextTick(() => {
-          this.initPlayListHeight();
-        });
-      }
-    },
+    // videoList: {
+    //   immediate: true,
+    //   handler: function(newVal,oldVal) {
+    //     this.$nextTick(() => {
+    //       if(!oldVal){
+    //         this.initPlayListHeight();
+    //         return
+    //       }
+    //       if(newVal.length !=oldVal.length){
+    //         this.initPlayListHeight();
+    //       }
+    //     });
+    //   }
+    // },
     isFullScreen(newVal) {
       if (newVal) {
         this.$refs.app.addEventListener("mousemove", this.onMouseMove);
@@ -158,7 +163,6 @@ export default {
     border-top: 1px solid #2f2f31;
   }
   .header-fullScreen {
-    // height: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 100;
     position: fixed;
@@ -168,13 +172,11 @@ export default {
     overflow: hidden;
   }
   .footer-fullScreen {
-    // height: 0;
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    overflow: hidden;
   }
 }
 </style>

@@ -288,9 +288,12 @@ export default {
         clearTimeout(this.playListTimer);
       }
     },
-    onMouseLeave() {
+    onMouseLeave(e) {
       if (this.playListTimer) {
         clearTimeout(this.playListTimer);
+      }
+      if (!this.currentVideo || !e) {
+        return;
       }
       if (this.currentVideo && !this.isLock && !this.isHidenList) {
         this.playListTimer = setTimeout(this.createTimeOut, this.time);
@@ -390,7 +393,9 @@ export default {
         this.setPlayListHeight(`${this.playListHeight}px`);
         this.refresh();
       } else {
-        this.resetPositionToOriginal();
+        if (!this.isFullScreen) {
+          this.resetPositionToOriginal();
+        }
       }
     }
   },
@@ -421,6 +426,7 @@ export default {
   width: 300px;
   right: 0;
   height: 100%;
+  transition: all 1s;
   background-color: rgba(0, 0, 0, 0.7);
   .my-arrow {
     background-color: rgba(0, 0, 0, 0.7);
@@ -428,6 +434,7 @@ export default {
 }
 
 .playList {
+  transition: all 1s;
   max-width: 50%;
   height: 100%;
   width: 300px;

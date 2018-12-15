@@ -396,6 +396,8 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
+    z-index: 10;
     span {
       padding: 0 10px;
     }
