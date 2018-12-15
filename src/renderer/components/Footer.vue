@@ -179,6 +179,10 @@ export default {
       this.setCurrentVideo(null);
       // 停止播放
       this.setPlaying(false);
+      // 退出全屏
+      if(this.isFullScreen){
+        this.setFullScreen(false)
+      }
     },
     // 下一个视频
     next() {

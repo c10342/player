@@ -52,15 +52,15 @@
         </div>
         <div  v-if="isFullScreen" class="fullScreen-title">{{currentVideo.filename}}</div>
         <div class="flexbetween" v-if="isFullScreen">
-          <span class="fullScreen-title">11:53</span>
-          <span class="fullScreen-title exit-fullScreen">退出全屏</span>
+          <span class="fullScreen-title">{{time}}</span>
+          <span class="fullScreen-title exit-fullScreen" @click="setFullScreen(false)">退出全屏</span>
         </div>
     </div>
 </template>
 
 <script>
 import WindowUtil from "../api/window";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 const winUtil = new WindowUtil();
 
@@ -71,10 +71,16 @@ export default {
       // 是否显示最大化
       isMaxed: false,
       // 是否显示左上角的菜单
-      isShowMenu: false
+      isShowMenu: false,
+      // 当前时间
+      time: null
     };
   },
+  mounted() {
+    this.timer = null;
+  },
   methods: {
+    ...mapMutations(["setFullScreen"]),
     // 最小化窗口
     minWindow() {
       winUtil.minWindow();
@@ -104,6 +110,13 @@ export default {
       // 隐藏左上角的菜单
       this.isShowMenu = false;
       window.removeEventListener("click", this.onClick);
+    },
+    getTime() {
+      let date = new Date();
+      let h = date.getHours();
+      let m = date.getMinutes();
+      let s = date.getSeconds();
+      this.time = `${h}:${m}:${s}`;
     }
   },
   computed: {
@@ -112,10 +125,20 @@ export default {
   watch: {
     isFullScreen(newVal) {
       winUtil.setFullScreen(newVal);
+      if (newVal) {
+        this.timer = setInterval(this.getTime, 1000);
+      } else {
+        if (this.timer) {
+          clearInterval(this.timer);
+        }
+      }
     }
   },
   beforeDestroy() {
     window.removeEventListener("click", this.onClick);
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 };
 </script>
@@ -242,9 +265,9 @@ export default {
   padding: 0 10px;
   cursor: default;
 }
-.exit-fullScreen{
+.exit-fullScreen {
   cursor: pointer;
-  &:hover{
+  &:hover {
     color: #5dee00;
   }
 }

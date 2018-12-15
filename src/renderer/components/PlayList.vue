@@ -169,9 +169,11 @@ export default {
       this.initScroll();
     }, 40);
 
+    // 全屏的时候显示头部和尾部
     connect.$on("showFooterAndHeader", () => {
       this.showFooterAndHeader();
     });
+    // 全屏的时候头部和尾部
     connect.$on("hideFooterAndHeader", () => {
       this.hideFooterAndHeader();
     });
@@ -309,18 +311,36 @@ export default {
     },
     // 全屏的时候显示头部和脚部，调整播放列表高度
     showFooterAndHeader() {
-      if (!this.isLock) {
-        this.$refs.playList.style.top = "36px";
-        this.$refs.playList.style.bottom = "56px";
-        this.$refs.playList.style.height = `${this.playListHeight}px`;
+      if (this.currentVideo) {
+        this.resetPositionToOriginal();
+        this.setPlayListHeight(`${this.playListHeight}px`);
+        this.refresh();
+      } else {
+        //不存在播放歌曲说明是点击停止按钮后退出全屏的
+        this.resetPositionToZero();
+        this.setPlayListHeight(`${this.playListHeight}px`);
         this.refresh();
       }
     },
     // 全屏的时候隐藏头部和脚部，调整播放列表高度
     hideFooterAndHeader() {
+      this.resetPositionToZero();
+      this.setPlayListHeight("100%");
+      this.refresh();
+    },
+    // 把列表定位置为0
+    resetPositionToZero() {
       this.$refs.playList.style.top = "0";
       this.$refs.playList.style.bottom = "0";
-      this.$refs.playList.style.height = "100%";
+    },
+    // 把列表定位恢复为原样
+    resetPositionToOriginal() {
+      this.$refs.playList.style.top = "36px";
+      this.$refs.playList.style.bottom = "56px";
+    },
+    // 设置列表高度
+    setPlayListHeight(height) {
+      this.$refs.playList.style.height = height;
       this.refresh();
     }
   },
@@ -349,18 +369,28 @@ export default {
     },
     isFullScreen(newVal) {
       if (!newVal) {
+        //从全屏切换回非全屏的时候需要显示头部和尾部
         this.showFooterAndHeader();
       } else {
+        //全品的时候不能锁定播放列表
         this.isLock = false;
       }
     },
     isLock(newVal) {
+      //上锁的时候是相对定位,全屏的时候是相对定位，可能会修改定位，这里是重置定位，不上锁同理
       if (newVal) {
-        this.$refs.playList.style.top = "0";
-        this.$refs.playList.style.bottom = "0";
+        this.resetPositionToZero();
       } else {
-        this.$refs.playList.style.top = "36px";
-        this.$refs.playList.style.bottom = "56px";
+        this.resetPositionToOriginal();
+      }
+    },
+    currentVideo(newVal) {
+      if (!newVal) {
+        this.resetPositionToZero();
+        this.setPlayListHeight(`${this.playListHeight}px`);
+        this.refresh();
+      } else {
+        this.resetPositionToOriginal();
       }
     }
   },
