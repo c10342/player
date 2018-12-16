@@ -64,7 +64,7 @@ export default {
     },
     // 隐藏头部和脚部
     hideFooterAndHeader() {
-      this.$refs.footer.click()
+      this.$refs.footer.click();
       this.$refs.footer.style.height = "0";
       this.$refs.header.style.height = "0";
       this.initPlayListHeight();
@@ -80,6 +80,7 @@ export default {
         clearTimeout(this.FullScreenTimer);
       }
       this.mouseMoveTimer = setTimeout(() => {
+        // 计算鼠标是否移动到头部或者是脚部的位置
         if (e.screenY <= 36 || client().height - e.screenY <= 85) {
           this.showFooterAndHeader();
           connect.$emit("showFooterAndHeader");
@@ -90,11 +91,11 @@ export default {
             clearTimeout(this.FullScreenTimer);
           }, 2000);
         }
-      }, 100);
+      }, 50);
     }
   },
   computed: {
-    ...mapGetters(["currentVideo", "isFullScreen",'videoList'])
+    ...mapGetters(["currentVideo", "isFullScreen", "videoList", "isPlaying"])
   },
   watch: {
     // videoList: {
@@ -111,7 +112,14 @@ export default {
     //     });
     //   }
     // },
+    isPlaying() {
+      // 播放的时候脚部的高度会发生变化，所以需要重新计算播放列表的高度
+      this.$nextTick(() => {
+        this.initPlayListHeight();
+      });
+    },
     isFullScreen(newVal) {
+      // 全屏的时候
       if (newVal) {
         this.$refs.app.addEventListener("mousemove", this.onMouseMove);
         if (this.FullScreenTimer) {

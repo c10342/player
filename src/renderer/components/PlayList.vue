@@ -177,6 +177,14 @@ export default {
     connect.$on("hideFooterAndHeader", () => {
       this.hideFooterAndHeader();
     });
+
+    // 点击video的打开文件按钮的时候
+    connect.$on("openFile", () => {
+      if (this.playListTimer) {
+        clearTimeout(this.playListTimer);
+      }
+      this.playListTimer = setTimeout(this.createTimeOut, this.time);
+    });
   },
   methods: {
     ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo"]),
@@ -292,7 +300,10 @@ export default {
       if (this.playListTimer) {
         clearTimeout(this.playListTimer);
       }
-      if (!this.currentVideo || !e) {
+      if (!this.currentVideo) {
+        return;
+      }
+      if (!e) {
         return;
       }
       if (this.currentVideo && !this.isLock && !this.isHidenList) {
@@ -353,13 +364,13 @@ export default {
       "sortMode",
       "currentVideo",
       "videoList",
-      "isFullScreen"
+      "isFullScreen",
+      "isPlaying"
     ])
   },
   watch: {
-    videoList() {
+    videoList(newVal, oldVal) {
       this.$nextTick(() => {
-        this.onMouseLeave();
         // 重新计算列表的高度
         this.refresh();
       });
@@ -397,6 +408,17 @@ export default {
           this.resetPositionToOriginal();
         }
       }
+    },
+    isPlaying(newVal) {
+      if (newVal && this.isLock) {
+        this.resetPositionToZero();
+      }
+      if (newVal && !this.isLock && !this.isHidenList) {
+        if (this.playListTimer) {
+          clearTimeout(this.playListTimer);
+        }
+        this.playListTimer = setTimeout(this.createTimeOut, this.time);
+      }
     }
   },
   beforeDestroy() {
@@ -407,7 +429,7 @@ export default {
       clearTimeout(this.playListTimer);
     }
     this.$refs.playList.removeEventListener("mouseleave", this.onMouseLeave);
-    this.$refs.playList.removeEventListener("mouseenter", this.onMouseLeave);
+    this.$refs.playList.removeEventListener("mouseenter", this.onMouseEnter);
     this.$refs.playList.removeEventListener(
       "transitionend",
       this.onTransitionEnd

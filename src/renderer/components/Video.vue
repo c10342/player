@@ -75,6 +75,7 @@ export default {
     // 打开文件
     openFile() {
       openDialog.openFile();
+      connect.$emit('openFile')
     },
     // 视频播放进度改变
     timeupdate(e) {
