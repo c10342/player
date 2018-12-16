@@ -152,7 +152,9 @@ export default {
       // 是否锁定播放列表
       isLock: false,
       // 定时器时间
-      time: 3000
+      time: 3000,
+      // 列表滚动的距离
+      deltaY: 0
     };
   },
   mounted() {
@@ -164,11 +166,11 @@ export default {
     this.playListTimer = null;
     this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
     this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
+    this.$refs.playList.addEventListener("mousewheel", this.onMouseWheel);
     setTimeout(() => {
       // 初始化better-scroll
       this.initScroll();
     }, 40);
-
     // 全屏的时候显示头部和尾部
     connect.$on("showFooterAndHeader", () => {
       this.showFooterAndHeader();
@@ -177,7 +179,6 @@ export default {
     connect.$on("hideFooterAndHeader", () => {
       this.hideFooterAndHeader();
     });
-
     // 点击video的打开文件按钮的时候
     connect.$on("openFile", () => {
       if (this.playListTimer) {
@@ -356,6 +357,24 @@ export default {
     setPlayListHeight(height) {
       this.$refs.playList.style.height = height;
       this.refresh();
+    },
+    onMouseWheel(e) {
+      // better-scroll可以进行滚动
+      if (this.scroll.hasVerticalScroll) {
+        // 滚动的距离
+        let deltaY = this.deltaY + e.deltaY;
+        if (-deltaY > 0) {
+          //滚轮向上滚动
+          return;
+        }
+        // 滚动的距离大于better-scroll可以滚动的最大距离
+        if (-this.scroll.maxScrollY < deltaY) {
+          this.scroll.scrollTo(0, this.scroll.maxScrollY);
+          return;
+        }
+        this.deltaY += e.deltaY;
+        this.scroll.scrollTo(0, -this.deltaY);
+      }
     }
   },
   computed: {
@@ -407,6 +426,9 @@ export default {
         if (!this.isFullScreen) {
           this.resetPositionToOriginal();
         }
+        if (!this.isFullScreen && this.isLock) {
+          this.resetPositionToZero();
+        }
       }
     },
     isPlaying(newVal) {
@@ -435,6 +457,8 @@ export default {
       this.onTransitionEnd
     );
     window.removeEventListener("click", this.onClick);
+    this.$refs.playList.removeEventListener("mousewheel", this.onMouseWheel);
+    this.scroll.destroy();
     this.scroll = null;
   }
 };
