@@ -96,7 +96,7 @@
                     </li>
                     <li @click="changeMode(3)">
                         <span v-if="playMode==3" class="fa fa-check"></span>
-                        顺序播放
+                        循环列表
                     </li>
                     <li @click="changeMode(4)">
                         <span v-if="playMode==4" class="fa fa-check"></span>
