@@ -45,8 +45,8 @@ function createWindow() {
     // 初始化窗口状态
     winUtil.initWin()
 
+    // 打开文件
     const openDialog = new OpenDialog();
-
     openDialog.init()
 }
 
