@@ -131,6 +131,9 @@ export default {
           clearTimeout(this.FullScreenTimer);
         }, 2000);
       } else {
+        if (this.FullScreenTimer) {
+          clearTimeout(this.FullScreenTimer);
+        }
         this.$refs.app.removeEventListener("mousemove", this.onMouseMove);
         this.showFooterAndHeader();
       }

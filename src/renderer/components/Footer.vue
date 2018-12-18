@@ -89,6 +89,7 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import { formatTime } from "../api/util";
+var Mousetrap = require("mousetrap");
 
 export default {
   name: "my-footer",
@@ -99,7 +100,8 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("keyup", this.onKeyUp);
+    // window.addEventListener("keyup", this.onKeyUp);
+    this.initGlobalShortcut();
   },
   methods: {
     ...mapMutations([
@@ -108,7 +110,8 @@ export default {
       "setPlayMode",
       "setCurrentVideo",
       "setCurrentVideoIndex",
-      "setFullScreen"
+      "setFullScreen",
+      "setSpeed"
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
@@ -135,19 +138,19 @@ export default {
       this.setPlaying(flag);
     },
     // 监听键盘
-    onKeyUp(e) {
-      if (!this.currentVideo) {
-        return;
-      }
-      // 按下Esc键
-      if (e.keyCode == 27 && this.isFullScreen == true) {
-        this.setFullScreen(false);
-      }
-      // 按下空格键
-      if (e.keyCode == 32) {
-        this.switchPlaying(!this.isPlaying);
-      }
-    },
+    // onKeyUp(e) {
+    //   if (!this.currentVideo) {
+    //     return;
+    //   }
+    //   // 按下Esc键
+    //   if (e.keyCode == 27 && this.isFullScreen == true) {
+    //     this.setFullScreen(false);
+    //   }
+    //   // 按下空格键
+    //   if (e.keyCode == 32) {
+    //     this.switchPlaying(!this.isPlaying);
+    //   }
+    // },
     // 切换播放模式
     changeMode(mode) {
       this.setPlayMode(mode);
@@ -180,8 +183,8 @@ export default {
       // 停止播放
       this.setPlaying(false);
       // 退出全屏
-      if(this.isFullScreen){
-        this.setFullScreen(false)
+      if (this.isFullScreen) {
+        this.setFullScreen(false);
       }
     },
     // 下一个视频
@@ -245,6 +248,46 @@ export default {
         return;
       }
       this.setFullScreen(!this.isFullScreen);
+    },
+    // 监听空格键
+    onSpaceKeyUp() {
+      if (!this.currentVideo) {
+        return;
+      }
+      this.switchPlaying(!this.isPlaying);
+    },
+    // 监听esc键
+    onEscKeyUp() {
+      if (!this.currentVideo) {
+        return;
+      }
+      if (this.isFullScreen == true) {
+        this.setFullScreen(false);
+      }
+    },
+    // 监听ctrl+r组合键
+    onCtrlAndRKeyUp() {
+      if (!this.currentVideo && this.speed == 1) {
+        return;
+      }
+      this.setSpeed(1);
+    },
+    // 初始化快捷键
+    initGlobalShortcut() {
+      // 监听快捷键
+      Mousetrap.bind("space", () => {
+        this.onSpaceKeyUp();
+        // 返回 false 以防止默认行为，并阻止事件冒泡
+        return false;
+      });
+      Mousetrap.bind("esc", () => {
+        this.onEscKeyUp();
+        return false;
+      });
+      Mousetrap.bind("r", () => {
+        this.onCtrlAndRKeyUp();
+        return false;
+      });
     }
   },
   computed: {

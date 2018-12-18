@@ -37,6 +37,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import OpenDialog from "../api/OpenDialog";
 const openDialog = new OpenDialog();
 import connect from "../api/bus.js";
+var Mousetrap = require("mousetrap");
 export default {
   data() {
     return {
@@ -75,7 +76,7 @@ export default {
     // 打开文件
     openFile() {
       openDialog.openFile();
-      connect.$emit('openFile')
+      // connect.$emit('openFile')
     },
     // 视频播放进度改变
     timeupdate(e) {
@@ -168,6 +169,15 @@ export default {
           }
           break;
       }
+    },
+    // 初始化快捷键
+    initGlobalShortcut() {
+      // 监听快捷键
+      Mousetrap.bind("ctrl+o", () => {
+        this.openFile();
+        // 返回 false 以防止默认行为，并阻止事件冒泡
+        return false;
+      });
     }
   },
   mounted() {
@@ -177,6 +187,7 @@ export default {
         this.$refs.video.currentTime = this.currentTime;
       });
     });
+    this.initGlobalShortcut();
   },
   computed: {
     ...mapGetters([

@@ -180,12 +180,12 @@ export default {
       this.hideFooterAndHeader();
     });
     // 点击video的打开文件按钮的时候
-    connect.$on("openFile", () => {
-      if (this.playListTimer) {
-        clearTimeout(this.playListTimer);
-      }
-      this.playListTimer = setTimeout(this.createTimeOut, this.time);
-    });
+    // connect.$on("openFile", () => {
+    //   if (this.playListTimer) {
+    //     clearTimeout(this.playListTimer);
+    //   }
+    //   this.playListTimer = setTimeout(this.createTimeOut, this.time);
+    // });
   },
   methods: {
     ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo"]),
