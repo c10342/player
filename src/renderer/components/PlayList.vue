@@ -45,7 +45,7 @@
                         <p>没有符合条件的文件</p>
                     </div>
                     <div class="open-file">
-                        <div class="flexrowcenter">
+                        <div @click='openFile' class="flexrowcenter">
                             <span class="fa fa-folder-open-o"></span>
                             <span>添加文件</span>
                         </div>
@@ -124,6 +124,8 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import BScroll from "better-scroll";
 import connect from "../api/bus.js";
+import OpenDialog from "../api/OpenDialog";
+const openDialog = new OpenDialog();
 
 export default {
   name: "play-list",
@@ -375,6 +377,10 @@ export default {
         this.deltaY += e.deltaY;
         this.scroll.scrollTo(0, -this.deltaY);
       }
+    },
+    // 打开文件
+    openFile(){
+      openDialog.openFile()
     }
   },
   computed: {
