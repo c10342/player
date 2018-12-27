@@ -18,7 +18,7 @@
             <span @click.stop="showMenu" class="fa fa-angle-down"></span>
             <transition name="router" mode="out-in">
             <ul v-if="isShowFileMenu" class="my-file">
-                <li>
+                <li @click="openFolder">
                     <span class="fa fa-file-video-o"></span>
                     打开文件夹
                 </li>
@@ -178,6 +178,10 @@ export default {
         // 返回 false 以防止默认行为，并阻止事件冒泡
         return false;
       });
+    },
+    // 打开文件夹
+    openFolder(){
+      openDialog.openFolder()
     }
   },
   mounted() {

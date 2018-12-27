@@ -5,7 +5,7 @@
         </div>
         <div class="footer">
             <div class="left">
-                <span title="打开文件" class="fa fa-folder-open-o"></span>
+                <span @click="openFile" title="打开文件" class="fa fa-folder-open-o"></span>
                 <span
                         :title="title"
                         @click.stop="showPlayMode"
@@ -90,6 +90,8 @@
 import { mapMutations, mapGetters } from "vuex";
 import { formatTime } from "../api/util";
 var Mousetrap = require("mousetrap");
+import OpenDialog from "../api/OpenDialog";
+const openDialog = new OpenDialog();
 
 export default {
   name: "my-footer",
@@ -288,6 +290,10 @@ export default {
         this.onCtrlAndRKeyUp();
         return false;
       });
+    },
+    // 打开文件
+    openFile(){
+       openDialog.openFile();
     }
   },
   computed: {

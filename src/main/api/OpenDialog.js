@@ -4,7 +4,9 @@ import {ipcMain,dialog} from 'electron'
 class OpenDialog{
     init(){
         this.openFile()
+        this.openFolder()
     }
+    // 打开文件
     openFile(){
         // 同步通讯
         // ipcMain.on('openFile',(e)=>{
@@ -41,6 +43,21 @@ class OpenDialog{
                     return
                 }
                 e.sender.send('openFile-ok',path)
+            })
+        })
+    }
+    // 打开文件夹
+    openFolder(){
+        ipcMain.on('openFolder',(e)=>{
+            dialog.showOpenDialog({
+                title:'打开文件夹',
+                properties:['openDirectory','multiSelections']
+            },(path)=>{
+                if(!path){
+                    return
+                }
+                console.log(path)
+                e.sender.send('openFolder-ok',path)
             })
         })
     }

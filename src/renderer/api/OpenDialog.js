@@ -9,7 +9,9 @@ import store from '../store'
 class OpenDialog {
     constructor() {
         this.onOpenFile()
+        this.onOpenFolder()
     }
+    // 打开文件
     openFile() {
         // 同步通讯
         // 向主进程发送消息并等待回复
@@ -33,25 +35,46 @@ class OpenDialog {
         // 异步通讯
         ipcRenderer.send('openFile')
     }
+    // 打开文件夹
+    openFolder(){
+        ipcRenderer.send('openFolder')
+    }
+    // 监听主进程在打开文件后返回的数据
     onOpenFile() {
         ipcRenderer.on('openFile-ok', (e, path) => {
             if (!path) {
                 return
             }
-            // 获取文件信息
-            const arr = this.getFileStat(path)
-            if (arr.length == 0) {
-                return
-            }
-            // 第一次添加，即播放列表没有数据
-            if (store.state.videoList.length == 0) {
-                store.commit('setCurrentVideo', arr[0])
-                store.commit('setOldVideo', arr[0])
-                store.commit('setCurrentVideoIndex', 0)
-            }
-            store.commit('setVideoList', arr)
+            this.changeStore(path)
         })
     }
+    // 监听主进程在打开文件夹后返回的数据
+    onOpenFolder(){
+        ipcRenderer.on('openFolder-ok', (e, path) => {
+            console.log(path)
+            if (!path) {
+                return
+            }
+            return
+            // this.changeStore(path)
+        })
+    }
+    // 根据传递进来的路径修改store
+    changeStore(path){
+        // 获取文件信息
+        const arr = this.getFileStat(path)
+        if (arr.length == 0) {
+            return
+        }
+        // 第一次添加，即播放列表没有数据
+        if (store.state.videoList.length == 0) {
+            store.commit('setCurrentVideo', arr[0])
+            store.commit('setOldVideo', arr[0])
+            store.commit('setCurrentVideoIndex', 0)
+        }
+        store.commit('setVideoList', arr)
+    }
+    // 获取文件的信息
     getFileStat(path) {
         let arr = []
         for (let i = 0; i < path.length; i++) {
