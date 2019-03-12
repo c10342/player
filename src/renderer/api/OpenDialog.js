@@ -1,4 +1,6 @@
-import { ipcRenderer } from 'electron'
+import {
+    ipcRenderer
+} from 'electron'
 
 const fs = require('fs')
 
@@ -8,8 +10,13 @@ import store from '../store'
 
 class OpenDialog {
     constructor() {
+        // 单例模式
+        if (OpenDialog.instance) {
+            return OpenDialog.instance
+        }
         this.onOpenFile()
         this.onOpenFolder()
+        OpenDialog.instance = this
     }
     // 打开文件
     openFile() {
@@ -20,7 +27,7 @@ class OpenDialog {
         //     return
         // }
         // // 获取文件信息
-        // const arr = this.getFileStat(path)
+        // const arr = this.getFileStatFromLocal(path)
         // if(arr.length == 0){
         //     return
         // }
@@ -36,7 +43,7 @@ class OpenDialog {
         ipcRenderer.send('openFile')
     }
     // 打开文件夹
-    openFolder(){
+    openFolder() {
         ipcRenderer.send('openFolder')
     }
     // 监听主进程在打开文件后返回的数据
@@ -45,27 +52,39 @@ class OpenDialog {
             if (!path) {
                 return
             }
-            this.changeStore(path)
+            // 获取文件信息
+            const arr = this.getFileStatFromLocal(path)
+            if (arr.length == 0) {
+                return
+            }
+            this.changeStore(arr)
         })
     }
     // 监听主进程在打开文件夹后返回的数据
-    onOpenFolder(){
+    onOpenFolder() {
         ipcRenderer.on('openFolder-ok', (e, path) => {
-            console.log(path)
             if (!path) {
                 return
             }
-            return
-            // this.changeStore(path)
+            // 获取文件信息
+            const arr = this.getFileStatFromLocal(path)
+            if (arr.length == 0) {
+                return
+            }
+            this.changeStore(arr)
         })
     }
-    // 根据传递进来的路径修改store
-    changeStore(path){
+    // 打开url
+    openUrl(path) {
         // 获取文件信息
-        const arr = this.getFileStat(path)
+        const arr = this.getFileStatFromUrl(path)
         if (arr.length == 0) {
             return
         }
+        this.changeStore(arr)
+    }
+    // 修改store
+    changeStore(arr) {
         // 第一次添加，即播放列表没有数据
         if (store.state.videoList.length == 0) {
             store.commit('setCurrentVideo', arr[0])
@@ -74,21 +93,39 @@ class OpenDialog {
         }
         store.commit('setVideoList', arr)
     }
-    // 获取文件的信息
-    getFileStat(path) {
+    // 获取本地文件的信息
+    getFileStatFromLocal(path) {
         let arr = []
         for (let i = 0; i < path.length; i++) {
             const result = fs.statSync(path[i])
             const index = store.state.videoList.findIndex(j => j.src == path[i])
             if (result && result.dev && index < 0) {
-                let obj = Object.assign({}, result, { src: path[i] })
+                let obj = Object.assign({}, result, {
+                    src: path[i],
+                    mode: 'local'
+                })
                 arr.push(this.formatData(obj))
             }
         }
         return arr
     }
+    // 获取url文件信息
+    getFileStatFromUrl(path) {
+        let arr = []
+        let obj = {
+            src: path,
+            birthtime: +new Date,
+            size: 1,
+            mode: 'url'
+        }
+        arr.push(this.formatData(obj))
+        return arr
+    }
     formatData(data) {
-        const result = fs.existsSync(data.src)
+        let result = true
+        if (data.mode == 'local') {
+            result = fs.existsSync(data.src)
+        }
         return {
             id: (+new Date()) + Math.random(),
             // 创建时间
@@ -99,8 +136,8 @@ class OpenDialog {
             isPlaying: false,
             // 播放进度
             currentTime: 0,
-            // 视频是本地文件还是网络文件
-            mode: 'local',
+            // 视频是本地文件还是网络文件，local本地文件，url网络文件
+            mode: data.mode,
             // 视频播放倍速
             speed: 1,
             // 视频总时间
@@ -114,5 +151,7 @@ class OpenDialog {
         }
     }
 }
+
+OpenDialog.instance = null
 
 export default OpenDialog

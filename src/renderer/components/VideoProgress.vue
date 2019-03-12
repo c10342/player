@@ -50,10 +50,12 @@ export default {
       // 过渡
       this.$refs.inLine.style.transition = "width .2s";
       this.inLineWidth = e.offsetX;
-      this.$refs.inLine.addEventListener("transitionend", () => {
-        // 取消过渡
-        this.$refs.inLine.style.transition = "";
-      });
+      this.$refs.inLine.addEventListener("transitionend", this.transitionend);
+    },
+    // 过渡结束
+    transitionend() {
+      // 取消过渡
+      this.$refs.inLine.style.transition = "";
     },
     // 鼠标在进度球按下
     ballMouseDown() {
@@ -154,6 +156,7 @@ export default {
     this.outLineX = null;
     this.outLineWidth = null;
     this.$refs.progress.removeEventListener("mousemove", this.mouseMove);
+    this.$refs.inLine.removeEventListener("transitionend", this.transitionend);
   }
 };
 </script>

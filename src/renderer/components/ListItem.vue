@@ -58,7 +58,7 @@ export default {
     ...mapMutations(["setCurrentVideo", "setPlaying", "setOldVideo"]),
     ...mapActions(["changeVideoList"]),
     setplaying() {
-      if (!fs.existsSync(this.item.src)) {
+      if (this.item.mode=='local' && !fs.existsSync(this.item.src)) {
         //文件不存在
         if (this.item.msg) {
           //存在文件错误信息

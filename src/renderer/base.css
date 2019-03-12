@@ -67,3 +67,11 @@ ul{
 .clearfix{
     *zoom:1;/*IE/7/6*/
 }
+
+.dplayer-controller,
+.dplayer-controller-mask,
+.dplayer-mask,
+.dplayer-menu,
+.dplayer-notice{
+    display: none !important;
+}

@@ -48,6 +48,8 @@ function createWindow() {
     // 打开文件
     const openDialog = new OpenDialog();
     openDialog.init()
+
+    require('./api/express')
 }
 
 app.on('ready', createWindow)

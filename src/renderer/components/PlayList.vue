@@ -51,7 +51,7 @@
                         </div>
                         <span @click.stop="showMenu" class="fa fa-angle-down"></span>
                         <ul v-if="isShowFileMenu" class="my-file">
-                            <li>
+                            <li @click='openFolder'>
                                 <span class="fa fa-file-excel-o"></span>
                                 添加文件夹
                             </li>
@@ -381,6 +381,10 @@ export default {
     // 打开文件
     openFile(){
       openDialog.openFile()
+    },
+    // 打开文件夹
+    openFolder() {
+      openDialog.openFolder();
     }
   },
   computed: {

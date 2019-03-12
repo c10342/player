@@ -5,6 +5,10 @@ import store from './store'
 import './font-awesome-4.7.0/css/font-awesome.css'
 import './base.css'
 
+import {MessageBox} from 'element-ui'
+
+Vue.prototype.$prompt = MessageBox.prompt;
+
 
 import App from './App'
 import MyHeader from './components/Header'

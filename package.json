@@ -53,7 +53,9 @@
   "dependencies": {
     "axios": "^0.18.0",
     "better-scroll": "^1.13.2",
+    "dplayer": "^1.25.0",
     "element-ui": "^2.4.11",
+    "express": "^4.16.4",
     "mousetrap": "^1.6.2",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",

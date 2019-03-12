@@ -113,7 +113,8 @@ export default {
       "setCurrentVideo",
       "setCurrentVideoIndex",
       "setFullScreen",
-      "setSpeed"
+      "setSpeed",
+      'setOldVideo'
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
@@ -180,6 +181,10 @@ export default {
       if (!this.currentVideo) {
         return;
       }
+      // 保存当前视频
+      this.setOldVideo(Object.assign({},this.currentVideo,{
+        currentTime:this.currentTime
+      }));
       // 清空当前正在播放的视频
       this.setCurrentVideo(null);
       // 停止播放

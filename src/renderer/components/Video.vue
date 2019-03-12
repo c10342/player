@@ -2,14 +2,15 @@
     <div 
     class="video-container" 
     @click="changePlayingMode">
-        <video
+        <!-- <video
         @loadedmetadata='loadedmetadata'
         @timeupdate='timeupdate'
         @durationchange='durationchange'
         @ended='ended'
                 ref="video"
                 class="my-video"
-                :src="currentVideo?currentVideo.src:''"></video>
+                :src="currentVideo?currentVideo.src:''"></video> -->
+                <div id="dplayer" class="my-video"></div>
         <div class="open-file" v-if="!currentVideo">
             <div class="flexrowcenter" @click="openFile">
                 <span class="fa fa-folder-open-o"></span>
@@ -22,7 +23,7 @@
                     <span class="fa fa-file-video-o"></span>
                     打开文件夹
                 </li>
-                <li>
+                <li @click="openUrl">
                     <span class="fa fa-link"></span>
                     打开URL
                 </li>
@@ -38,6 +39,11 @@ import OpenDialog from "../api/OpenDialog";
 const openDialog = new OpenDialog();
 import connect from "../api/bus.js";
 var Mousetrap = require("mousetrap");
+const fs = require("fs");
+
+import "DPlayer/dist/DPlayer.min.css";
+import DPlayer from "DPlayer";
+
 export default {
   data() {
     return {
@@ -79,27 +85,27 @@ export default {
       // connect.$emit('openFile')
     },
     // 视频播放进度改变
-    timeupdate(e) {
-      this.setCurrentTime(e.target.currentTime);
+    timeupdate() {
+      this.setCurrentTime(this.dp.video.currentTime);
     },
     // 视频长度发生变化
-    durationchange(e) {
-      this.setTotalTime(e.target.duration);
+    durationchange() {
+      this.setTotalTime(this.dp.video.duration);
     },
     // 当浏览器已加载音频/视频的元数据时,只触发一次，只有在视频发生变化时才触发
     loadedmetadata() {
       // 保存当前视频的总时长
       this.setOldVideo(
         Object.assign({}, this.currentVideo, {
-          totalTime: this.$refs.video.duration
+          totalTime: this.dp.video.duration
         })
       );
       // 修改播放状态
       this.setPlaying(true);
-      this.$refs.video.play();
+      this.dp.play();
       // 还原上一次的播放状态
-      this.$refs.video.playbackRate = this.currentVideo.speed;
-      this.$refs.video.currentTime = this.currentVideo.currentTime;
+      this.dp.speed(this.currentVideo.speed);
+      this.dp.seek(this.currentVideo.currentTime);
     },
     // 播放或者暂停视频
     changePlayingMode() {
@@ -170,6 +176,10 @@ export default {
           break;
       }
     },
+    // 加载视频的时候发生错误
+    error() {
+      console.log("error");
+    },
     // 初始化快捷键
     initGlobalShortcut() {
       // 监听快捷键
@@ -180,15 +190,55 @@ export default {
       });
     },
     // 打开文件夹
-    openFolder(){
-      openDialog.openFolder()
+    openFolder() {
+      openDialog.openFolder();
+    },
+    // 打开网络地址
+    openUrl() {
+      this.$prompt("请输入网络视频地址", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputValidator: this.inputValidator,
+        inputErrorMessage: "邮箱格式不正确"
+      })
+        .then(({ value }) => {
+          openDialog.openUrl(value);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    // 校验url
+    inputValidator(e) {
+      // 校验url
+      let reg1 = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
+      // 校验是否为支持的视频类型
+      let reg2 = /\.(mp4|webm|ogg)$/i;
+      let flag1 = reg1.test(e);
+      let flag2 = reg2.test(e);
+      // return flag1 ? (flag2 ? true : "不支持该类型视频") : "url格式不正确";
+      return true;
+    },
+    // 初始化dplayer播放器
+    initDplayer() {
+      this.dp = new DPlayer({
+        container: document.getElementById("dplayer"),
+        hotkey:false
+      });
+      this.dp.on("timeupdate", this.timeupdate);
+      this.dp.on("durationchange", this.durationchange);
+      this.dp.on("loadedmetadata", this.loadedmetadata);
+      this.dp.on("ended", this.ended);
+      this.dp.on("error", this.error);
+      this.dp.volume(this.volumePercent)
     }
   },
   mounted() {
+    this.initDplayer();
     // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
     this.$nextTick(() => {
       connect.$on("setCurrentTime", () => {
-        this.$refs.video.currentTime = this.currentTime;
+        this.dp.seek(this.currentTime);
       });
     });
     this.initGlobalShortcut();
@@ -212,9 +262,9 @@ export default {
       // 同步video和store中的isPlaying的状态
       this.$nextTick(() => {
         if (newVal) {
-          this.$refs.video.play();
+          this.dp.play();
         } else {
-          this.$refs.video.pause();
+          this.dp.pause();
         }
       });
     },
@@ -236,12 +286,27 @@ export default {
         const index = this.videoList.findIndex(i => i.id == newVal.id);
         // 设置视频的索引
         this.setCurrentVideoIndex(index);
+
+        if (this.dp) {
+          this.initDplayer();
+        }
+        // 切换视频
+        this.dp.switchVideo({
+          url: `http://localhost:6789/video?video=${newVal.src}`
+        });
+      } else {
+        // this.dp.destroy();
+        this.dp.switchVideo(
+          {
+            url: ''
+          }
+        );
       }
     },
     speed(newVal) {
       // 视频速度发生变化时修改video的速度
       this.$nextTick(() => {
-        this.$refs.video.playbackRate = newVal;
+         this.dp.speed(newVal);
       });
     },
     volumePercent: {
@@ -249,7 +314,7 @@ export default {
       immediate: true,
       handler: function(newVal) {
         this.$nextTick(() => {
-          this.$refs.video.volume = newVal;
+          this.dp.volume(newVal);
         });
       }
     }
