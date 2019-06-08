@@ -90,3 +90,29 @@ export const setVolumePercent = (state,volumePercent) => {
 export const setFullScreen = (state,isFullScreen) => {
     state.isFullScreen = isFullScreen
 }
+
+// 设置播放历史记录
+export const setHistoricalRecords = (state,historicalRecords) => {
+    let history = state.historicalRecords.slice()
+    const index = history.findIndex(item=>item.id == historicalRecords.id)
+    if(index != -1){
+        history.splice(index,1)
+    }
+    history.unshift(historicalRecords)
+    state.historicalRecords = history
+}
+
+// 清空播放历史记录
+export const clearHistoricalRecords = (state) => {
+    state.historicalRecords = []
+}
+
+// 设置窗口是否在最前端
+export const setAlwaysOnTop = (state,isAlwaysOnTop) =>{
+    state.isAlwaysOnTop = isAlwaysOnTop
+}
+
+// 设置主题
+export const setTheme = (state,theme) =>{
+    state.theme = theme
+}

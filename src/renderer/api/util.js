@@ -69,3 +69,65 @@ export function exitFullscreen(element) {
         de.webkitCancelFullScreen();
     }
 }
+
+// 音乐后缀
+export const musicSuffix = ['.mp3']
+
+// 可播放的后缀
+export const suffix = ['.MP4', '.WebM', '.Ogg', '.mkv', '.avi', '.MOV', '.ASF', '.WMV', '.NAVI', '.3GP', '.FLV', '.F4V', '.RMVB', '.HDDVD', '.rm', '.rmvb', '.MP3']
+
+export const reg = /\.(MP4|WebM|Ogg|mkv|avi|MOV|ASF|WMV|NAVI|3GP|FLV|F4V|RMVB|HDDVD|rm|rmvb|mp3)$/i
+
+export const musicReg = /\.(mp3)$/i
+
+export const themes = [
+    { 
+        bgUrl:require('../assets/bg0.jpg'),
+        textColor:'#818181',
+        bgColor:'#252528',
+        hover:'default-hover',
+        itemHover:'default-hover'
+     },
+    {
+        bgUrl:require('../assets/bg1.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+    {
+        bgUrl:require('../assets/bg2.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+    {
+        bgUrl:require('../assets/bg3.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+    {
+        bgUrl:require('../assets/bg4.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+    {
+        bgUrl:require('../assets/bg5.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+    {
+        bgUrl:require('../assets/bg6.jpg'),
+        textColor:'#ffffff',
+        bgColor:'#FAFCFD',
+        hover:'theme-hover',
+        itemHover:'item-theme-hover'
+    },
+]

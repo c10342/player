@@ -1,25 +1,31 @@
 <template>
   <div
     class="flexbetween my-list-item"
-    :class="`${isCurrentVideo?'currentVideo':''} ${theme.itemHover}`"
+    :class="`${isCurrentVideo?'currentVideo':''} ${theme.hover}`"
     :title="item.msg?item.msg:item.src"
     @dblclick="dblPlaying"
-    :style="{'color': isCurrentVideo?'#00B400':''}"
+    :style="{'color': isCurrentVideo?'#00B400':'#878788'}"
     @contextmenu.stop="contextmenu"
   >
-    <div class="out-progress" v-if="isCurrentVideo"></div>
-    <div :style="{'width':currentVideoPercent}" class="in-progress" v-if="isCurrentVideo"></div>
     <div class="left">
       <span class="fa fa-caret-right" v-if="isCurrentVideo"></span>
       <span
         class="fa fa-eye"
         v-if="oldVideo && oldVideo.id == item.id && !isPlaying && !currentVideo"
       ></span>
-      <span>{{item.filename}}</span>
+      <span style="display:inline-block;width:210px;">{{item.filename}}</span>
+    </div>
+    <div v-if="!isCurrentVideo && item.currentTime!=0" class="middle">
+        播到：{{item.currentTime | formatTime}}
+    </div>
+    <div v-if="!isCurrentVideo && item.currentTime==0" class="middle">
+        已播完
+    </div>
+    <div v-if="isCurrentVideo" class="middle">
+        {{isPlaying?'正在播放':'暂停'}}
     </div>
     <span class="msg" v-if="item.msg">{{item.msg}}</span>
     <div class="flexrowcenter right" v-if="!item.msg">
-      <span class="time" v-if="item.totalTime>0">{{item.totalTime | formatTime}}</span>
       <span
         @click.stop="playing"
         v-if="!isPlaying || !isCurrentVideo"
@@ -32,8 +38,8 @@
         title="暂停"
         class="my-fa fa fa-pause-circle-o"
       ></span>
-      <span title="打开文件所在位置" class="my-fa fa fa-file-archive-o"></span>
-      <span title="从播放列表中删除" class="my-fa fa fa-close"></span>
+      <span style="margin-left:8px;" title="打开文件所在位置" class="my-fa fa fa-file-archive-o"></span>
+      <span style="margin-left:8px;" title="从播放列表中删除" class="my-fa fa fa-close"></span>
     </div>
   </div>
 </template>
@@ -122,43 +128,26 @@ export default {
     isCurrentVideo() {
       return this.currentVideo ? this.item.id == this.currentVideo.id : false;
     },
-    // 计算当前视频进度占中时间的百分比
-    currentVideoPercent() {
-      return `${(this.currentTime / this.oldVideo.totalTime) * 100}%`;
-    }
+    // // 计算当前视频进度占中时间的百分比
+    // currentVideoPercent() {
+    //   return `${(this.currentTime / this.oldVideo.totalTime) * 100}%`;
+    // }
   }
 };
 </script>
 
 <style scoped lang="less">
 .my-list-item {
+font-size: 12px;
   max-height: 32px;
   height: 32px;
   line-height: 32px;
   overflow: hidden;
-  font-size: 13px;
   cursor: default;
-  padding: 0 15px;
+  padding: 0 5px;
   transition: width 1s;
   color: #cccccc;
   position: relative;
-  > .in-progress {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: -1;
-  }
-  > .out-progress {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #5d5d5e;
-    z-index: -1;
-  }
   .left {
     overflow: hidden;
     white-space: nowrap;
@@ -173,6 +162,9 @@ export default {
     // background-color: #5d5d5e;
   }
   &:hover {
+    .middle{
+        display: none;
+    }
     .right {
       .time {
         display: none;
@@ -201,5 +193,11 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   color: red;
+}
+.middle{
+    white-space: nowrap;
+}
+.b4{
+  color:#b4b4b4;
 }
 </style>

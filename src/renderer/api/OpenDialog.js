@@ -20,25 +20,6 @@ class OpenDialog {
     }
     // 打开文件
     openFile() {
-        // 同步通讯
-        // 向主进程发送消息并等待回复
-        // const path = ipcRenderer.sendSync('openFile')
-        // if(!path){
-        //     return
-        // }
-        // // 获取文件信息
-        // const arr = this.getFileStatFromLocal(path)
-        // if(arr.length == 0){
-        //     return
-        // }
-        // // 第一次添加，即播放列表没有数据
-        // if(store.state.videoList.length == 0){
-        //     store.commit('setCurrentVideo',arr[0])
-        //     store.commit('setOldVideo',arr[0])
-        //     store.commit('setCurrentVideoIndex',0)
-        // }
-        // store.commit('setVideoList',arr)
-
         // 异步通讯
         ipcRenderer.send('openFile')
     }
@@ -127,7 +108,7 @@ class OpenDialog {
             result = fs.existsSync(data.src)
         }
         return {
-            id: (+new Date()) + Math.random(),
+            id: data.src,
             // 创建时间
             createTime: +new Date(data.birthtime),
             // 视频大小

@@ -1,17 +1,15 @@
 <template>
-    <div
-            :title="title"
-            @click="onClick($event)"
-            class="out-line"
-            ref="outLine"
-            :style="{'width':width}">
-        <div class="in-line" :style="{'width':inLineWidth}">
-            <span
-                    @mousedown.stop="ballMouseDown"
-                    @click.stop
-                    class="ball"></span>
-        </div>
+  <div
+    :title="title"
+    @click="onClick($event)"
+    class="out-line"
+    ref="outLine"
+    :style="{'width':width}"
+  >
+    <div class="in-line" :style="{'width':inLineWidth}">
+      <span @mousedown.stop="ballMouseDown" @click.stop class="ball"></span>
     </div>
+  </div>
 </template>
 
 <script>
@@ -39,7 +37,7 @@ export default {
     this.mousedown = false;
   },
   methods: {
-    ...mapMutations(["setInWidth", "setIsVolumeOn",'setVolumePercent']),
+    ...mapMutations(["setInWidth", "setIsVolumeOn", "setVolumePercent"]),
     // 点击最外层进度条
     onClick(e) {
       // 小于0则关闭音量图标
@@ -68,7 +66,8 @@ export default {
         let outLineWidth = this.$refs.outLine.getBoundingClientRect().width;
         // 获取鼠标移动距离相对最外层进度条的距离
         let offsetX = e.pageX - outLineX;
-        if (offsetX <= 0) { //小于0关闭音量
+        if (offsetX <= 0) {
+          //小于0关闭音量
           offsetX = 0;
           this.setIsVolumeOn(false);
         } else if (offsetX > outLineWidth) {
@@ -110,9 +109,8 @@ export default {
       immediate: true,
       handler: function(newVal) {
         // 四舍五入
-        let volumePercent = Math.round(
-        this.inWidth / parseInt(this.width) * 100
-      )/100;
+        let volumePercent =
+          Math.round((this.inWidth / parseInt(this.width)) * 100) / 100;
         this.setVolumePercent(volumePercent);
       }
     }
@@ -126,7 +124,7 @@ export default {
     // 鼠标悬停时显示当前音量是多少
     title() {
       this.volumePercent = Math.round(
-        this.inWidth / parseInt(this.width) * 100
+        (this.inWidth / parseInt(this.width)) * 100
       );
       return `音量:${this.volumePercent}%`;
     }

@@ -1,54 +1,87 @@
 <template>
-    <div 
-    class="video-container" 
-    @click="changePlayingMode">
-        <!-- <video
+  <div class="video-container" @contextmenu="contextmenu">
+    <div class="message">
+      <p>{{speedMsg}}</p>
+      <p>{{volumeMsg}}</p>
+      <p>{{playModeMsg}}</p>
+    </div>
+    <!-- <video
         @loadedmetadata='loadedmetadata'
         @timeupdate='timeupdate'
         @durationchange='durationchange'
         @ended='ended'
                 ref="video"
                 class="my-video"
-                :src="currentVideo?currentVideo.src:''"></video> -->
-                <div id="dplayer" class="my-video"></div>
-        <div class="open-file" v-if="!currentVideo">
-            <div class="flexrowcenter" @click="openFile">
-                <span class="fa fa-folder-open-o"></span>
-                <span>打开文件</span>
-            </div>
-            <span @click.stop="showMenu" class="fa fa-angle-down"></span>
-            <transition name="router" mode="out-in">
-            <ul v-if="isShowFileMenu" class="my-file">
-                <li @click="openFolder">
-                    <span class="fa fa-file-video-o"></span>
-                    打开文件夹
-                </li>
-                <li @click="openUrl">
-                    <span class="fa fa-link"></span>
-                    打开URL
-                </li>
-            </ul>
-            </transition>
-        </div>
+    :src="currentVideo?currentVideo.src:''"></video>-->
+    <div 
+    @click="changePlayingMode" 
+    v-show="currentVideo" 
+    id="dplayer" 
+    class="my-video"
+    ></div>
+    <div v-show="!currentVideo" class="my-video"></div>
+    <div
+      :style="{'animation-play-state':animationPlayState}"
+      @click="changePlayingMode"
+      v-show="isMusic && currentVideo"
+      class="music-bg"
+    ></div>
+    <div :style="{'color':theme.textColor,'border': `1px solid ${theme.textColor}`}" class="open-file" v-if="!currentVideo">
+      <div class="flexrowcenter" @click="openFile">
+        <span class="fa fa-folder-open-o"></span>
+        <span>打开文件</span>
+      </div>
+      <span @click.stop="showMenu" class="fa fa-angle-down"></span>
+      <transition name="router" mode="out-in">
+        <ul 
+        :style="{'background-color':theme.bgColor}"
+        v-if="isShowFileMenu" 
+        class="my-file">
+          <li :class='theme.hover' @click="openFolder">
+            <span class="fa fa-file-video-o"></span>
+            打开文件夹
+          </li>
+          <li :class='theme.hover' @click="openUrl">
+            <span class="fa fa-link"></span>
+            打开URL
+          </li>
+        </ul>
+      </transition>
     </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import OpenDialog from "../api/OpenDialog";
-const openDialog = new OpenDialog();
 import connect from "../api/bus.js";
-var Mousetrap = require("mousetrap");
-const fs = require("fs");
-
+import Mousetrap from "mousetrap";
+import fs from "fs";
+import path from "path";
 import "DPlayer/dist/DPlayer.min.css";
 import DPlayer from "DPlayer";
+import { musicReg } from "../api/util";
+import { remote } from "electron";
+
+const openDialog = new OpenDialog();
+
+const { Menu } = remote;
 
 export default {
   data() {
     return {
       // 是否显示文件菜单
-      isShowFileMenu: false
+      isShowFileMenu: false,
+      // 左上角音量提示语
+      volumeMsg: "",
+      // 左上角视频速度提示语
+      speedMsg: "",
+      // 左上角视频状态提示语
+      playModeMsg: "",
+      // 判断是否为音乐
+      isMusic: false,
+      // 动画状态，停止或者播放
+      animationPlayState: "running"
     };
   },
   name: "my-video",
@@ -60,24 +93,23 @@ export default {
       "setTotalTime",
       "setSpeed",
       "setOldVideo",
-      "setCurrentVideo"
+      "setCurrentVideo",
+      "setFullScreen",
+      "setHistoricalRecords",
+      "setAlwaysOnTop"
     ]),
     ...mapActions(["changeVideoList"]),
     // 点击按钮后显示或者隐藏菜单
     showMenu() {
       // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
-      document.body.click();
-      this.isShowFileMenu = !this.isShowFileMenu;
-      if (!this.isShowFileMenu) {
-        window.removeEventListener("click", this.onClick);
-      } else {
-        window.addEventListener("click", this.onClick);
+      if(!this.isShowFileMenu){
+        document.body.click();
       }
+      this.isShowFileMenu = !this.isShowFileMenu;
     },
     onClick() {
       // 隐藏菜单
       this.isShowFileMenu = false;
-      window.removeEventListener("click", this.onClick);
     },
     // 打开文件
     openFile() {
@@ -223,17 +255,249 @@ export default {
     initDplayer() {
       this.dp = new DPlayer({
         container: document.getElementById("dplayer"),
-        hotkey:false
+        hotkey: false
       });
       this.dp.on("timeupdate", this.timeupdate);
       this.dp.on("durationchange", this.durationchange);
       this.dp.on("loadedmetadata", this.loadedmetadata);
       this.dp.on("ended", this.ended);
       this.dp.on("error", this.error);
-      this.dp.volume(this.volumePercent)
+      this.dp.volume(this.volumePercent);
+    },
+    // 双击退出全屏
+    handelDBClick() {
+      if (!this.currentVideo) {
+        return;
+      }
+      if (this.isFullScreen) {
+        this.setFullScreen(false);
+      } else {
+        this.setFullScreen(true);
+      }
+    },
+    speedTimers(msg) {
+      if (this.speedTimer) {
+        clearTimeout(this.speedTimer);
+      }
+      this.speedMsg = msg;
+      this.speedTimer = setTimeout(() => {
+        this.speedMsg = "";
+        clearTimeout(this.speedTimer);
+      }, 5000);
+    },
+    volumeTimers(msg) {
+      if (this.volumeTimer) {
+        clearTimeout(this.volumeTimer);
+      }
+      this.volumeMsg = msg;
+      this.volumeTimer = setTimeout(() => {
+        this.volumeMsg = "";
+        clearTimeout(this.volumeTimer);
+      }, 5000);
+    },
+    playModeTimers(msg) {
+      if (this.playModeTimer) {
+        clearTimeout(this.playModeTimer);
+      }
+      this.playModeMsg = msg;
+      this.playModeTimer = setTimeout(() => {
+        this.playModeMsg = "";
+        clearTimeout(this.playModeTimer);
+      }, 5000);
+    },
+    // 右键菜单
+    contextmenu() {
+      let contextMenuTemplate = [
+        {
+          label: "打开",
+          submenu: [
+            {
+              label: "打开文件",
+              click() {
+                console.log("打开文件11");
+              }
+            },
+            {
+              label: "打开文件夹",
+              click() {
+                console.log("打开文件夹");
+              }
+            },
+            {
+              label: "打开URL",
+              click() {
+                console.log("打开URL");
+              }
+            }
+          ]
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "窗口置顶",
+          submenu: [
+            {
+              label: this.isAlwaysOnTop?"     从不":"√   从不",
+              click:() => {
+                this.setAlwaysOnTop(false)
+              }
+            },
+            {
+              label: this.isAlwaysOnTop?"√   始终":"     始终",
+              click:() => {
+                this.setAlwaysOnTop(true)
+              }
+            }
+          ]
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "播放列表"
+        },
+        {
+          label: "播放顺序",
+          submenu: [
+            {
+              label: "单个播放",
+              click() {
+                console.log("单个播放");
+              }
+            },
+            {
+              label: "单个循环",
+              click() {
+                console.log("单个循环");
+              }
+            },
+            {
+              label: "循环列表",
+              click() {
+                console.log("循环列表");
+              }
+            },
+            {
+              label: "随机播放",
+              click() {
+                console.log("随机播放");
+              }
+            }
+          ]
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "声音",
+          submenu: [
+            {
+              label: "10%",
+              click() {
+                console.log("10%");
+              }
+            },
+            {
+              label: "20%",
+              click() {
+                console.log("20%");
+              }
+            },
+            {
+              label: "30%",
+              click() {
+                console.log("30%");
+              }
+            },
+            {
+              label: "40%",
+              click() {
+                console.log("40%");
+              }
+            },
+            {
+              label: "50%",
+              click() {
+                console.log("50%");
+              }
+            },
+            {
+              label: "60%",
+              click() {
+                console.log("60%");
+              }
+            },
+            {
+              label: "70%",
+              click() {
+                console.log("70%");
+              }
+            },
+            {
+              label: "80%",
+              click() {
+                console.log("80%");
+              }
+            },
+            {
+              label: "90%",
+              click() {
+                console.log("90%");
+              }
+            },
+            {
+              label: "100%",
+              click() {
+                console.log("100%");
+              }
+            },
+            {
+              label: "静音",
+              click() {
+                console.log("静音");
+              }
+            }
+          ]
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "设置"
+        },
+        {
+          label: "文件信息"
+        }
+      ];
+      if (this.currentVideo) {
+        let addMenu = [
+          {
+            label: this.isPlaying ? "暂停" : "播放",
+            click: () => {
+              this.setPlaying(!this.isPlaying);
+            }
+          },
+          {
+            type: "separator"
+          }
+        ];
+        contextMenuTemplate.unshift(...addMenu);
+
+        contextMenuTemplate.splice(4,0,{
+          label: this.isFullScreen?"退出全屏":"全屏",
+          click:()=>{
+            this.setFullScreen(!this.isFullScreen)
+          }
+        },)
+      }
+      let m = Menu.buildFromTemplate(contextMenuTemplate);
+      Menu.setApplicationMenu(m);
+      m.popup({ window: remote.getCurrentWindow() });
     }
   },
   mounted() {
+    window.addEventListener('click',this.onClick)
     this.initDplayer();
     // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
     this.$nextTick(() => {
@@ -254,7 +518,10 @@ export default {
       "inWidth",
       "volumePercent",
       "playMode",
-      "currentVideoIndex"
+      "currentVideoIndex",
+      "isFullScreen",
+      "isAlwaysOnTop",
+      "theme"
     ])
   },
   watch: {
@@ -262,8 +529,12 @@ export default {
       // 同步video和store中的isPlaying的状态
       this.$nextTick(() => {
         if (newVal) {
+          this.isMusic && (this.animationPlayState = "running");
+          this.playModeTimers("已播放");
           this.dp.play();
         } else {
+          this.isMusic && (this.animationPlayState = "paused");
+          this.playModeTimers("已暂停");
           this.dp.pause();
         }
       });
@@ -276,6 +547,14 @@ export default {
           speed: this.speed
         })
       );
+      if(oldVal){
+        this.setHistoricalRecords(
+        Object.assign({}, this.oldVideo, {
+          currentTime: this.currentTime,
+          speed: this.speed
+        })
+      );
+      }
       // 新的视频不为空·
       if (newVal) {
         // 获取该视频以前的播放进度
@@ -290,23 +569,39 @@ export default {
         if (this.dp) {
           this.initDplayer();
         }
+        // 获取后缀名
+        let extname = path.extname(newVal.src);
+        this.isMusic = musicReg.test(extname);
         // 切换视频
         this.dp.switchVideo({
-          url: `http://localhost:6789/video?video=${newVal.src}`
+          url: `http://localhost:6789/video?video=${encodeURIComponent(
+            newVal.src
+          )}`
         });
+        // 设置播放历史记录
+        this.setHistoricalRecords(newVal);
       } else {
         // this.dp.destroy();
-        this.dp.switchVideo(
-          {
-            url: ''
-          }
-        );
+        this.dp.switchVideo({
+          url: ""
+        });
       }
     },
     speed(newVal) {
       // 视频速度发生变化时修改video的速度
       this.$nextTick(() => {
-         this.dp.speed(newVal);
+        if (newVal > 1) {
+          this.speedTimers(
+            `加速播放（ctrl+up）：${newVal}倍（按R恢复正常速度）`
+          );
+        } else if (newVal < 1) {
+          this.speedTimers(
+            `减速播放（ctrl+down）：${newVal}倍（按R恢复正常速度）`
+          );
+        } else if (newVal == 1) {
+          this.speedTimers(`正常速度：1.0倍（按R恢复正常速度）`);
+        }
+        this.dp.speed(newVal);
       });
     },
     volumePercent: {
@@ -314,6 +609,7 @@ export default {
       immediate: true,
       handler: function(newVal) {
         this.$nextTick(() => {
+          this.volumeTimers(`音量：${Math.round(newVal * 100)}%`);
           this.dp.volume(newVal);
         });
       }
@@ -321,6 +617,9 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("click", this.onClick);
+    if (this.volumeTimer) {
+      clearTimeout(this.volumeTimer);
+    }
   }
 };
 </script>
@@ -329,23 +628,45 @@ export default {
 .video-container {
   flex: 1;
   position: relative;
+  .message {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    color: #ffffff;
+  }
 }
 .my-video {
   width: 100%;
   height: 100%;
   vertical-align: top;
-  background-color: #000000;
+  // background-color: #000000;
+}
+.music-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  margin-top: -200px;
+  margin-left: -200px;
+  background: url("../assets/musicBg.jpg") no-repeat center center;
+  background-size: cover;
+  border-radius: 50%;
+  animation: rotate 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 .open-file {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #818181;
+  // color: #818181;
   width: 150px;
   height: 40px;
   border-radius: 40px;
-  border: 1px solid #818181;
+  // border: 1px solid #818181;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -357,7 +678,7 @@ export default {
     top: 45px;
     left: 0;
     width: 100%;
-    background-color: #0c0c0c;
+    // background-color: #0c0c0c;
     border-radius: 5px;
     &:before {
       content: "";
@@ -367,15 +688,16 @@ export default {
       top: -10px;
       left: 23px;
       border: 5px solid transparent;
-      border-bottom-color: #0c0c0c;
+      border-bottom-color: greenyellow;
     }
     > li {
       width: 100%;
       height: 40px;
       padding: 10px 15px;
+      color: #878788;
       cursor: pointer;
       &:hover {
-        background-color: #373333;
+        // background-color: #373333;
         color: #5dee00;
       }
     }
@@ -397,6 +719,15 @@ export default {
     &:hover {
       color: #5dee00;
     }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

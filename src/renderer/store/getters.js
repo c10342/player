@@ -39,3 +39,12 @@ export const volumePercent = state => state.volumePercent
 
 // 获取全屏状态
 export const isFullScreen = state => state.isFullScreen
+
+// 获取播放历史记录
+export const historicalRecords = state => state.historicalRecords
+
+// 获取窗口是否在最前端
+export const isAlwaysOnTop = state => state.isAlwaysOnTop
+
+// 获取主题
+export const theme = state => state.theme

@@ -1,21 +1,15 @@
 <template>
-    <div :title="subTitle" class="progress-container" ref="progress">
-        <span @click.stop="speedDown" class="fa fa-backward my-icon" title="减速"></span>
-        <span v-if="speed!=1" class="speed speed-back">{{speed}}x</span>
-        <div
-                @click="onClick($event)"
-                class="video-out-line"
-                ref="outLine">
-            <div ref="inLine" class="in-line" :style="{'width':`${videoPercent}%`}">
-            <span
-                    @mousedown.stop="ballMouseDown"
-                    @click.stop
-                    class="ball"></span>
-            </div>
-        </div>
-        <span  v-if="speed!=1" class="speed speed-forward">{{speed}}x</span>
-        <span @click.stop="speedUp" title="加速" class="fa fa-forward my-icon"></span>
+  <div :title="subTitle" class="progress-container" ref="progress">
+    <span @click.stop="speedDown" class="fa fa-backward my-icon" title="减速"></span>
+    <span v-if="speed!=1" class="speed speed-back">{{speed}}x</span>
+    <div @click="onClick($event)" class="video-out-line" ref="outLine">
+      <div ref="inLine" class="in-line" :style="{'width':`${videoPercent}%`}">
+        <span @mousedown.stop="ballMouseDown" @click.stop class="ball"></span>
+      </div>
     </div>
+    <span v-if="speed!=1" class="speed speed-forward">{{speed}}x</span>
+    <span @click.stop="speedUp" title="加速" class="fa fa-forward my-icon"></span>
+  </div>
 </template>
 
 <script>
@@ -139,13 +133,13 @@ export default {
   watch: {
     currentTime(newVal) {
       // 计算出内层占外层进度条的百分比
-      this.videoPercent = newVal / this.oldVideo.totalTime * 100;
+      this.videoPercent = (newVal / this.oldVideo.totalTime) * 100;
     },
     inLineWidth() {
       // 最外层进度条宽度
       let outLineWidth = this.$refs.outLine.getBoundingClientRect().width;
       // 最内层进度条占最外层进度条的百分比
-      this.videoPercent = this.inLineWidth / outLineWidth * 100;
+      this.videoPercent = (this.inLineWidth / outLineWidth) * 100;
       // 设置当前时间
       this.setCurrentTime(this.totalTime * (this.inLineWidth / outLineWidth));
       // 发射事件修改video的当前播放进度

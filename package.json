@@ -52,7 +52,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "better-scroll": "^1.13.2",
     "dplayer": "^1.25.0",
     "element-ui": "^2.4.11",
     "express": "^4.16.4",

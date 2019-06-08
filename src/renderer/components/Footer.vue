@@ -1,89 +1,98 @@
 <template>
-    <div class="footer-container">
-        <div v-if="currentVideo" class="video-progress">
-            <video-progress/>
-        </div>
-        <div class="footer">
-            <div class="left">
-                <span @click="openFile" title="打开文件" class="fa fa-folder-open-o"></span>
-                <span
-                        :title="title"
-                        @click.stop="showPlayMode"
-                        class="fa fa-random"></span>
-                <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
-                <transition name="router" mode="out-in">
-                <ul class="play-mode" v-if="isShowPlayMode">
-                    <li @click="changeMode(1)">
-                        <span v-if="playMode==1" class="fa fa-check"></span>
-                        单个播放
-                    </li>
-                    <li @click="changeMode(2)">
-                        <span v-if="playMode==2" class="fa fa-check"></span>
-                        单个循环
-                    </li>
-                    <li @click="changeMode(3)">
-                        <span v-if="playMode==3" class="fa fa-check"></span>
-                        循环列表
-                    </li>
-                    <li @click="changeMode(4)">
-                        <span v-if="playMode==4" class="fa fa-check"></span>
-                        顺序播放
-                    </li>
-                    <li @click="changeMode(5)">
-                        <span v-if="playMode==5" class="fa fa-check"></span>
-                        随机播放
-                    </li>
-                </ul>
-                </transition>
-            </div>
-            <div class="middle">
-                <span :style="{'color':currentVideo?'':'#454548'}" title="停止" class="fa fa-stop" @click="stop"></span>
-                <span
-                :style="{'color':(videoList.length<=1)?'#454548':''}"
-                        @click="prev"
-                        title="上一个文件"
-                        class="fa fa-step-backward"></span>
-                <span
-                        @click.stop="switchPlaying(true)"
-                        v-if="!isPlaying"
-                        title="播放"
-                        class="fa fa-play-circle-o"
-                        style="font-size: 50px;"></span>
-                <span
-                        v-if="isPlaying"
-                        title="暂停"
-                        class="fa fa-pause-circle-o"
-                        style="font-size: 50px;"
-                        @click.stop="switchPlaying(false)"></span>
-                <span
-                :style="{'color':(videoList.length<=1)?'#454548':''}"
-                        @click="next"
-                        title="下一个文件"
-                        class="fa fa-step-forward"></span>
-                <span
-                        title="静音"
-                        v-if="isVolumeOn"
-                        style="width: 40px;height: 20px;"
-                        @click.stop="setVolume(false)"
-                        class="fa fa-volume-up"></span>
-                <span
-                        title="取消静音"
-                        v-if="!isVolumeOn"
-                        style="width: 40px;height: 20px;"
-                        @click.stop="setVolume(true)"
-                        class="fa fa-volume-off"></span>
-                <my-progress width="62px"/>
-            </div>
-            <div class="right">
-                <span title="无痕模式" class="fa fa-snowflake-o"></span>
-                <span 
-                :style="{'color':currentVideo?'':'#454548'}"
-                @click="fullScreen" 
-                :title="isFullScreen?'退出全屏':'全屏'" 
-                class="fa fa-expand my-expand"></span>
-            </div>
-        </div>
+  <div class="footer-container">
+    <div v-if="currentVideo" class="video-progress">
+      <video-progress/>
     </div>
+    <div class="footer">
+      <div class="left">
+        <span @click="openFile" title="打开文件" class="fa fa-folder-open-o"></span>
+        <span :title="title" @click.stop="showPlayMode" class="fa fa-random"></span>
+        <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
+        <transition name="router" mode="out-in">
+          <ul :style="{'background-color': theme.bgColor}" class="play-mode" v-if="isShowPlayMode">
+            <li :class="theme.hover" @click="changeMode(1)">
+              <span v-if="playMode==1" class="fa fa-check"></span>
+              单个播放
+            </li>
+            <li :class="theme.hover" @click="changeMode(2)">
+              <span v-if="playMode==2" class="fa fa-check"></span>
+              单个循环
+            </li>
+            <li :class="theme.hover" @click="changeMode(3)">
+              <span v-if="playMode==3" class="fa fa-check"></span>
+              循环列表
+            </li>
+            <li :class="theme.hover" @click="changeMode(4)">
+              <span v-if="playMode==4" class="fa fa-check"></span>
+              顺序播放
+            </li>
+            <li :class="theme.hover" @click="changeMode(5)">
+              <span v-if="playMode==5" class="fa fa-check"></span>
+              随机播放
+            </li>
+          </ul>
+        </transition>
+      </div>
+      <div class="middle">
+        <span
+          :style="{'color':currentVideo?'':'#454548'}"
+          title="停止"
+          class="fa fa-stop"
+          @click="stop"
+        ></span>
+        <span
+          :style="{'color':(videoList.length<=1)?'#454548':''}"
+          @click="prev"
+          title="上一个文件"
+          class="fa fa-step-backward"
+        ></span>
+        <span
+          @click.stop="switchPlaying(true)"
+          v-if="!isPlaying"
+          title="播放"
+          class="fa fa-play-circle-o"
+          style="font-size: 50px;"
+        ></span>
+        <span
+          v-if="isPlaying"
+          title="暂停"
+          class="fa fa-pause-circle-o"
+          style="font-size: 50px;"
+          @click.stop="switchPlaying(false)"
+        ></span>
+        <span
+          :style="{'color':(videoList.length<=1)?'#454548':''}"
+          @click="next"
+          title="下一个文件"
+          class="fa fa-step-forward"
+        ></span>
+        <span
+          title="静音"
+          v-if="isVolumeOn"
+          style="width: 40px;height: 20px;"
+          @click.stop="setVolume(false)"
+          class="fa fa-volume-up"
+        ></span>
+        <span
+          title="取消静音"
+          v-if="!isVolumeOn"
+          style="width: 40px;height: 20px;"
+          @click.stop="setVolume(true)"
+          class="fa fa-volume-off"
+        ></span>
+        <my-progress width="62px"/>
+      </div>
+      <div class="right">
+        <span title="无痕模式" class="fa fa-snowflake-o"></span>
+        <span
+          :style="{'color':currentVideo?'':'#454548'}"
+          @click="fullScreen"
+          :title="isFullScreen?'退出全屏':'全屏'"
+          class="fa fa-expand my-expand"
+        ></span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -102,8 +111,8 @@ export default {
     };
   },
   mounted() {
-    // window.addEventListener("keyup", this.onKeyUp);
     this.initGlobalShortcut();
+    window.addEventListener("click", this.onClick);
   },
   methods: {
     ...mapMutations([
@@ -114,7 +123,7 @@ export default {
       "setCurrentVideoIndex",
       "setFullScreen",
       "setSpeed",
-      'setOldVideo'
+      "setOldVideo"
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
@@ -140,40 +149,21 @@ export default {
       // 设置播放状态
       this.setPlaying(flag);
     },
-    // 监听键盘
-    // onKeyUp(e) {
-    //   if (!this.currentVideo) {
-    //     return;
-    //   }
-    //   // 按下Esc键
-    //   if (e.keyCode == 27 && this.isFullScreen == true) {
-    //     this.setFullScreen(false);
-    //   }
-    //   // 按下空格键
-    //   if (e.keyCode == 32) {
-    //     this.switchPlaying(!this.isPlaying);
-    //   }
-    // },
     // 切换播放模式
     changeMode(mode) {
       this.setPlayMode(mode);
     },
     // 显示或者隐藏播放模式列表
-    showPlayMode() {
-      // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
-      document.body.click();
+    showPlayMode(e) {
+      if(!this.isShowPlayMode){
+        document.body.click();
+      }
       // 选择完播放模式后就隐藏播放模式列表菜单
       this.isShowPlayMode = !this.isShowPlayMode;
-      if (this.isShowPlayMode) {
-        window.addEventListener("click", this.onClick);
-      } else {
-        window.removeEventListener("click", this.onClick);
-      }
     },
     onClick() {
       // 隐藏播放模式列表菜单
       this.isShowPlayMode = false;
-      window.removeEventListener("click", this.onClick);
     },
     // 停止播放
     stop() {
@@ -182,9 +172,11 @@ export default {
         return;
       }
       // 保存当前视频
-      this.setOldVideo(Object.assign({},this.currentVideo,{
-        currentTime:this.currentTime
-      }));
+      this.setOldVideo(
+        Object.assign({}, this.currentVideo, {
+          currentTime: this.currentTime
+        })
+      );
       // 清空当前正在播放的视频
       this.setCurrentVideo(null);
       // 停止播放
@@ -297,8 +289,8 @@ export default {
       });
     },
     // 打开文件
-    openFile(){
-       openDialog.openFile();
+    openFile() {
+      openDialog.openFile();
     }
   },
   computed: {
@@ -313,7 +305,8 @@ export default {
       "oldVideo",
       "currentTime",
       "totalTime",
-      "isFullScreen"
+      "isFullScreen",
+      "theme"
     ]),
     title() {
       if (this.playMode == 1) {
@@ -352,7 +345,6 @@ export default {
     }
   },
   beforeDestroy() {
-    window.removeEventListener("keyup", this.onKeyUp);
     window.removeEventListener("click", this.onClick);
   }
 };
@@ -408,7 +400,7 @@ export default {
       position: absolute;
       left: 7px;
       top: -167px;
-      background-color: #252528;
+      // background-color: #252528;
       width: 100px;
       color: #999999;
       padding: 3px 0;
@@ -429,9 +421,10 @@ export default {
         text-align: center;
         line-height: 30px;
         font-size: 12px;
+        color: #878788;
         cursor: pointer;
         &:hover {
-          background-color: #373333;
+          // background-color: #373333;
           color: #1bb017;
           > span {
             color: #1bb017;

@@ -18,6 +18,7 @@ import PlayList from './components/PlayList'
 import MyProgress from './components/Progress'
 import VideoProgress from './components/VideoProgress'
 import ListItem from './components/ListItem'
+import HistoryItem from './components/HistoryItem'
 
 Vue.component('MyHeader', MyHeader)
 Vue.component('MyVideo', MyVideo)
@@ -26,6 +27,7 @@ Vue.component('PlayList', PlayList)
 Vue.component('MyProgress', MyProgress)
 Vue.component('VideoProgress', VideoProgress)
 Vue.component('ListItem', ListItem)
+Vue.component('HistoryItem', HistoryItem)
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
