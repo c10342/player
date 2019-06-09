@@ -92,7 +92,9 @@ export default {
       "setCurrentVideo",
       "setFullScreen",
       "setHistoricalRecords",
-      "setAlwaysOnTop"
+      "setAlwaysOnTop",
+      "setPlayMode",
+      "setInWidth"
     ]),
     ...mapActions(["changeVideoList"]),
     // 点击按钮后显示或者隐藏菜单
@@ -358,27 +360,33 @@ export default {
           label: "播放顺序",
           submenu: [
             {
-              label: "单个播放",
-              click() {
-                console.log("单个播放");
+              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              click: () => {
+                this.setPlayMode(1);
               }
             },
             {
-              label: "单个循环",
-              click() {
-                console.log("单个循环");
+              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              click: () => {
+                this.setPlayMode(2);
               }
             },
             {
-              label: "循环列表",
-              click() {
-                console.log("循环列表");
+              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              click: () => {
+                this.setPlayMode(3);
               }
             },
             {
-              label: "随机播放",
-              click() {
-                console.log("随机播放");
+              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              click: () => {
+                this.setPlayMode(4);
+              }
+            },
+            {
+              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              click: () => {
+                this.setPlayMode(5);
               }
             }
           ]
@@ -390,69 +398,83 @@ export default {
           label: "声音",
           submenu: [
             {
-              label: "10%",
-              click() {
-                console.log("10%");
+              label: this.volumePercent == 0.1?"√ 10%":"   10%",
+              click:()=>{
+                let inWidth = 0.1*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "20%",
-              click() {
-                console.log("20%");
+              label: this.volumePercent == 0.2?"√ 20%":"   20%",
+              click:()=>{
+                let inWidth = 0.2*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "30%",
-              click() {
-                console.log("30%");
+              label: this.volumePercent == 0.3?"√ 30%":"   30%",
+              click:()=>{
+                let inWidth = 0.3*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "40%",
-              click() {
-                console.log("40%");
+              label: this.volumePercent == 0.4?"√ 40%":"   40%",
+              click:()=>{
+                let inWidth = 0.4*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "50%",
-              click() {
-                console.log("50%");
+              label: this.volumePercent == 0.5?"√ 50%":"   50%",
+              click:()=>{
+                let inWidth = 0.5*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "60%",
-              click() {
-                console.log("60%");
+              label: this.volumePercent == 0.6?"√ 60%":"   60%",
+              click:()=>{
+                let inWidth = 0.6*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "70%",
-              click() {
-                console.log("70%");
+              label: this.volumePercent == 0.7?"√ 70%":"   70%",
+              click:()=>{
+                let inWidth = 0.7*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "80%",
-              click() {
-                console.log("80%");
+              label: this.volumePercent == 0.8?"√ 80%":"   80%",
+              click:()=>{
+                let inWidth = 0.8*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "90%",
-              click() {
-                console.log("90%");
+              label: this.volumePercent == 0.9?"√ 90%":"   90%",
+              click:()=>{
+                let inWidth = 0.9*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "100%",
-              click() {
-                console.log("100%");
+              label: this.volumePercent == 1?"√ 100%":"   100%",
+              click:()=>{
+                let inWidth = 1*62
+                this.setInWidth(inWidth)
               }
             },
             {
-              label: "静音",
-              click() {
-                console.log("静音");
+              label: (this.volumePercent != 0.1&&this.volumePercent != 0.2&&this.volumePercent != 0.3&&this.volumePercent != 0.4&&this.volumePercent != 0.5&&this.volumePercent != 0.6&&this.volumePercent != 0.7&&this.volumePercent != 0.8&&this.volumePercent != 0.9&&this.volumePercent != 1&&this.volumePercent != 0)?`√ 其他(${Math.round(this.volumePercent*100)}%)`:"   其他",
+            },
+            {
+              label: this.volumePercent == 0?"√ 静音":"   静音",
+              click:()=>{
+                let inWidth = 0
+                this.setInWidth(inWidth)
               }
             }
           ]

@@ -18,12 +18,7 @@
         title="收起列表"
         class="fa fa-arrow-circle-o-right"
       ></span>
-      <span
-        @click="hideList"
-        v-show="isHidenList"
-        title="展开列表"
-        class="fa fa-arrow-circle-o-left"
-      ></span>
+      <span @click="hideList" v-show="isHidenList" title="展开列表" class="fa fa-arrow-circle-o-left"></span>
       <span
         @click="lockList"
         v-show="currentVideo&&!isLock&&!isHidenList&&!isFullScreen"
@@ -70,7 +65,11 @@
         </div>
       </div>
       <transition name="router" mode="out-in">
-        <ul :style="{'background-color': theme.bgColor}" class="extend-menu" v-show="isShowExtendMenu">
+        <ul
+          :style="{'background-color': theme.bgColor}"
+          class="extend-menu"
+          v-show="isShowExtendMenu"
+        >
           <li :class="theme.hover" class="line">清空此列表</li>
           <li :class="theme.hover" @click="changeSoreMode(1)">
             <span v-show="sortMode==1" class="fa fa-check"></span>
@@ -136,14 +135,14 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import connect from "../api/bus.js";
 import OpenDialog from "../api/OpenDialog";
-import { remote,shell } from "electron";
-import path from 'path'
-import storage from 'good-storage'
+import { remote, shell } from "electron";
+import path from "path";
+import storage from "good-storage";
 
 const openDialog = new OpenDialog();
 const { Menu } = remote;
 
-let isLock = storage.get('isLock',false)
+let isLock = storage.get("isLock", false);
 
 export default {
   name: "play-list",
@@ -185,7 +184,7 @@ export default {
     this.playListTimer = null;
     this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
     this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
-    window.addEventListener('click',this.onClick)
+    window.addEventListener("click", this.onClick);
     // 全屏的时候显示头部和尾部
     connect.$on("showFooterAndHeader", () => {
       this.showFooterAndHeader();
@@ -196,11 +195,17 @@ export default {
     });
   },
   methods: {
-    ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo","setPlaying","clearVideoList"]),
-    ...mapActions(["sortVideoList","deleteVideo","clearInvalidVideo"]),
+    ...mapMutations([
+      "setPlayMode",
+      "setSortMode",
+      "setCurrentVideo",
+      "setPlaying",
+      "clearVideoList"
+    ]),
+    ...mapActions(["sortVideoList", "deleteVideo", "clearInvalidVideo"]),
     // 显示或者隐藏列表最中间菜单
     showMenu() {
-      if(!this.isShowFileMenu){
+      if (!this.isShowFileMenu) {
         document.body.click();
       }
       this.isShowFileMenu = !this.isShowFileMenu;
@@ -225,7 +230,7 @@ export default {
     },
     // 显示或者隐藏右上角的扩展菜单
     showExtendMenu() {
-      if(!this.isShowExtendMenu){
+      if (!this.isShowExtendMenu) {
         document.body.click();
       }
       this.isShowExtendMenu = !this.isShowExtendMenu;
@@ -313,13 +318,13 @@ export default {
     openFolder() {
       openDialog.openFolder();
     },
-    clearTimerAndListener(){
+    clearTimerAndListener() {
       this.$refs.playList.removeEventListener("mouseleave", this.onMouseLeave);
       if (this.playListTimer) {
         clearTimeout(this.playListTimer);
       }
     },
-    resetTimerAndListener(){
+    resetTimerAndListener() {
       if (this.playListTimer) {
         clearTimeout(this.playListTimer);
       }
@@ -327,8 +332,8 @@ export default {
       this.playListTimer = setTimeout(this.createTimeOut, this.time);
     },
     contextmenu() {
-      this.clearTimerAndListener()
-      document.body.click()
+      this.clearTimerAndListener();
+      document.body.click();
       let playListMenuTemplate = [
         {
           label: "添加",
@@ -360,16 +365,34 @@ export default {
           label: "播放顺序",
           submenu: [
             {
-              label: "单个播放"
+              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              click: () => {
+                this.setPlayMode(1);
+              }
             },
             {
-              label: "单个循环"
+              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              click: () => {
+                this.setPlayMode(2);
+              }
             },
             {
-              label: "循环列表"
+              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              click: () => {
+                this.setPlayMode(3);
+              }
             },
             {
-              label: "随机播放"
+              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              click: () => {
+                this.setPlayMode(4);
+              }
+            },
+            {
+              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              click: () => {
+                this.setPlayMode(5);
+              }
             }
           ]
         },
@@ -377,19 +400,34 @@ export default {
           label: "排序",
           submenu: [
             {
-              label: "默认排序"
+              label: this.sortMode == 1 ? "√ 默认排序" : "   默认排序",
+              click: () => {
+                this.setSortMode(1);
+              }
             },
             {
-              label: "大小排序"
+              label: this.sortMode == 2 ? "√ 大小排序" : "   大小排序",
+              click: () => {
+                this.setSortMode(2);
+              }
             },
             {
-              label: "时间排序"
+              label: this.sortMode == 3 ? "√ 时间排序" : "   时间排序",
+              click: () => {
+                this.setSortMode(3);
+              }
             },
             {
-              label: "随机排序"
+              label: this.sortMode == 4 ? "√ 随机排序" : "   随机排序",
+              click: () => {
+                this.setSortMode(4);
+              }
             },
             {
-              label: "名称排序"
+              label: this.sortMode == 5 ? "√ 名称排序" : "   名称排序",
+              click: () => {
+                this.setSortMode(5);
+              }
             }
           ]
         },
@@ -404,33 +442,35 @@ export default {
 
       m.popup({ window: remote.getCurrentWindow() });
 
-      m.addListener('menu-will-close',()=>{
-        this.resetTimerAndListener()
-      })
+      m.addListener("menu-will-close", () => {
+        this.resetTimerAndListener();
+      });
     },
     itemContextmenu(video) {
-      this.clearTimerAndListener()
-      document.body.click()
-      let flag = false
-      let isCurrentVideo = (this.currentVideo ? video.id == this.currentVideo.id : false)
-      if(this.currentVideo && isCurrentVideo && this.isPlaying){
-        flag = true
+      this.clearTimerAndListener();
+      document.body.click();
+      let flag = false;
+      let isCurrentVideo = this.currentVideo
+        ? video.id == this.currentVideo.id
+        : false;
+      if (this.currentVideo && isCurrentVideo && this.isPlaying) {
+        flag = true;
       }
       let playListMenuTemplate = [
         {
-          label: flag?'暂停':'播放',
-          click:()=>{
-            if(isCurrentVideo){
-              this.setPlaying(!flag)
-            }else{
-              this.setCurrentVideo(video)
+          label: flag ? "暂停" : "播放",
+          click: () => {
+            if (isCurrentVideo) {
+              this.setPlaying(!flag);
+            } else {
+              this.setCurrentVideo(video);
             }
           }
         },
         {
           label: "删除选中项",
-          click:()=>{
-            this.deleteVideo(video)
+          click: () => {
+            this.deleteVideo(video);
           }
         },
         {
@@ -452,14 +492,14 @@ export default {
         },
         {
           label: "清空播放列表",
-          click:()=>{
-            this.clearVideoList()
+          click: () => {
+            this.clearVideoList();
           }
         },
         {
           label: "删除无效文件",
-          click:()=>{
-            this.clearInvalidVideo()
+          click: () => {
+            this.clearInvalidVideo();
           }
         },
         {
@@ -469,33 +509,33 @@ export default {
           label: "播放顺序",
           submenu: [
             {
-              label: this.playMode == 1 ?"√ 单个播放":"   单个播放",
-              click:()=>{
-                this.setPlayMode(1)
+              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              click: () => {
+                this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ?"√ 单个循环":"   单个循环",
-              click:()=>{
-                this.setPlayMode(2)
+              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              click: () => {
+                this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ?"√ 循环列表":"   循环列表",
-              click:()=>{
-                this.setPlayMode(3)
+              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              click: () => {
+                this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ?"√ 顺序播放":"   顺序播放",
-              click:()=>{
-                this.setPlayMode(4)
+              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              click: () => {
+                this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ?"√ 随机播放":"   随机播放",
-              click:()=>{
-                this.setPlayMode(5)
+              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              click: () => {
+                this.setPlayMode(5);
               }
             }
           ]
@@ -504,33 +544,33 @@ export default {
           label: "排序",
           submenu: [
             {
-              label: this.sortMode == 1 ?"√ 默认排序":"   默认排序",
-              click:()=>{
-                this.setSortMode(1)
+              label: this.sortMode == 1 ? "√ 默认排序" : "   默认排序",
+              click: () => {
+                this.setSortMode(1);
               }
             },
             {
-              label: this.sortMode == 2 ?"√ 大小排序":"   大小排序",
-              click:()=>{
-                this.setSortMode(2)
+              label: this.sortMode == 2 ? "√ 大小排序" : "   大小排序",
+              click: () => {
+                this.setSortMode(2);
               }
             },
             {
-              label: this.sortMode == 3 ?"√ 时间排序":"   时间排序",
-              click:()=>{
-                this.setSortMode(3)
+              label: this.sortMode == 3 ? "√ 时间排序" : "   时间排序",
+              click: () => {
+                this.setSortMode(3);
               }
             },
             {
-              label: this.sortMode == 4 ?"√ 随机排序":"   随机排序",
-              click:()=>{
-                this.setSortMode(4)
+              label: this.sortMode == 4 ? "√ 随机排序" : "   随机排序",
+              click: () => {
+                this.setSortMode(4);
               }
             },
             {
-              label: this.sortMode == 5 ?"√ 名称排序":"   名称排序",
-              click:()=>{
-                this.setSortMode(5)
+              label: this.sortMode == 5 ? "√ 名称排序" : "   名称排序",
+              click: () => {
+                this.setSortMode(5);
               }
             }
           ]
@@ -540,9 +580,9 @@ export default {
         },
         {
           label: "打开文件所在位置",
-          click:()=>{
-            let url = path.dirname(video.src)
-            shell.openExternal(url)
+          click: () => {
+            let url = path.dirname(video.src);
+            shell.openExternal(url);
           }
         }
       ];
@@ -551,9 +591,9 @@ export default {
       Menu.setApplicationMenu(m);
 
       m.popup({ window: remote.getCurrentWindow() });
-      m.addListener('menu-will-close',()=>{
-        this.resetTimerAndListener()
-      })
+      m.addListener("menu-will-close", () => {
+        this.resetTimerAndListener();
+      });
     }
   },
   computed: {
@@ -584,7 +624,7 @@ export default {
       }
     },
     isLock(newVal) {
-      storage.set('isLock',newVal)
+      storage.set("isLock", newVal);
       //上锁的时候是相对定位,全屏的时候是相对定位，可能会修改定位，这里是重置定位，不上锁同理
       if (newVal) {
         this.resetPositionToZero();

@@ -40,12 +40,6 @@ export default {
     ...mapMutations(["setInWidth", "setIsVolumeOn", "setVolumePercent"]),
     // 点击最外层进度条
     onClick(e) {
-      // 小于0则关闭音量图标
-      if (e.offsetX <= 0) {
-        this.setIsVolumeOn(false);
-      } else {
-        this.setIsVolumeOn(true);
-      }
       // 记录鼠标点击的位置距离最外层进度条最左边的距离
       this.oldInWidth = e.offsetX;
       this.setInWidth(e.offsetX);
@@ -69,12 +63,8 @@ export default {
         if (offsetX <= 0) {
           //小于0关闭音量
           offsetX = 0;
-          this.setIsVolumeOn(false);
         } else if (offsetX > outLineWidth) {
           offsetX = outLineWidth;
-        }
-        if (offsetX > 0) {
-          this.setIsVolumeOn(true);
         }
         // 记录鼠标点击的位置距离最外层进度条最左边的距离
         this.oldInWidth = offsetX;
@@ -112,6 +102,11 @@ export default {
         let volumePercent =
           Math.round((this.inWidth / parseInt(this.width)) * 100) / 100;
         this.setVolumePercent(volumePercent);
+        if(volumePercent == 0){
+          this.setIsVolumeOn(false)
+        }else{
+          this.setIsVolumeOn(true)
+        }
       }
     }
   },

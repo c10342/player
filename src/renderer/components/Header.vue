@@ -1,5 +1,8 @@
 <template>
   <div :style="{'color':theme.textColor}" class="header">
+    <transition name="router" mode="out-in">
+      <About @handlerAboutClick='handlerAboutClick' :isShow="showAbout"/>
+    </transition>
     <div class="left" v-if="!isFullScreen">
       <span class="fa fa-youtube-play"></span>
       <div @click.stop="showMenu">
@@ -16,8 +19,23 @@
         class="filename"
       >{{currentVideo.filename}}</span>
       <transition name="router" mode="out-in">
-        <ul :style="{'background-color': theme.bgColor}" v-if="isShowMenu" class="my-menu">
-          <li :class="theme.hover">
+        <ul
+          @click="handlerClick"
+          :style="{'background-color': theme.bgColor}"
+          v-if="isShowMenu"
+          class="my-menu"
+        >
+          <li
+            :data-title="item.title"
+            v-for="(item,index) in lis"
+            :key="index"
+            :class="{[theme.hover]:true,'set':item.set}"
+          >
+            <span :class="item.icion"></span>
+            {{item.title}}
+          </li>
+
+          <!-- <li :class="theme.hover">
             <span class="fa fa-list-alt"></span>
             访问官网
           </li>
@@ -44,7 +62,7 @@
           <li class="set" :class="theme.hover">
             <span class="fa fa-sign-out"></span>
             退出
-          </li>
+          </li>-->
         </ul>
       </transition>
     </div>
@@ -72,10 +90,14 @@
       <transition name="router" mode="out-in">
         <div :style="{'background-color':theme.bgColor}" v-show="isShowHistory" class="m-history">
           <div class="history">
-            <div :style="{'background-color':theme.bgColor}" class="no-history" v-if="historicalRecords.length == 0">暂无历史记录</div>
+            <div
+              :style="{'background-color':theme.bgColor}"
+              class="no-history"
+              v-if="historicalRecords.length == 0"
+            >暂无历史记录</div>
             <HistoryItem :item="video" v-for="(video,index) in historicalRecords" :key="index"/>
             <div
-            :style="{'background-color':theme.bgColor}"
+              :style="{'background-color':theme.bgColor}"
               v-if="historicalRecords.length != 0"
               @click="clearHistoricalRecords"
               class="clear-history"
@@ -105,7 +127,7 @@
 <script>
 import WindowUtil from "../api/window";
 import { mapGetters, mapMutations } from "vuex";
-import { remote } from "electron";
+import { remote, shell } from "electron";
 import { themes } from "../api/util";
 
 const winUtil = new WindowUtil();
@@ -125,7 +147,19 @@ export default {
       // 主题颜色
       themes,
       // 是否显示主题
-      isShowTheme: false
+      isShowTheme: false,
+      // 左上角菜单
+      lis: [
+        { title: "访问官网", icion: "fa fa-list-alt", set: false },
+        { title: "在线升级", icion: "fa fa-cloud-upload", set: false },
+        { title: "在线帮助", icion: "fa fa-question-circle-o", set: false },
+        { title: "意见反馈", icion: "fa fa-envelope-open-o", set: false },
+        { title: "设置", icion: "fa fa-cog fa-fw", set: true },
+        { title: "关于", icion: "fa fa-user-circle", set: false },
+        { title: "退出", icion: "fa fa-sign-out", set: true }
+      ],
+      // 是否显示关于页面
+      showAbout: false
     };
   },
   mounted() {
@@ -195,6 +229,23 @@ export default {
         document.body.click();
       }
       this.isShowTheme = !this.isShowTheme;
+    },
+    handlerClick(e) {
+      const title = e.target.dataset.title;
+      switch (title) {
+        case "访问官网":
+          shell.openExternal("https://github.com/c10342/player");
+          break;
+        case "退出":
+          this.close();
+          break;
+        case "关于":
+          this.showAbout = true;
+          break;
+      }
+    },
+    handlerAboutClick() {
+      this.showAbout = false;
     }
   },
   computed: {

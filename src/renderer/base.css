@@ -118,3 +118,7 @@ ul{
     background-color: rgba(0, 0, 0, .3);
     color: #5dee00 !important;
 }
+
+.mt20{
+    margin-top: 20px;
+}

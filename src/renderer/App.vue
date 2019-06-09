@@ -133,7 +133,7 @@ export default {
         let w = this.inWidth - 5;
         if (w <= 0) {
           //音量下限
-          this.setIsVolumeOn(false); //音量为0时需要显示静音图标
+          // this.setIsVolumeOn(false); //音量为0时需要显示静音图标
           this.setInWidth(0);
         } else {
           this.setInWidth(w);

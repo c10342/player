@@ -98,7 +98,7 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import { formatTime } from "../api/util";
-var Mousetrap = require("mousetrap");
+import Mousetrap from "mousetrap";
 import OpenDialog from "../api/OpenDialog";
 import connect from '../api/bus'
 const openDialog = new OpenDialog();
