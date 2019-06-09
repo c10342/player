@@ -4,7 +4,7 @@
     :class="`${isCurrentVideo?'currentVideo':''} ${theme.itemHover}`"
     :title="item.msg?item.msg:item.src"
     @dblclick="dblPlaying"
-    :style="{'color': isCurrentVideo?'#00B400':''}"
+    :style="{'color': isCurrentVideo?'#00B400':theme.textColor}"
     @contextmenu.stop="contextmenu"
   >
     <div class="out-progress" v-if="isCurrentVideo"></div>
@@ -140,7 +140,7 @@ export default {
   cursor: default;
   padding: 0 15px;
   transition: width 1s;
-  color: #cccccc;
+  // color: #cccccc;
   position: relative;
   > .in-progress {
     position: absolute;

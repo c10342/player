@@ -1,7 +1,7 @@
-
+import storage from 'good-storage'
 
 // 仓库
-let state = {
+let defaultState = {
     // 音量大小
     inWidth: 31,
     // 是否关闭音量
@@ -46,5 +46,6 @@ let state = {
     }
 }
 
+let state = storage.get('state', defaultState)
 
 export default state;

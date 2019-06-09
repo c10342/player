@@ -35,6 +35,13 @@ function createWindow() {
 
     mainWindow.loadURL(winURL)
 
+    mainWindow.on('close', () => {
+        mainWindow.webContents.send('close')
+    })
+    // 因为强制关机或机器重启或会话注销而导致窗口会话结束时触发
+    mainWindow.on('session-end', () => {
+        mainWindow.webContents.send('close')
+    })
     mainWindow.on('closed', () => {
         mainWindow = null
     })
@@ -50,6 +57,7 @@ function createWindow() {
     openDialog.init()
 
     require('./api/express')
+
 }
 
 app.on('ready', createWindow)

@@ -107,14 +107,14 @@ ul{
 
 .default-hover:hover:not(.currentVideo){
     background-color: #373333;
-    /* color: #5dee00; */
+    color: #5dee00 !important;
 }
 
 .theme-hover:hover:not(.currentVideo){
     background-color: #EEF0F1;
-    /* color: #5dee00; */
+    color: #5dee00 !important;
 }
 .item-theme-hover:hover:not(.currentVideo){
     background-color: rgba(0, 0, 0, .3);
-    /* color: #5dee00; */
+    color: #5dee00 !important;
 }

@@ -131,9 +131,12 @@ export default {
     ])
   },
   watch: {
-    currentTime(newVal) {
-      // 计算出内层占外层进度条的百分比
-      this.videoPercent = (newVal / this.oldVideo.totalTime) * 100;
+    currentTime: {
+      immediate: true,
+      handler: function(newVal) {
+        // 计算出内层占外层进度条的百分比
+        this.videoPercent = (newVal / this.oldVideo.totalTime) * 100;
+      }
     },
     inLineWidth() {
       // 最外层进度条宽度

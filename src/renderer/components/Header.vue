@@ -282,7 +282,7 @@ export default {
           width: 100%;
           top: 0;
           left: 0;
-          background-color: #2e2e30;
+          background-color: #878788;
         }
         &:hover {
           // background-color: #373333;

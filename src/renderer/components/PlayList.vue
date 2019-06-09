@@ -136,10 +136,14 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import connect from "../api/bus.js";
 import OpenDialog from "../api/OpenDialog";
-import { remote } from "electron";
+import { remote,shell } from "electron";
+import path from 'path'
+import storage from 'good-storage'
 
 const openDialog = new OpenDialog();
 const { Menu } = remote;
+
+let isLock = storage.get('isLock',false)
 
 export default {
   name: "play-list",
@@ -166,7 +170,7 @@ export default {
       // 是否显示扩展菜单
       isShowExtendMenu: false,
       // 是否锁定播放列表
-      isLock: false,
+      isLock: isLock,
       // 定时器时间
       time: 3000,
       // 列表滚动的距离
@@ -192,8 +196,8 @@ export default {
     });
   },
   methods: {
-    ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo","setPlaying"]),
-    ...mapActions(["sortVideoList"]),
+    ...mapMutations(["setPlayMode", "setSortMode", "setCurrentVideo","setPlaying","clearVideoList"]),
+    ...mapActions(["sortVideoList","deleteVideo","clearInvalidVideo"]),
     // 显示或者隐藏列表最中间菜单
     showMenu() {
       if(!this.isShowFileMenu){
@@ -324,6 +328,7 @@ export default {
     },
     contextmenu() {
       this.clearTimerAndListener()
+      document.body.click()
       let playListMenuTemplate = [
         {
           label: "添加",
@@ -405,8 +410,9 @@ export default {
     },
     itemContextmenu(video) {
       this.clearTimerAndListener()
+      document.body.click()
       let flag = false
-      let isCurrentVideo = (this.currentVideo.src == video.src)
+      let isCurrentVideo = (this.currentVideo ? video.id == this.currentVideo.id : false)
       if(this.currentVideo && isCurrentVideo && this.isPlaying){
         flag = true
       }
@@ -422,7 +428,10 @@ export default {
           }
         },
         {
-          label: "删除选中项"
+          label: "删除选中项",
+          click:()=>{
+            this.deleteVideo(video)
+          }
         },
         {
           label: "添加",
@@ -442,10 +451,16 @@ export default {
           type: "separator"
         },
         {
-          label: "清空播放列表"
+          label: "清空播放列表",
+          click:()=>{
+            this.clearVideoList()
+          }
         },
         {
-          label: "删除无效文件"
+          label: "删除无效文件",
+          click:()=>{
+            this.clearInvalidVideo()
+          }
         },
         {
           type: "separator"
@@ -454,16 +469,34 @@ export default {
           label: "播放顺序",
           submenu: [
             {
-              label: "单个播放"
+              label: this.playMode == 1 ?"√ 单个播放":"   单个播放",
+              click:()=>{
+                this.setPlayMode(1)
+              }
             },
             {
-              label: "单个循环"
+              label: this.playMode == 2 ?"√ 单个循环":"   单个循环",
+              click:()=>{
+                this.setPlayMode(2)
+              }
             },
             {
-              label: "循环列表"
+              label: this.playMode == 3 ?"√ 循环列表":"   循环列表",
+              click:()=>{
+                this.setPlayMode(3)
+              }
             },
             {
-              label: "随机播放"
+              label: this.playMode == 4 ?"√ 顺序播放":"   顺序播放",
+              click:()=>{
+                this.setPlayMode(4)
+              }
+            },
+            {
+              label: this.playMode == 5 ?"√ 随机播放":"   随机播放",
+              click:()=>{
+                this.setPlayMode(5)
+              }
             }
           ]
         },
@@ -471,19 +504,34 @@ export default {
           label: "排序",
           submenu: [
             {
-              label: "默认排序"
+              label: this.sortMode == 1 ?"√ 默认排序":"   默认排序",
+              click:()=>{
+                this.setSortMode(1)
+              }
             },
             {
-              label: "大小排序"
+              label: this.sortMode == 2 ?"√ 大小排序":"   大小排序",
+              click:()=>{
+                this.setSortMode(2)
+              }
             },
             {
-              label: "时间排序"
+              label: this.sortMode == 3 ?"√ 时间排序":"   时间排序",
+              click:()=>{
+                this.setSortMode(3)
+              }
             },
             {
-              label: "随机排序"
+              label: this.sortMode == 4 ?"√ 随机排序":"   随机排序",
+              click:()=>{
+                this.setSortMode(4)
+              }
             },
             {
-              label: "名称排序"
+              label: this.sortMode == 5 ?"√ 名称排序":"   名称排序",
+              click:()=>{
+                this.setSortMode(5)
+              }
             }
           ]
         },
@@ -491,7 +539,11 @@ export default {
           type: "separator"
         },
         {
-          label: "打开文件所在位置"
+          label: "打开文件所在位置",
+          click:()=>{
+            let url = path.dirname(video.src)
+            shell.openExternal(url)
+          }
         }
       ];
       let m = Menu.buildFromTemplate(playListMenuTemplate);
@@ -532,6 +584,7 @@ export default {
       }
     },
     isLock(newVal) {
+      storage.set('isLock',newVal)
       //上锁的时候是相对定位,全屏的时候是相对定位，可能会修改定位，这里是重置定位，不上锁同理
       if (newVal) {
         this.resetPositionToZero();
@@ -593,7 +646,7 @@ export default {
 
 .playList {
   height: 100%;
-  // background-color: #0d0d0e;
+  // background-color: rgba(0, 0, 0, 0.3);
   border-left: 1px solid #2f2f31;
   position: relative;
   .content-container {
@@ -760,7 +813,7 @@ export default {
   padding: 3px 0;
   border-radius: 5px;
   > .line {
-    border-bottom: 1px solid #303032;
+    border-bottom: 1px solid #878788;
   }
   &:after {
     content: "";
@@ -770,7 +823,7 @@ export default {
     height: 0;
     width: 0;
     border: 5px solid transparent;
-    border-bottom-color: #252528;
+    border-bottom-color: greenyellow;
   }
   > li {
     height: 30px;

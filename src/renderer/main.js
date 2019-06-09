@@ -33,8 +33,20 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
+import {ipcRenderer} from 'electron'
+import storage from 'good-storage'
+
+ipcRenderer.on('close',()=>{
+    if(store.state.currentVideo){
+        storage.set('state',Object.assign({},store.state,{currentVideo:{...store.state.currentVideo,currentTime:store.state.currentTime,speed:store.state.speed}}))
+    }else{
+        storage.set('state',store.state)
+    }
+})
+
 new Vue({
     components: {App},
     template: '<App/>',
     store
 }).$mount('#app')
+

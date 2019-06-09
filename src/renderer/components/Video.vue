@@ -13,12 +13,7 @@
                 ref="video"
                 class="my-video"
     :src="currentVideo?currentVideo.src:''"></video>-->
-    <div 
-    @click="changePlayingMode" 
-    v-show="currentVideo" 
-    id="dplayer" 
-    class="my-video"
-    ></div>
+    <div @click="changePlayingMode" v-show="currentVideo" id="dplayer" class="my-video"></div>
     <div v-show="!currentVideo" class="my-video"></div>
     <div
       :style="{'animation-play-state':animationPlayState}"
@@ -26,22 +21,23 @@
       v-show="isMusic && currentVideo"
       class="music-bg"
     ></div>
-    <div :style="{'color':theme.textColor,'border': `1px solid ${theme.textColor}`}" class="open-file" v-if="!currentVideo">
+    <div
+      :style="{'color':theme.textColor,'border': `1px solid ${theme.textColor}`}"
+      class="open-file"
+      v-if="!currentVideo"
+    >
       <div class="flexrowcenter" @click="openFile">
         <span class="fa fa-folder-open-o"></span>
         <span>打开文件</span>
       </div>
       <span @click.stop="showMenu" class="fa fa-angle-down"></span>
       <transition name="router" mode="out-in">
-        <ul 
-        :style="{'background-color':theme.bgColor}"
-        v-if="isShowFileMenu" 
-        class="my-file">
-          <li :class='theme.hover' @click="openFolder">
+        <ul :style="{'background-color':theme.bgColor}" v-if="isShowFileMenu" class="my-file">
+          <li :class="theme.hover" @click="openFolder">
             <span class="fa fa-file-video-o"></span>
             打开文件夹
           </li>
-          <li :class='theme.hover' @click="openUrl">
+          <li :class="theme.hover" @click="openUrl">
             <span class="fa fa-link"></span>
             打开URL
           </li>
@@ -56,7 +52,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import OpenDialog from "../api/OpenDialog";
 import connect from "../api/bus.js";
 import Mousetrap from "mousetrap";
-import fs from "fs";
+import fs, { truncate } from "fs";
 import path from "path";
 import "DPlayer/dist/DPlayer.min.css";
 import DPlayer from "DPlayer";
@@ -102,7 +98,7 @@ export default {
     // 点击按钮后显示或者隐藏菜单
     showMenu() {
       // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
-      if(!this.isShowFileMenu){
+      if (!this.isShowFileMenu) {
         document.body.click();
       }
       this.isShowFileMenu = !this.isShowFileMenu;
@@ -307,6 +303,7 @@ export default {
     },
     // 右键菜单
     contextmenu() {
+      document.body.click();
       let contextMenuTemplate = [
         {
           label: "打开",
@@ -338,15 +335,15 @@ export default {
           label: "窗口置顶",
           submenu: [
             {
-              label: this.isAlwaysOnTop?"     从不":"√   从不",
-              click:() => {
-                this.setAlwaysOnTop(false)
+              label: this.isAlwaysOnTop ? "     从不" : "√   从不",
+              click: () => {
+                this.setAlwaysOnTop(false);
               }
             },
             {
-              label: this.isAlwaysOnTop?"√   始终":"     始终",
-              click:() => {
-                this.setAlwaysOnTop(true)
+              label: this.isAlwaysOnTop ? "√   始终" : "     始终",
+              click: () => {
+                this.setAlwaysOnTop(true);
               }
             }
           ]
@@ -484,12 +481,12 @@ export default {
         ];
         contextMenuTemplate.unshift(...addMenu);
 
-        contextMenuTemplate.splice(4,0,{
-          label: this.isFullScreen?"退出全屏":"全屏",
-          click:()=>{
-            this.setFullScreen(!this.isFullScreen)
+        contextMenuTemplate.splice(4, 0, {
+          label: this.isFullScreen ? "退出全屏" : "全屏",
+          click: () => {
+            this.setFullScreen(!this.isFullScreen);
           }
-        },)
+        });
       }
       let m = Menu.buildFromTemplate(contextMenuTemplate);
       Menu.setApplicationMenu(m);
@@ -497,7 +494,7 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('click',this.onClick)
+    window.addEventListener("click", this.onClick);
     this.initDplayer();
     // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
     this.$nextTick(() => {
@@ -539,70 +536,77 @@ export default {
         }
       });
     },
-    currentVideo(newVal, oldVal) {
-      // 当前视频发生变化时把旧的视频覆盖掉播放列表中对应的视频
-      this.changeVideoList(
-        Object.assign({}, this.oldVideo, {
-          currentTime: this.currentTime,
-          speed: this.speed
-        })
-      );
-      if(oldVal){
-        this.setHistoricalRecords(
-        Object.assign({}, this.oldVideo, {
-          currentTime: this.currentTime,
-          speed: this.speed
-        })
-      );
-      }
-      // 新的视频不为空·
-      if (newVal) {
-        // 获取该视频以前的播放进度
-        this.setCurrentTime(newVal.currentTime);
-        // 获取该视频以前的视频速度
-        this.setSpeed(newVal.speed);
-        // 找出新的视频在播放列表中的索引
-        const index = this.videoList.findIndex(i => i.id == newVal.id);
-        // 设置视频的索引
-        this.setCurrentVideoIndex(index);
+    currentVideo: {
+      immediate: true,
+      handler: function(newVal, oldVal) {
+        this.$nextTick(() => {
+          // 当前视频发生变化时把旧的视频覆盖掉播放列表中对应的视频
+          this.changeVideoList(
+            Object.assign({}, this.oldVideo, {
+              currentTime: this.currentTime,
+              speed: this.speed
+            })
+          );
+          if (oldVal) {
+            this.setHistoricalRecords(
+              Object.assign({}, this.oldVideo, {
+                currentTime: this.currentTime,
+                speed: this.speed
+              })
+            );
+          }
+          // 新的视频不为空·
+          if (newVal) {
+            // 获取该视频以前的播放进度
+            this.setCurrentTime(newVal.currentTime);
+            // 获取该视频以前的视频速度
+            this.setSpeed(newVal.speed);
+            // 找出新的视频在播放列表中的索引
+            const index = this.videoList.findIndex(i => i.id == newVal.id);
+            // 设置视频的索引
+            this.setCurrentVideoIndex(index);
 
-        if (this.dp) {
-          this.initDplayer();
-        }
-        // 获取后缀名
-        let extname = path.extname(newVal.src);
-        this.isMusic = musicReg.test(extname);
-        // 切换视频
-        this.dp.switchVideo({
-          url: `http://localhost:6789/video?video=${encodeURIComponent(
-            newVal.src
-          )}`
-        });
-        // 设置播放历史记录
-        this.setHistoricalRecords(newVal);
-      } else {
-        // this.dp.destroy();
-        this.dp.switchVideo({
-          url: ""
+            if (this.dp) {
+              this.initDplayer();
+            }
+            // 获取后缀名
+            let extname = path.extname(newVal.src);
+            this.isMusic = musicReg.test(extname);
+            // 切换视频
+            this.dp.switchVideo({
+              url: `http://localhost:6789/video?video=${encodeURIComponent(
+                newVal.src
+              )}`
+            });
+            // 设置播放历史记录
+            this.setHistoricalRecords(newVal);
+          } else {
+            this.dp.switchVideo({
+              url: ""
+            });
+          }
         });
       }
     },
-    speed(newVal) {
-      // 视频速度发生变化时修改video的速度
-      this.$nextTick(() => {
-        if (newVal > 1) {
-          this.speedTimers(
-            `加速播放（ctrl+up）：${newVal}倍（按R恢复正常速度）`
-          );
-        } else if (newVal < 1) {
-          this.speedTimers(
-            `减速播放（ctrl+down）：${newVal}倍（按R恢复正常速度）`
-          );
-        } else if (newVal == 1) {
-          this.speedTimers(`正常速度：1.0倍（按R恢复正常速度）`);
-        }
-        this.dp.speed(newVal);
-      });
+    speed: {
+      immediate: true,
+      handler: function(newVal) {
+        // 视频速度发生变化时修改video的速度
+        this.$nextTick(() => {
+          if (newVal > 1) {
+            this.speedTimers(
+              `加速播放（ctrl+up）：${newVal}倍（按R恢复正常速度）`
+            );
+          } else if (newVal < 1) {
+            this.speedTimers(
+              `减速播放（ctrl+down）：${newVal}倍（按R恢复正常速度）`
+            );
+          } else if (newVal == 1) {
+            this.speedTimers(`正常速度：1.0倍（按R恢复正常速度）`);
+          }
+          this.dp.speed(newVal);
+        });
+      }
     },
     volumePercent: {
       // 立刻触发是因为需要在播放器初始化时初始化音量

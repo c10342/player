@@ -100,6 +100,7 @@ import { mapMutations, mapGetters } from "vuex";
 import { formatTime } from "../api/util";
 var Mousetrap = require("mousetrap");
 import OpenDialog from "../api/OpenDialog";
+import connect from '../api/bus'
 const openDialog = new OpenDialog();
 
 export default {
@@ -113,6 +114,9 @@ export default {
   mounted() {
     this.initGlobalShortcut();
     window.addEventListener("click", this.onClick);
+    connect.$on('deleteCurrentVideo',()=>{
+      this.stop()
+    })
   },
   methods: {
     ...mapMutations([
@@ -334,6 +338,9 @@ export default {
   },
   watch: {
     currentVideoIndex(newVal) {
+      if(newVal == null){
+        return
+      }
       // 视频索引发生变化时查找出索引对应的视频
       const currentVideo = this.videoList[newVal];
       // 判断是否为同一首歌，排序可能会使当前歌曲索引改变
@@ -342,6 +349,12 @@ export default {
       }
       // 设置当前播放的视频
       this.setCurrentVideo(currentVideo);
+    },
+    videoList(newVal){
+      if(newVal.length == 0){
+        this.stop()
+        this.setOldVideo(null)
+      }
     }
   },
   beforeDestroy() {
