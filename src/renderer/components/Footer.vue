@@ -85,7 +85,7 @@
           @click.stop="setVolume(true)"
           class="fa fa-volume-off"
         ></span>
-        <my-progress width="62px"/>
+        <my-progress ref="progress" width="62px"/>
       </div>
       <div class="right">
         <span title="无痕模式" class="fa fa-snowflake-o"></span>
@@ -144,6 +144,10 @@ export default {
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
+      // 音量一开始0，再点一次恢复还是0，音量图标应该还是关闭
+      if(flag && this.volumePercent == 0 && this.$refs.progress.oldInWidth == 0){
+        return
+      }
       this.setIsVolumeOn(flag);
     },
     // 切换播放状态，播放或者暂停
@@ -323,7 +327,8 @@ export default {
       "currentTime",
       "totalTime",
       "isFullScreen",
-      "theme"
+      "theme",
+      "volumePercent"
     ]),
     title() {
       if (this.playMode == 1) {
