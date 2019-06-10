@@ -1,36 +1,15 @@
 <template>
     <div @click="handlerAboutClick" v-if="isShow" class="about-box">
         <div @click.stop class="box">
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <div>作者：</div>
+            <div class="img">
+                <img src="../assets/default.png" class="avatar">
+            </div>
+            <el-row v-for="(item,index) in info" :key="index" :class="{'mt20':index!=0}" :gutter="20">
+                <el-col :span="4">
+                    <div>{{item.key}}</div>
                 </el-col>
-                <el-col :span="16">
-                    <div>c10342</div>
-                </el-col>
-            </el-row>
-            <el-row class="mt20" :gutter="20">
-                <el-col :span="8">
-                    <div>使用技术：</div>
-                </el-col>
-                <el-col :span="16">
-                    <div>electron , vue , node</div>
-                </el-col>
-            </el-row>
-            <el-row class="mt20" :gutter="20">
-                <el-col :span="8">
-                    <div>github地址：</div>
-                </el-col>
-                <el-col :span="16">
-                    <div>https://github.com/c10342/player</div>
-                </el-col>
-            </el-row>
-            <el-row class="mt20" :gutter="20">
-                <el-col :span="8">
-                    <div>版本：</div>
-                </el-col>
-                <el-col :span="16">
-                    <div>v1.0.0</div>
+                <el-col :span="20">
+                    <div>{{item.val}}</div>
                 </el-col>
             </el-row>
         </div>
@@ -43,6 +22,16 @@ export default {
         isShow:{
             type:Boolean,
             default:false
+        }
+    },
+    data(){
+        return {
+            info:[
+                {key:'作者：',val:'c10342'},
+                {key:'技术：',val:'electron , vue , node'},
+                {key:'地址：',val:'https://github.com/c10342/player'},
+                {key:'版本：',val:'v1.0.0'},
+            ]
         }
     },
     methods:{
@@ -69,12 +58,18 @@ export default {
         background-color: rgba(0, 0, 0, .7);
         padding: 20px;
         width: 430px;
-        height: 180px;
+        height: 320px;
         border-radius: 5px;
     }
     div{
         font-size: 16px;
         // font-weight: bold; 
+    }
+    .img{
+        text-align: center;
+        .avatar{
+            border-radius: 50%;
+        }
     }
 }
 </style>

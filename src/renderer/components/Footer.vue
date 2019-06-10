@@ -10,7 +10,12 @@
         <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
         <transition name="router" mode="out-in">
           <ul :style="{'background-color': theme.bgColor}" class="play-mode" v-if="isShowPlayMode">
-            <li :class="theme.hover" @click="changeMode(1)">
+            <li v-for="(item,index) in playModeList" :key="index" :class="theme.hover" @click="changeMode(item.playMode)">
+              <span v-if="playMode==item.playMode" class="fa fa-check"></span>
+              {{item.title}}
+            </li>
+
+            <!-- <li :class="theme.hover" @click="changeMode(1)">
               <span v-if="playMode==1" class="fa fa-check"></span>
               单个播放
             </li>
@@ -29,7 +34,7 @@
             <li :class="theme.hover" @click="changeMode(5)">
               <span v-if="playMode==5" class="fa fa-check"></span>
               随机播放
-            </li>
+            </li> -->
           </ul>
         </transition>
       </div>
@@ -108,7 +113,15 @@ export default {
   data() {
     return {
       // 是否展开播放模式列表菜单
-      isShowPlayMode: false
+      isShowPlayMode: false,
+      // 播放模式列表
+      playModeList:[
+        {title:'单个播放',playMode:1},
+        {title:'单个循环',playMode:2},
+        {title:'循环列表',playMode:3},
+        {title:'顺序播放',playMode:4},
+        {title:'随机播放',playMode:5},
+      ]
     };
   },
   mounted() {

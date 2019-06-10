@@ -40,7 +40,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
-const fs = require("fs");
+import fs from "fs";
 import { formatTime } from "../api/util";
 
 export default {

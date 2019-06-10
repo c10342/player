@@ -1,18 +1,13 @@
 <template>
   <div class="video-container" @contextmenu="contextmenu">
+    <transition name="router" mode="out-in">
+      <FileInfo @click="isShowInfo=false" :isShow='isShowInfo' :video='videoInfo' />
+    </transition>
     <div class="message">
       <p>{{speedMsg}}</p>
       <p>{{volumeMsg}}</p>
       <p>{{playModeMsg}}</p>
     </div>
-    <!-- <video
-        @loadedmetadata='loadedmetadata'
-        @timeupdate='timeupdate'
-        @durationchange='durationchange'
-        @ended='ended'
-                ref="video"
-                class="my-video"
-    :src="currentVideo?currentVideo.src:''"></video>-->
     <div @click="changePlayingMode" v-show="currentVideo" id="dplayer" class="my-video"></div>
     <div v-show="!currentVideo" class="my-video"></div>
     <div
@@ -77,7 +72,11 @@ export default {
       // 判断是否为音乐
       isMusic: false,
       // 动画状态，停止或者播放
-      animationPlayState: "running"
+      animationPlayState: "running",
+      // 是否显示文件信息
+      isShowInfo:false,
+      // 文件信息
+      videoInfo:null
     };
   },
   name: "my-video",
@@ -484,9 +483,6 @@ export default {
         },
         {
           label: "设置"
-        },
-        {
-          label: "文件信息"
         }
       ];
       if (this.currentVideo) {
@@ -509,6 +505,14 @@ export default {
             this.setFullScreen(!this.isFullScreen);
           }
         });
+
+        contextMenuTemplate.push({
+          label:'文件信息',
+          click:()=>{
+            this.videoInfo = this.currentVideo
+            this.isShowInfo = true
+          }
+        })
       }
       let m = Menu.buildFromTemplate(contextMenuTemplate);
       Menu.setApplicationMenu(m);
@@ -525,6 +529,10 @@ export default {
       });
     });
     this.initGlobalShortcut();
+    connect.$on('videoInfo',(data)=>{
+      this.videoInfo = data
+      this.isShowInfo = true
+    })
   },
   computed: {
     ...mapGetters([

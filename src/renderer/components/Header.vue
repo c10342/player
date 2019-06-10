@@ -34,35 +34,6 @@
             <span :class="item.icion"></span>
             {{item.title}}
           </li>
-
-          <!-- <li :class="theme.hover">
-            <span class="fa fa-list-alt"></span>
-            访问官网
-          </li>
-          <li :class="theme.hover">
-            <span class="fa fa-cloud-upload"></span>
-            在线升级
-          </li>
-          <li :class="theme.hover">
-            <span class="fa fa-question-circle-o"></span>
-            在线帮助
-          </li>
-          <li :class="theme.hover">
-            <span class="fa fa-envelope-open-o"></span>
-            意见反馈
-          </li>
-          <li class="set" :class="theme.hover">
-            <span class="fa fa-cog fa-fw"></span>
-            设置
-          </li>
-          <li :class="theme.hover">
-            <span class="fa fa-user-circle"></span>
-            关于
-          </li>
-          <li class="set" :class="theme.hover">
-            <span class="fa fa-sign-out"></span>
-            退出
-          </li>-->
         </ul>
       </transition>
     </div>

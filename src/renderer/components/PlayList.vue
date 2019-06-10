@@ -71,45 +71,13 @@
           v-show="isShowExtendMenu"
         >
           <li :class="theme.hover" class="line">清空此列表</li>
-          <li :class="theme.hover" @click="changeSoreMode(1)">
-            <span v-show="sortMode==1" class="fa fa-check"></span>
-            默认排序
+          <li v-for='(item,index) in soreModeList' :key='item.title' :class="{[theme.hover]:true,'line':index==soreModeList.length-1}" @click="changeSoreMode(item.soreMode)">
+            <span v-show="sortMode==item.soreMode" class="fa fa-check"></span>
+            {{item.title}}
           </li>
-          <li :class="theme.hover" @click="changeSoreMode(2)">
-            <span v-show="sortMode==2" class="fa fa-check"></span>
-            大小排序
-          </li>
-          <li :class="theme.hover" @click="changeSoreMode(3)">
-            <span v-show="sortMode==3" class="fa fa-check"></span>
-            时间排序
-          </li>
-          <li :class="theme.hover" @click="changeSoreMode(4)">
-            <span v-show="sortMode==4" class="fa fa-check"></span>
-            随机排序
-          </li>
-          <li :class="theme.hover" class="line" @click="changeSoreMode(5)">
-            <span v-show="sortMode==5" class="fa fa-check"></span>
-            名称排序
-          </li>
-          <li :class="theme.hover" @click="changeMode(1)">
-            <span v-show="playMode==1" class="fa fa-check"></span>
-            单个播放
-          </li>
-          <li :class="theme.hover" @click="changeMode(2)">
-            <span v-show="playMode==2" class="fa fa-check"></span>
-            单个循环
-          </li>
-          <li :class="theme.hover" @click="changeMode(3)">
-            <span v-show="playMode==3" class="fa fa-check"></span>
-            循环列表
-          </li>
-          <li :class="theme.hover" @click="changeMode(4)">
-            <span v-show="playMode==4" class="fa fa-check"></span>
-            顺序循环
-          </li>
-          <li :class="theme.hover" @click="changeMode(5)">
-            <span v-show="playMode==5" class="fa fa-check"></span>
-            随机播放
+          <li v-for="item in playModeList" :key="item.title" :class="theme.hover" @click="changeMode(item.playMode)">
+              <span v-if="playMode==item.playMode" class="fa fa-check"></span>
+              {{item.title}}
           </li>
         </ul>
       </transition>
@@ -172,8 +140,22 @@ export default {
       isLock: isLock,
       // 定时器时间
       time: 3000,
-      // 列表滚动的距离
-      deltaY: 0
+      // 播放模式列表
+      playModeList:[
+        {title:'单个播放',playMode:1},
+        {title:'单个循环',playMode:2},
+        {title:'循环列表',playMode:3},
+        {title:'顺序播放',playMode:4},
+        {title:'随机播放',playMode:5},
+      ],
+      // 分类模式列表
+      soreModeList:[
+        {title:'默认排序',soreMode:1},
+        {title:'大小排序',soreMode:2},
+        {title:'时间排序',soreMode:3},
+        {title:'随机排序',soreMode:4},
+        {title:'名称排序',soreMode:5},
+      ]
     };
   },
   mounted() {
@@ -329,7 +311,7 @@ export default {
         clearTimeout(this.playListTimer);
       }
       this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
-      this.playListTimer = setTimeout(this.createTimeOut, this.time);
+      // this.playListTimer = setTimeout(this.createTimeOut, this.time);
     },
     contextmenu() {
       this.clearTimerAndListener();
@@ -577,6 +559,12 @@ export default {
         },
         {
           type: "separator"
+        },
+        {
+          label: "文件信息",
+          click: () => {
+            connect.$emit('videoInfo',video)
+          }
         },
         {
           label: "打开文件所在位置",
