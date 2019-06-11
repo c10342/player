@@ -17,7 +17,7 @@ npm run build
 
 ```
 
-安装包：http://zhifa.daiqee.com/player%20Setup%200.0.1.exe
+安装包：[http://zhifa.daiqee.com/player%20Setup%200.0.1.exe](http://zhifa.daiqee.com/player%20Setup%200.0.1.exe)
 
 ---
 
