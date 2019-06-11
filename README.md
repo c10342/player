@@ -19,8 +19,8 @@ npm run build
 
 ---
 
-##音视频播放器介绍
-###相关技术
+## 音视频播放器介绍
+### 相关技术
 - [electron](https://electronjs.org/)：负责构建播放器的所需要的环境，提供访问系统资源的api（调用资源管理器，浏览器等等）以及打包成桌面应用程序
 - [vue](https://cn.vuejs.org/)：负责构建播放器的界面
 - [node](https://nodejs.org/zh-cn/)：负责处理文件和路径问题，主要使用fs和path这2个模块
@@ -28,7 +28,7 @@ npm run build
 - [html5相关技术](http://www.w3school.com.cn/html5/index.asp)：拖拽api，全屏api，Notification消息通知
 - [DPlayer](http://dplayer.js.org/#/zh-Hans/)：音视频播放器核心组件
 
-###已实现功能
+### 已实现功能
 - 视频播放：目前已经支持大多数视频格式，比如 MP4、WebM、mkv、avi、WMV、FLV、rmvb 等，后续会添加更多的视频格式
 - 音频播放：目前已经支持大多是音频格式，比如 MP3 等，后续会添加更多的音频格式
 - 换肤功能：该功能类似其他软件的换肤功能，用户可以根据自己的喜好选择不同的主题皮肤
@@ -42,7 +42,7 @@ npm run build
 - 全屏功能：实现了应用的全屏功能，这里是使用了electron提供的全屏api，没有使用html5的全屏api
 - 右键菜单功能：目前已经实现了大多数右键菜单的功能，没实现的后续实现
 
-###效果图
+### 效果图
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-1.png">
 </p>
