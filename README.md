@@ -17,6 +17,8 @@ npm run build
 
 ```
 
+安装包：http://zhifa.daiqee.com/player%20Setup%200.0.1.exe
+
 ---
 
 ## 音视频播放器介绍
@@ -67,6 +69,16 @@ npm run build
 <img src="http://zhifa.daiqee.com/player-5.png">
 </p>
 <h1 align="center">效果图5</h1>
+
+<p align="center">
+<img src="http://zhifa.daiqee.com/player-6.png">
+</p>
+<h1 align="center">效果图6</h1>
+
+<p align="center">
+<img src="http://zhifa.daiqee.com/player-7.png">
+</p>
+<h1 align="center">效果图7</h1>
 
 
 
