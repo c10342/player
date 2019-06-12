@@ -49,32 +49,26 @@ npm run build
 <img src="http://zhifa.daiqee.com/player-1.png">
 </p>
 <h1 align="center">效果图1</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-2.png">
 </p>
 <h1 align="center">效果图2</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-3.png">
 </p>
 <h1 align="center">效果图3</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-4.png">
 </p>
 <h1 align="center">效果图4</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-5.png">
 </p>
 <h1 align="center">效果图5</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-6.png">
 </p>
 <h1 align="center">效果图6</h1>
-
 <p align="center">
 <img src="http://zhifa.daiqee.com/player-7.png">
 </p>
