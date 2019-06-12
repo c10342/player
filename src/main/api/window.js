@@ -2,7 +2,11 @@ import {ipcMain,BrowserWindow} from 'electron'
 
 class WindowUtil{
     constructor(){
+        if(WindowUtil.instance){
+            return WindowUtil.instance
+        }
         this.mainWin = BrowserWindow.getFocusedWindow()
+        WindowUtil.instance = this
     }
     // 最小化窗口
     minWindow(){
@@ -61,5 +65,7 @@ class WindowUtil{
         this.setFullScreen()
     }
 }
+
+WindowUtil.instance = null
 
 export default WindowUtil

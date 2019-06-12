@@ -2,7 +2,12 @@ const { globalShortcut, BrowserWindow } = require('electron')
 
 class GlobalShortcut {
     constructor() {
+        if(GlobalShortcut.instance){
+            return GlobalShortcut.instance
+        }
         this.mainWin = BrowserWindow.getFocusedWindow()
+
+        GlobalShortcut.instance = this
     }
     initSpace() {
        
@@ -30,5 +35,7 @@ class GlobalShortcut {
         this.initCtrlAndR()
     }
 }
+
+GlobalShortcut.instance = null
 
 export default GlobalShortcut

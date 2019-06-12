@@ -10,7 +10,11 @@ const MyPath = require('path')
 
 class OpenDialog {
     constructor(){
+        if(OpenDialog.instance){
+            return OpenDialog.instance
+        }
         this.count= 0
+        OpenDialog.instance = this
     }
     init() {
         this.openFile()
@@ -79,5 +83,7 @@ class OpenDialog {
         return arr
     }
 }
+
+OpenDialog.instance = null
 
 export default OpenDialog

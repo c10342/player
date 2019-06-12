@@ -1,6 +1,12 @@
 import {ipcRenderer} from 'electron'
 
 class WindowUtil {
+    constructor(){
+        if(WindowUtil.instance){
+            return WindowUtil.instance
+        }
+        WindowUtil.instance = this
+    }
     // 窗口最小化
     minWindow() {
         ipcRenderer.send('minimize')
@@ -41,5 +47,7 @@ class WindowUtil {
         ipcRenderer.send('close')
     }
 }
+
+WindowUtil.instance = null
 
 export default  WindowUtil
