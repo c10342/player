@@ -1,6 +1,7 @@
 import {app, BrowserWindow} from 'electron'
 import WindowUtil from './api/window'
 import OpenDialog from './api/OpenDialog'
+import createTray from './api/tray'
 
 /**
  * Set `__static` path to static files in production
@@ -55,6 +56,9 @@ function createWindow() {
     // 打开文件
     const openDialog = new OpenDialog();
     openDialog.init()
+
+    // 初始化系统托盘
+    createTray()
 
     require('./api/express')
 

@@ -1,8 +1,8 @@
 {
   "name": "player",
-  "version": "0.0.1",
+  "version": "0.0.13",
   "author": "c10342 <1376023740@qq.com>",
-  "description": "视频播放器",
+  "description": "音视频播放器",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -21,6 +21,11 @@
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true
     },
     "files": [
       "dist/electron/**/*"
