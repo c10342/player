@@ -63,7 +63,6 @@ export default {
     }
     div{
         font-size: 16px;
-        // font-weight: bold; 
     }
     .img{
         text-align: center;

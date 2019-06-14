@@ -47,7 +47,6 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import OpenDialog from "../api/OpenDialog";
 import connect from "../api/bus.js";
 import Mousetrap from "mousetrap";
-import fs, { truncate } from "fs";
 import path from "path";
 import "DPlayer/dist/DPlayer.min.css";
 import DPlayer from "DPlayer";
@@ -59,6 +58,7 @@ const openDialog = new OpenDialog();
 const { Menu } = remote;
 
 export default {
+  name: "my-video",
   data() {
     return {
       // 是否显示文件菜单
@@ -74,12 +74,11 @@ export default {
       // 动画状态，停止或者播放
       animationPlayState: "running",
       // 是否显示文件信息
-      isShowInfo:false,
+      isShowInfo: false,
       // 文件信息
-      videoInfo:null
+      videoInfo: null
     };
   },
-  name: "my-video",
   methods: {
     ...mapMutations([
       "setPlaying",
@@ -96,6 +95,16 @@ export default {
       "setInWidth"
     ]),
     ...mapActions(["changeVideoList"]),
+    initListener() {
+      // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
+      connect.$on("setCurrentTime", () => {
+        this.dp.seek(this.currentTime);
+      });
+      connect.$on("videoInfo", data => {
+        this.videoInfo = data;
+        this.isShowInfo = true;
+      });
+    },
     // 点击按钮后显示或者隐藏菜单
     showMenu() {
       // 触发一次点击是因为可能还有其他的菜单在显示，此时需要隐藏其他菜单
@@ -353,7 +362,10 @@ export default {
           type: "separator"
         },
         {
-          label: "播放列表"
+          label: "播放列表",
+          click: () => {
+            connect.$emit("showPlayList");
+          }
         },
         {
           label: "播放顺序",
@@ -397,83 +409,96 @@ export default {
           label: "声音",
           submenu: [
             {
-              label: this.volumePercent == 0.1?"√ 10%":"   10%",
-              click:()=>{
-                let inWidth = 0.1*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.1 ? "√ 10%" : "   10%",
+              click: () => {
+                let inWidth = 0.1 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.2?"√ 20%":"   20%",
-              click:()=>{
-                let inWidth = 0.2*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.2 ? "√ 20%" : "   20%",
+              click: () => {
+                let inWidth = 0.2 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.3?"√ 30%":"   30%",
-              click:()=>{
-                let inWidth = 0.3*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.3 ? "√ 30%" : "   30%",
+              click: () => {
+                let inWidth = 0.3 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.4?"√ 40%":"   40%",
-              click:()=>{
-                let inWidth = 0.4*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.4 ? "√ 40%" : "   40%",
+              click: () => {
+                let inWidth = 0.4 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.5?"√ 50%":"   50%",
-              click:()=>{
-                let inWidth = 0.5*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.5 ? "√ 50%" : "   50%",
+              click: () => {
+                let inWidth = 0.5 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.6?"√ 60%":"   60%",
-              click:()=>{
-                let inWidth = 0.6*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.6 ? "√ 60%" : "   60%",
+              click: () => {
+                let inWidth = 0.6 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.7?"√ 70%":"   70%",
-              click:()=>{
-                let inWidth = 0.7*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.7 ? "√ 70%" : "   70%",
+              click: () => {
+                let inWidth = 0.7 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.8?"√ 80%":"   80%",
-              click:()=>{
-                let inWidth = 0.8*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.8 ? "√ 80%" : "   80%",
+              click: () => {
+                let inWidth = 0.8 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.9?"√ 90%":"   90%",
-              click:()=>{
-                let inWidth = 0.9*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0.9 ? "√ 90%" : "   90%",
+              click: () => {
+                let inWidth = 0.9 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 1?"√ 100%":"   100%",
-              click:()=>{
-                let inWidth = 1*62
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 1 ? "√ 100%" : "   100%",
+              click: () => {
+                let inWidth = 1 * 62;
+                this.setInWidth(inWidth);
               }
             },
             {
-              label: (this.volumePercent != 0.1&&this.volumePercent != 0.2&&this.volumePercent != 0.3&&this.volumePercent != 0.4&&this.volumePercent != 0.5&&this.volumePercent != 0.6&&this.volumePercent != 0.7&&this.volumePercent != 0.8&&this.volumePercent != 0.9&&this.volumePercent != 1&&this.volumePercent != 0)?`√ 其他(${Math.round(this.volumePercent*100)}%)`:"   其他",
+              label:
+                this.volumePercent != 0.1 &&
+                this.volumePercent != 0.2 &&
+                this.volumePercent != 0.3 &&
+                this.volumePercent != 0.4 &&
+                this.volumePercent != 0.5 &&
+                this.volumePercent != 0.6 &&
+                this.volumePercent != 0.7 &&
+                this.volumePercent != 0.8 &&
+                this.volumePercent != 0.9 &&
+                this.volumePercent != 1 &&
+                this.volumePercent != 0
+                  ? `√ 其他(${Math.round(this.volumePercent * 100)}%)`
+                  : "   其他"
             },
             {
-              label: this.volumePercent == 0?"√ 静音":"   静音",
-              click:()=>{
-                let inWidth = 0
-                this.setInWidth(inWidth)
+              label: this.volumePercent == 0 ? "√ 静音" : "   静音",
+              click: () => {
+                let inWidth = 0;
+                this.setInWidth(inWidth);
               }
             }
           ]
@@ -507,12 +532,12 @@ export default {
         });
 
         contextMenuTemplate.push({
-          label:'文件信息',
-          click:()=>{
-            this.videoInfo = this.currentVideo
-            this.isShowInfo = true
+          label: "文件信息",
+          click: () => {
+            this.videoInfo = this.currentVideo;
+            this.isShowInfo = true;
           }
-        })
+        });
       }
       let m = Menu.buildFromTemplate(contextMenuTemplate);
       Menu.setApplicationMenu(m);
@@ -522,17 +547,10 @@ export default {
   mounted() {
     window.addEventListener("click", this.onClick);
     this.initDplayer();
-    // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
     this.$nextTick(() => {
-      connect.$on("setCurrentTime", () => {
-        this.dp.seek(this.currentTime);
-      });
+      this.initListener();
     });
     this.initGlobalShortcut();
-    connect.$on('videoInfo',(data)=>{
-      this.videoInfo = data
-      this.isShowInfo = true
-    })
   },
   computed: {
     ...mapGetters([
@@ -674,7 +692,6 @@ export default {
   width: 100%;
   height: 100%;
   vertical-align: top;
-  // background-color: #000000;
 }
 .music-bg {
   position: absolute;
@@ -696,11 +713,9 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  // color: #818181;
   width: 150px;
   height: 40px;
   border-radius: 40px;
-  // border: 1px solid #818181;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -712,7 +727,6 @@ export default {
     top: 45px;
     left: 0;
     width: 100%;
-    // background-color: #0c0c0c;
     border-radius: 5px;
     &:before {
       content: "";
@@ -731,7 +745,6 @@ export default {
       color: #878788;
       cursor: pointer;
       &:hover {
-        // background-color: #373333;
         color: #5dee00;
       }
     }

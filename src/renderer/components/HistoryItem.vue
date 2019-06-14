@@ -127,11 +127,7 @@ export default {
     // 是否为当前的歌曲
     isCurrentVideo() {
       return this.currentVideo ? this.item.id == this.currentVideo.id : false;
-    },
-    // // 计算当前视频进度占中时间的百分比
-    // currentVideoPercent() {
-    //   return `${(this.currentTime / this.oldVideo.totalTime) * 100}%`;
-    // }
+    }
   }
 };
 </script>
@@ -159,7 +155,6 @@ font-size: 12px;
   }
   &:hover:not(.currentVideo) {
     color: white;
-    // background-color: #5d5d5e;
   }
   &:hover {
     .middle{

@@ -387,7 +387,6 @@ export default {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  // background-color: #151616;
   .video-progress {
     width: 100%;
     padding: 0 5px;
@@ -431,7 +430,6 @@ export default {
       position: absolute;
       left: 7px;
       top: -167px;
-      // background-color: #252528;
       width: 100px;
       color: #999999;
       padding: 3px 0;
@@ -455,7 +453,6 @@ export default {
         color: #878788;
         cursor: pointer;
         &:hover {
-          // background-color: #373333;
           color: #1bb017;
           > span {
             color: #1bb017;

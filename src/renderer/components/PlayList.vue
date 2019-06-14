@@ -141,20 +141,20 @@ export default {
       // 定时器时间
       time: 3000,
       // 播放模式列表
-      playModeList:[
-        {title:'单个播放',playMode:1},
-        {title:'单个循环',playMode:2},
-        {title:'循环列表',playMode:3},
-        {title:'顺序播放',playMode:4},
-        {title:'随机播放',playMode:5},
+      playModeList: [
+        { title: "单个播放", playMode: 1 },
+        { title: "单个循环", playMode: 2 },
+        { title: "循环列表", playMode: 3 },
+        { title: "顺序播放", playMode: 4 },
+        { title: "随机播放", playMode: 5 }
       ],
       // 分类模式列表
-      soreModeList:[
-        {title:'默认排序',soreMode:1},
-        {title:'大小排序',soreMode:2},
-        {title:'时间排序',soreMode:3},
-        {title:'随机排序',soreMode:4},
-        {title:'名称排序',soreMode:5},
+      soreModeList: [
+        { title: "默认排序", soreMode: 1 },
+        { title: "大小排序", soreMode: 2 },
+        { title: "时间排序", soreMode: 3 },
+        { title: "随机排序", soreMode: 4 },
+        { title: "名称排序", soreMode: 5 }
       ]
     };
   },
@@ -162,19 +162,9 @@ export default {
     // 保存列表原有的的宽度
     this.savePlayListWidth = 300;
     // 定时器
-    this.timer = null;
     this.playListTimer = null;
-    this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
-    this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
-    window.addEventListener("click", this.onClick);
-    // 全屏的时候显示头部和尾部
-    connect.$on("showFooterAndHeader", () => {
-      this.showFooterAndHeader();
-    });
-    // 全屏的时候隐藏头部和尾部
-    connect.$on("hideFooterAndHeader", () => {
-      this.hideFooterAndHeader();
-    });
+    this.initEventListener()
+    this.initListener()
   },
   methods: {
     ...mapMutations([
@@ -185,6 +175,39 @@ export default {
       "clearVideoList"
     ]),
     ...mapActions(["sortVideoList", "deleteVideo", "clearInvalidVideo"]),
+    // 开启定时器
+    createSetTimeOut() {
+      if (this.playListTimer) {
+        clearTimeout(this.playListTimer);
+      }
+      this.playListTimer = setTimeout(this.createTimeOut, this.time);
+    },
+    initEventListener(){
+      this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
+    this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
+    window.addEventListener("click", this.onClick);
+    },
+    initListener() {
+      // 非全屏的时候显示头部和尾部
+      connect.$on("showFooterAndHeader", () => {
+        this.showFooterAndHeader();
+      });
+      // 全屏的时候隐藏头部和尾部
+      connect.$on("hideFooterAndHeader", () => {
+        this.hideFooterAndHeader();
+      });
+
+      connect.$on("showPlayList", () => {
+        if (!this.isHidenList) {
+          return;
+        }
+        this.hideList();
+        if (!this.currentVideo) {
+          return;
+        }
+        this.createSetTimeOut();
+      });
+    },
     // 显示或者隐藏列表最中间菜单
     showMenu() {
       if (!this.isShowFileMenu) {
@@ -259,10 +282,10 @@ export default {
         return;
       }
       if (this.currentVideo && !this.isLock && !this.isHidenList) {
-        this.playListTimer = setTimeout(this.createTimeOut, this.time);
+        this.createSetTimeOut();
       }
     },
-    // 全屏的时候显示头部和脚部，调整播放列表高度
+    // 非全屏的时候显示头部和脚部，调整播放列表高度
     showFooterAndHeader() {
       if (this.currentVideo) {
         this.resetPositionToOriginal();
@@ -311,7 +334,6 @@ export default {
         clearTimeout(this.playListTimer);
       }
       this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
-      // this.playListTimer = setTimeout(this.createTimeOut, this.time);
     },
     contextmenu() {
       this.clearTimerAndListener();
@@ -563,7 +585,7 @@ export default {
         {
           label: "文件信息",
           click: () => {
-            connect.$emit('videoInfo',video)
+            connect.$emit("videoInfo", video);
           }
         },
         {
@@ -618,6 +640,9 @@ export default {
         this.resetPositionToZero();
       } else {
         this.resetPositionToOriginal();
+        if (this.isFullScreen) {
+          this.createSetTimeOut();
+        }
       }
     },
     currentVideo(newVal) {
@@ -638,17 +663,11 @@ export default {
         this.resetPositionToZero();
       }
       if (newVal && !this.isLock && !this.isHidenList) {
-        if (this.playListTimer) {
-          clearTimeout(this.playListTimer);
-        }
-        this.playListTimer = setTimeout(this.createTimeOut, this.time);
+        this.createSetTimeOut();
       }
     }
   },
   beforeDestroy() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
     if (this.playListTimer) {
       clearTimeout(this.playListTimer);
     }
@@ -674,7 +693,6 @@ export default {
 
 .playList {
   height: 100%;
-  // background-color: rgba(0, 0, 0, 0.3);
   border-left: 1px solid #2f2f31;
   position: relative;
   .content-container {
@@ -690,7 +708,6 @@ export default {
     transform: translateY(-50%);
     width: 30px;
     height: 66px;
-    // background-color: #030303;
     line-height: 66px;
     text-align: center;
     border: 1px solid #303031;
@@ -704,7 +721,6 @@ export default {
       }
     }
     > span {
-      // color: #b0b0b0;
       width: 100%;
       line-height: 66px;
     }
@@ -714,7 +730,6 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    // color: #b0b0b0;
     width: 100%;
     > span {
       font-size: 15px;
@@ -746,7 +761,6 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     .no-file {
-      // color: #818181;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -759,11 +773,9 @@ export default {
     }
     .open-file {
       position: relative;
-      // color: #818181;
       width: 150px;
       height: 40px;
       border-radius: 40px;
-      // border: 1px solid #818181;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -775,7 +787,6 @@ export default {
         top: 45px;
         left: 0;
         width: 100%;
-        // background-color: #252527;
         border-radius: 5px;
         &:before {
           content: "";
@@ -794,7 +805,6 @@ export default {
           color: #878788;
           cursor: pointer;
           &:hover {
-            // background-color: #373333;
             color: #5dee00;
           }
         }
@@ -834,7 +844,6 @@ export default {
   position: absolute;
   right: 5px;
   top: 40px;
-  // background-color: #27272a;
   z-index: 5;
   width: 100px;
   color: #878788;
@@ -860,7 +869,6 @@ export default {
     font-size: 12px;
     cursor: pointer;
     &:hover {
-      // background-color: #373333;
       color: #1bb017;
       > span {
         color: #1bb017;
@@ -869,7 +877,6 @@ export default {
     > span {
       font-size: 10px;
       padding: 0;
-      // color: #999999;
       margin-left: -10px;
     }
   }

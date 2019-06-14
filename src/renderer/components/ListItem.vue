@@ -140,7 +140,6 @@ export default {
   cursor: default;
   padding: 0 15px;
   transition: width 1s;
-  // color: #cccccc;
   position: relative;
   > .in-progress {
     position: absolute;
@@ -170,7 +169,6 @@ export default {
   }
   &:hover:not(.currentVideo) {
     color: white;
-    // background-color: #5d5d5e;
   }
   &:hover {
     .right {

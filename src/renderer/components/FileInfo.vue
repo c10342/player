@@ -3,7 +3,7 @@
         <div @click.stop class="box">
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <div>创建时间：</div>
+                    <div>添加时间：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{time}}</div>
@@ -14,7 +14,7 @@
                     <div>视频大小：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div>{{video?video.size:''}}</div>
+                    <div>{{size}}</div>
                 </el-col>
             </el-row>
             <el-row class="mt20" :gutter="20">
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getTime } from "../api/util";
+import { getTime,getVideoSize } from "../api/util";
 export default {
   props: {
     isShow: {
@@ -81,6 +81,9 @@ export default {
   computed:{
       time(){
           return this.video?getTime(this.video.createTime) : ''
+      },
+      size(){
+          return this.video?getVideoSize(this.video.size) :''
       }
   }
 };

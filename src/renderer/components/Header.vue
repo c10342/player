@@ -259,7 +259,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   height: 36px;
-  // background-color: #1e1e20;
   padding: 0 10px;
   .middle {
     -webkit-app-region: drag;
@@ -277,7 +276,6 @@ export default {
       font-size: 13px;
       top: 38px;
       left: 5px;
-      // background-color: #252528;
       color: #b4b4b4;
       z-index: 11;
       width: 150px;
@@ -307,7 +305,6 @@ export default {
           background-color: #878788;
         }
         &:hover {
-          // background-color: #373333;
           color: #5dee00;
         }
       }
@@ -320,12 +317,10 @@ export default {
       position: relative;
       cursor: pointer;
       .title {
-        // color: #b0b0b0;
         font-size: 16px;
         padding: 0 5px;
       }
       .my-angle-down {
-        // color: #b0b0b0;
         font-size: 16px;
       }
       &:hover {
@@ -341,7 +336,6 @@ export default {
     align-items: center;
     position: relative;
     span {
-      // color: #b0b0b0;
       height: 36px;
       width: 36px;
       text-align: center;
@@ -354,7 +348,6 @@ export default {
     .history {
       max-height: 200px;
       width: 300px;
-      // background-color: #333;
       border-radius: 5px;
       overflow: auto;
       color: #b4b4b4;
@@ -408,10 +401,8 @@ export default {
 .clear-history,
 .no-history {
   text-align: center;
-  // color: #fff;
   font-size: 12px;
   padding: 10px;
-  // background-color: #333333;
 }
 .clear-history {
   cursor: pointer;
@@ -429,7 +420,6 @@ export default {
   top: 38px;
   z-index: 2;
   right: 0;
-  // background-color: #333333;
   border-radius: 5px;
   &:before {
     position: absolute;

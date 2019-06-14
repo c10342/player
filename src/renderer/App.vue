@@ -302,7 +302,6 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   .app-header {
-    // background-color: #1e1e20;
     border-bottom: 1px solid #2f2f31;
   }
   .video {
@@ -311,7 +310,6 @@ export default {
     flex: 1;
   }
   .app-footer {
-    // background-color: #151616;
     border-top: 1px solid #2f2f31;
   }
   .header-fullScreen {

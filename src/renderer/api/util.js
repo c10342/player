@@ -34,7 +34,10 @@ export const getTime = (time) => {
     const year = d.getFullYear()
     const month = d.getMonth()+1
     const day = d.getDate()
-    return  `${year}-${month}-${day}`
+    const h = d.getHours()
+    const m = d.getMinutes()
+    const s = d.getSeconds()
+    return  `${year}-${month}-${day} ${h}:${m}:${s}`
 }
 
 // 在min和max之间的数中取一个随机数
@@ -140,3 +143,17 @@ export const themes = [
         itemHover:'item-theme-hover'
     },
 ]
+
+
+export const getVideoSize = (size) => {
+    let mb = parseFloat(Math.round(size/1024/1024*100)/100)
+
+    if(mb < 1024){
+        return `${mb}MB`
+    }else{
+        mb = parseFloat(Math.round(mb/1024*100)/100)
+        return `${mb}GB`
+    }
+}
+
+
