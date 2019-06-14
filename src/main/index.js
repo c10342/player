@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron'
+import { app, BrowserWindow } from 'electron'
 import WindowUtil from './api/window'
 import OpenDialog from './api/OpenDialog'
 import createTray from './api/tray'
@@ -24,14 +24,14 @@ function createWindow() {
         height: 589,
         useContentSize: true,
         width: 866,
-        minWidth:760,
-        minHeight:550,
+        minWidth: 760,
+        minHeight: 550,
         webPreferences: {
             webSecurity: false
         },
         // 初始化时的背景颜色
         backgroundColor: '#2e2c29',
-        frame:false //关闭最大化那一栏
+        frame: false //关闭最大化那一栏
     })
 
     mainWindow.loadURL(winURL)
@@ -46,6 +46,19 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
+    // 只能开启一个应用窗口
+    const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore()
+            mainWindow.focus()
+        }
+    })
+
+    if (shouldQuit) {
+        app.quit()
+    }
+
     // 隐藏菜单栏
     mainWindow.setMenu(null)
 
