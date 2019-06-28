@@ -17,7 +17,7 @@ npm run build
 
 ```
 
-安装包：[http://zhifa.daiqee.com/player%20Setup%200.0.1.exe](http://zhifa.daiqee.com/player%20Setup%200.0.1.exe)
+安装包：[http://120.79.209.208:9093/player.exe](http://120.79.209.208:9093/player.exe)
 
 ---
 
@@ -46,31 +46,31 @@ npm run build
 
 ### 效果图
 <p align="center">
-<img src="http://zhifa.daiqee.com/player1.png">
+<img src="http://120.79.209.208:9093/player1.png">
 </p>
 <h1 align="center">效果图1</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player2.png">
+<img src="http://120.79.209.208:9093/player2.png">
 </p>
 <h1 align="center">效果图2</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player3.png">
+<img src="http://120.79.209.208:9093/player3.png">
 </p>
 <h1 align="center">效果图3</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player4.png">
+<img src="http://120.79.209.208:9093/player4.png">
 </p>
 <h1 align="center">效果图4</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player5.png">
+<img src="http://120.79.209.208:9093/player5.png">
 </p>
 <h1 align="center">效果图5</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player6.png">
+<img src="http://120.79.209.208:9093/player6.png">
 </p>
 <h1 align="center">效果图6</h1>
 <p align="center">
-<img src="http://zhifa.daiqee.com/player7.png">
+<img src="http://120.79.209.208:9093/player7.png">
 </p>
 <h1 align="center">效果图7</h1>
 
