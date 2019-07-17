@@ -14,27 +14,6 @@
               <span v-if="playMode==item.playMode" class="fa fa-check"></span>
               {{item.title}}
             </li>
-
-            <!-- <li :class="theme.hover" @click="changeMode(1)">
-              <span v-if="playMode==1" class="fa fa-check"></span>
-              单个播放
-            </li>
-            <li :class="theme.hover" @click="changeMode(2)">
-              <span v-if="playMode==2" class="fa fa-check"></span>
-              单个循环
-            </li>
-            <li :class="theme.hover" @click="changeMode(3)">
-              <span v-if="playMode==3" class="fa fa-check"></span>
-              循环列表
-            </li>
-            <li :class="theme.hover" @click="changeMode(4)">
-              <span v-if="playMode==4" class="fa fa-check"></span>
-              顺序播放
-            </li>
-            <li :class="theme.hover" @click="changeMode(5)">
-              <span v-if="playMode==5" class="fa fa-check"></span>
-              随机播放
-            </li> -->
           </ul>
         </transition>
       </div>
@@ -356,7 +335,13 @@ export default {
   },
   watch: {
     currentVideoIndex(newVal) {
-      if(newVal == null){
+      if(newVal == null || newVal == -1){
+        return
+      }
+      if(!this.oldVideo){
+        // 设置当前播放的视频
+        this.setCurrentVideo(this.videoList[newVal]);
+        this.setPlaying(true);
         return
       }
       // 视频索引发生变化时查找出索引对应的视频

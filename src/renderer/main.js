@@ -51,6 +51,8 @@ ipcRenderer.on('close',()=>{
     }
 })
 
+
+
 new Vue({
     components: {App},
     template: '<App/>',

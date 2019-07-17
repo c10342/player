@@ -52,7 +52,7 @@ export default {
     this.initGlobalShortcut();
     let video = this.$refs.video;
     video.ondragenter = video.ondragover = video.ondragleave = function() {
-      // 组织默认事件
+      // 阻止默认事件
       return false;
     };
     // 释放文件

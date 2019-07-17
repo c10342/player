@@ -1,5 +1,4 @@
 // 修改音量最内层进度条宽度
-// import {speed} from "./getters";
 
 export const setInWidth = (state, inWidth)=>{
     state.inWidth = inWidth

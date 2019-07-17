@@ -52,6 +52,7 @@ import "DPlayer/dist/DPlayer.min.css";
 import DPlayer from "DPlayer";
 import { musicReg } from "../api/util";
 import { remote } from "electron";
+import fs from "fs";
 
 const openDialog = new OpenDialog();
 
@@ -595,6 +596,7 @@ export default {
               speed: this.speed
             })
           );
+          // 历史记录
           if (oldVal) {
             this.setHistoricalRecords(
               Object.assign({}, this.oldVideo, {
@@ -603,8 +605,21 @@ export default {
               })
             );
           }
-          // 新的视频不为空·
+          // 新的视频不为空
           if (newVal) {
+            // 播放文件不存在
+            if (!fs.existsSync(newVal.src)) {
+              // 清空当前正在播放的视频
+              this.setCurrentVideo(null);
+              // 停止播放
+              this.setPlaying(false);
+              // 保存文件错误信息
+              let video = Object.assign({}, newVal, { msg: "无效文件" });
+              this.setOldVideo(Object.assign({},video))
+              // 修改播放列表
+              this.changeVideoList(video);
+              return;
+            }
             // 获取该视频以前的播放进度
             this.setCurrentTime(newVal.currentTime);
             // 获取该视频以前的视频速度

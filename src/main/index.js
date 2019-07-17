@@ -71,7 +71,7 @@ function createWindow() {
     openDialog.init()
 
     // 初始化系统托盘
-    createTray()
+    // createTray()
 
     require('./api/express')
 

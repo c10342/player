@@ -61,24 +61,33 @@ export const clearInvalidVideo = ({
     commit,
     state
 }) => {
+    // 现在的列表
     let videoList = []
-
     const vl = state.videoList.slice()
-
     vl.forEach(element => {
         const result = fs.existsSync(element.src)
         if (result) {
             videoList.push(element)
         }
     });
-
     commit('changeList', videoList)
-    
     // 删除后视频索引可能会改变
     if (state.oldVideo) {
         const index = videoList.findIndex(item => item.id == state.oldVideo.id)
         commit('setCurrentVideoIndex', index)
     }
+
+
+    // 原本(默认)的列表
+    let oldVideoList = []
+    const ovl = state.oldVideoList.slice()
+    ovl.forEach(element => {
+        const result = fs.existsSync(element.src)
+        if (result) {
+            oldVideoList.push(element)
+        }
+    });
+    commit('changeOldList', oldVideoList)
 }
 
 // 排序模式

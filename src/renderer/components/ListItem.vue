@@ -124,6 +124,9 @@ export default {
     },
     // 计算当前视频进度占中时间的百分比
     currentVideoPercent() {
+      if(!this.oldVideo){
+        return `0%`
+      }
       return `${(this.currentTime / this.oldVideo.totalTime) * 100}%`;
     }
   }
