@@ -1,7 +1,7 @@
 <template>
   <div class="footer-container">
     <div v-if="currentVideo" class="video-progress">
-      <video-progress/>
+      <video-progress />
     </div>
     <div class="footer">
       <div class="left">
@@ -10,7 +10,12 @@
         <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
         <transition name="router" mode="out-in">
           <ul :style="{'background-color': theme.bgColor}" class="play-mode" v-if="isShowPlayMode">
-            <li v-for="(item,index) in playModeList" :key="index" :class="theme.hover" @click="changeMode(item.playMode)">
+            <li
+              v-for="(item,index) in playModeList"
+              :key="index"
+              :class="theme.hover"
+              @click="changeMode(item.playMode)"
+            >
               <span v-if="playMode==item.playMode" class="fa fa-check"></span>
               {{item.title}}
             </li>
@@ -64,10 +69,15 @@
           @click.stop="setVolume(true)"
           class="fa fa-volume-off"
         ></span>
-        <my-progress ref="progress" width="62px"/>
+        <my-progress ref="progress" width="62px" />
       </div>
       <div class="right">
-        <span title="无痕模式" class="fa fa-snowflake-o"></span>
+        <span
+          title="无痕模式"
+          class="fa fa-snowflake-o"
+          :style="{'color':isTrace?'#1bb017':''}"
+          @click="noTrace"
+        ></span>
         <span
           :style="{'color':currentVideo?'':'#454548'}"
           @click="fullScreen"
@@ -84,7 +94,7 @@ import { mapMutations, mapGetters } from "vuex";
 import { formatTime } from "../api/util";
 import Mousetrap from "mousetrap";
 import OpenDialog from "../api/OpenDialog";
-import connect from '../api/bus'
+import connect from "../api/bus";
 const openDialog = new OpenDialog();
 
 export default {
@@ -94,21 +104,21 @@ export default {
       // 是否展开播放模式列表菜单
       isShowPlayMode: false,
       // 播放模式列表
-      playModeList:[
-        {title:'单个播放',playMode:1},
-        {title:'单个循环',playMode:2},
-        {title:'循环列表',playMode:3},
-        {title:'顺序播放',playMode:4},
-        {title:'随机播放',playMode:5},
+      playModeList: [
+        { title: "单个播放", playMode: 1 },
+        { title: "单个循环", playMode: 2 },
+        { title: "循环列表", playMode: 3 },
+        { title: "顺序播放", playMode: 4 },
+        { title: "随机播放", playMode: 5 }
       ]
     };
   },
   mounted() {
     this.initGlobalShortcut();
     window.addEventListener("click", this.onClick);
-    connect.$on('deleteCurrentVideo',()=>{
-      this.stop()
-    })
+    connect.$on("deleteCurrentVideo", () => {
+      this.stop();
+    });
   },
   methods: {
     ...mapMutations([
@@ -119,13 +129,18 @@ export default {
       "setCurrentVideoIndex",
       "setFullScreen",
       "setSpeed",
-      "setOldVideo"
+      "setOldVideo",
+      "setTrace"
     ]),
     // 点击音量图标，开启或者关闭
     setVolume(flag) {
       // 音量一开始0，再点一次恢复还是0，音量图标应该还是关闭
-      if(flag && this.volumePercent == 0 && this.$refs.progress.oldInWidth == 0){
-        return
+      if (
+        flag &&
+        this.volumePercent == 0 &&
+        this.$refs.progress.oldInWidth == 0
+      ) {
+        return;
       }
       this.setIsVolumeOn(flag);
     },
@@ -155,7 +170,7 @@ export default {
     },
     // 显示或者隐藏播放模式列表
     showPlayMode(e) {
-      if(!this.isShowPlayMode){
+      if (!this.isShowPlayMode) {
         document.body.click();
       }
       // 选择完播放模式后就隐藏播放模式列表菜单
@@ -171,12 +186,14 @@ export default {
       if (!this.currentVideo) {
         return;
       }
-      // 保存当前视频
-      this.setOldVideo(
-        Object.assign({}, this.currentVideo, {
-          currentTime: this.currentTime
-        })
-      );
+      if (!this.isTrace) {
+        // 保存当前视频
+        this.setOldVideo(
+          Object.assign({}, this.currentVideo, {
+            currentTime: this.currentTime
+          })
+        );
+      }
       // 清空当前正在播放的视频
       this.setCurrentVideo(null);
       // 停止播放
@@ -291,6 +308,10 @@ export default {
     // 打开文件
     openFile() {
       openDialog.openFile();
+    },
+    // 开启无痕模式
+    noTrace() {
+      this.setTrace(!this.isTrace);
     }
   },
   computed: {
@@ -307,7 +328,8 @@ export default {
       "totalTime",
       "isFullScreen",
       "theme",
-      "volumePercent"
+      "volumePercent",
+      "isTrace"
     ]),
     title() {
       if (this.playMode == 1) {
@@ -335,14 +357,14 @@ export default {
   },
   watch: {
     currentVideoIndex(newVal) {
-      if(newVal == null || newVal == -1){
-        return
+      if (newVal == null || newVal == -1) {
+        return;
       }
-      if(!this.oldVideo){
+      if (!this.oldVideo) {
         // 设置当前播放的视频
         this.setCurrentVideo(this.videoList[newVal]);
         this.setPlaying(true);
-        return
+        return;
       }
       // 视频索引发生变化时查找出索引对应的视频
       const currentVideo = this.videoList[newVal];
@@ -353,15 +375,16 @@ export default {
       // 设置当前播放的视频
       this.setCurrentVideo(currentVideo);
     },
-    videoList(newVal){
-      if(newVal.length == 0){
-        this.stop()
-        this.setOldVideo(null)
+    videoList(newVal) {
+      if (newVal.length == 0) {
+        this.stop();
+        this.setOldVideo(null);
       }
     }
   },
   beforeDestroy() {
     window.removeEventListener("click", this.onClick);
+    connect.$off("deleteCurrentVideo");
   }
 };
 </script>

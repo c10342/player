@@ -10,12 +10,9 @@
         let stat = fs.statSync(pathSrc);
         let fileSize = stat.size;
         let range = req.headers.range;
-    
         // fileSize 3332038
-    
         if (range) {
             //有range头才使用206状态码
-    
             let parts = range.replace(/bytes=/, "").split("-");
             let start = parseInt(parts[0], 10);
             let end = parts[1] ? parseInt(parts[1], 10) : start + 999999;

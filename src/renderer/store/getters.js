@@ -48,3 +48,6 @@ export const isAlwaysOnTop = state => state.isAlwaysOnTop
 
 // 获取主题
 export const theme = state => state.theme
+
+// 获取无痕模式
+export const isTrace = state => state.isTrace

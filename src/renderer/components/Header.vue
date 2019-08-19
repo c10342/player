@@ -1,7 +1,7 @@
 <template>
   <div :style="{'color':theme.textColor}" class="header">
     <transition name="router" mode="out-in">
-      <About @handlerAboutClick='handlerAboutClick' :isShow="showAbout"/>
+      <About @handlerAboutClick="handlerAboutClick" :isShow="showAbout" />
     </transition>
     <div class="left" v-if="!isFullScreen">
       <span class="fa fa-youtube-play"></span>
@@ -66,7 +66,7 @@
               class="no-history"
               v-if="historicalRecords.length == 0"
             >暂无历史记录</div>
-            <HistoryItem :item="video" v-for="(video,index) in historicalRecords" :key="index"/>
+            <HistoryItem :item="video" v-for="(video,index) in historicalRecords" :key="index" />
             <div
               :style="{'background-color':theme.bgColor}"
               v-if="historicalRecords.length != 0"
@@ -135,9 +135,7 @@ export default {
   },
   mounted() {
     this.timer = null;
-    remote.getCurrentWindow().addListener("maximize", this.maximize);
-    remote.getCurrentWindow().addListener("unmaximize", this.unmaximize);
-    window.addEventListener("click", this.onClick);
+    this.initListener();
   },
   methods: {
     ...mapMutations([
@@ -146,6 +144,17 @@ export default {
       "setAlwaysOnTop",
       "setTheme"
     ]),
+    // 初始化监听器
+    initListener() {
+      remote.getCurrentWindow().addListener("maximize", this.maximize);
+      remote.getCurrentWindow().addListener("unmaximize", this.unmaximize);
+      window.addEventListener("click", this.onClick);
+    },
+    // 清空监听器
+    removeListener(){
+      window.removeEventListener("click", this.onClick);
+      remote.getCurrentWindow().removeAllListeners();
+    },
     maximize() {
       this.isMaxed = true;
     },
@@ -158,7 +167,6 @@ export default {
     },
     // 最大化或者还原窗口
     maxWindow() {
-      // this.isMaxed = !this.isMaxed;
       winUtil.maxWindow();
     },
     // 关闭窗口
@@ -241,11 +249,10 @@ export default {
     }
   },
   beforeDestroy() {
-    window.removeEventListener("click", this.onClick);
     if (this.timer) {
       clearInterval(this.timer);
     }
-    remote.getCurrentWindow().removeAllListeners();
+    this.removeListener()
   }
 };
 </script>

@@ -65,7 +65,7 @@ export const clearInvalidVideo = ({
     let videoList = []
     const vl = state.videoList.slice()
     vl.forEach(element => {
-        const result = fs.existsSync(element.src)
+        const result = (fs.existsSync(element.src)) && (element.mode=='local')
         if (result) {
             videoList.push(element)
         }
@@ -82,7 +82,7 @@ export const clearInvalidVideo = ({
     let oldVideoList = []
     const ovl = state.oldVideoList.slice()
     ovl.forEach(element => {
-        const result = fs.existsSync(element.src)
+        const result = (fs.existsSync(element.src)) && (element.mode=='local')
         if (result) {
             oldVideoList.push(element)
         }

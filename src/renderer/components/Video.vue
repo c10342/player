@@ -1,7 +1,7 @@
 <template>
   <div class="video-container" @contextmenu="contextmenu">
     <transition name="router" mode="out-in">
-      <FileInfo @click="isShowInfo=false" :isShow='isShowInfo' :video='videoInfo' />
+      <FileInfo @click="isShowInfo=false" :isShow="isShowInfo" :video="videoInfo" />
     </transition>
     <div class="message">
       <p>{{speedMsg}}</p>
@@ -96,6 +96,7 @@ export default {
       "setInWidth"
     ]),
     ...mapActions(["changeVideoList"]),
+    // 初始化事件监听
     initListener() {
       // 视频进度条被用户手动改变时，会触发setCurrentTime这个事件
       connect.$on("setCurrentTime", () => {
@@ -105,6 +106,15 @@ export default {
         this.videoInfo = data;
         this.isShowInfo = true;
       });
+      connect.$on("openUrl", () => {
+        this.openUrl();
+      });
+    },
+    // 移除事件监听
+    removeListener() {
+      connect.$off("setCurrentTime");
+      connect.$off("videoInfo");
+      connect.$off("openUrl");
     },
     // 点击按钮后显示或者隐藏菜单
     showMenu() {
@@ -121,7 +131,6 @@ export default {
     // 打开文件
     openFile() {
       openDialog.openFile();
-      // connect.$emit('openFile')
     },
     // 视频播放进度改变
     timeupdate() {
@@ -238,7 +247,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         inputValidator: this.inputValidator,
-        inputErrorMessage: "邮箱格式不正确"
+        inputErrorMessage: "网络视频地址不正确"
       })
         .then(({ value }) => {
           openDialog.openUrl(value);
@@ -251,12 +260,8 @@ export default {
     inputValidator(e) {
       // 校验url
       let reg1 = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
-      // 校验是否为支持的视频类型
-      let reg2 = /\.(mp4|webm|ogg)$/i;
       let flag1 = reg1.test(e);
-      let flag2 = reg2.test(e);
-      // return flag1 ? (flag2 ? true : "不支持该类型视频") : "url格式不正确";
-      return true;
+      return flag1;
     },
     // 初始化dplayer播放器
     initDplayer() {
@@ -321,20 +326,20 @@ export default {
           submenu: [
             {
               label: "打开文件",
-              click() {
-                console.log("打开文件11");
+              click: () => {
+                openDialog.openFile();
               }
             },
             {
               label: "打开文件夹",
-              click() {
-                console.log("打开文件夹");
+              click: () => {
+                openDialog.openFolder();
               }
             },
             {
               label: "打开URL",
-              click() {
-                console.log("打开URL");
+              click: () => {
+                this.openUrl();
               }
             }
           ]
@@ -567,7 +572,8 @@ export default {
       "currentVideoIndex",
       "isFullScreen",
       "isAlwaysOnTop",
-      "theme"
+      "theme",
+      "isTrace"
     ])
   },
   watch: {
@@ -589,33 +595,36 @@ export default {
       immediate: true,
       handler: function(newVal, oldVal) {
         this.$nextTick(() => {
-          // 当前视频发生变化时把旧的视频覆盖掉播放列表中对应的视频
-          this.changeVideoList(
-            Object.assign({}, this.oldVideo, {
-              currentTime: this.currentTime,
-              speed: this.speed
-            })
-          );
-          // 历史记录
-          if (oldVal) {
-            this.setHistoricalRecords(
+          // 没有开启无痕模式
+          if (!this.isTrace) {
+            // 当前视频发生变化时把旧的视频覆盖掉播放列表中对应的视频
+            this.changeVideoList(
               Object.assign({}, this.oldVideo, {
                 currentTime: this.currentTime,
                 speed: this.speed
               })
             );
+            // 历史记录
+            if (oldVal) {
+              this.setHistoricalRecords(
+                Object.assign({}, this.oldVideo, {
+                  currentTime: this.currentTime,
+                  speed: this.speed
+                })
+              );
+            }
           }
           // 新的视频不为空
           if (newVal) {
-            // 播放文件不存在
-            if (!fs.existsSync(newVal.src)) {
+            // 播放文件不存在,网络文件除外
+            if (!fs.existsSync(newVal.src) && newVal.mode == "local") {
               // 清空当前正在播放的视频
               this.setCurrentVideo(null);
               // 停止播放
               this.setPlaying(false);
               // 保存文件错误信息
               let video = Object.assign({}, newVal, { msg: "无效文件" });
-              this.setOldVideo(Object.assign({},video))
+              this.setOldVideo(Object.assign({}, video));
               // 修改播放列表
               this.changeVideoList(video);
               return;
@@ -635,14 +644,19 @@ export default {
             // 获取后缀名
             let extname = path.extname(newVal.src);
             this.isMusic = musicReg.test(extname);
-            // 切换视频
+            // 切换视频,校验文件是本地文件还是网络文件
+            const url = this.inputValidator(newVal.src)
+              ? newVal.src
+              : `http://localhost:6789/video?video=${encodeURIComponent(
+                  newVal.src
+                )}`;
             this.dp.switchVideo({
-              url: `http://localhost:6789/video?video=${encodeURIComponent(
-                newVal.src
-              )}`
+              url
             });
-            // 设置播放历史记录
-            this.setHistoricalRecords(newVal);
+            if (!this.isTrace) {
+              // 设置播放历史记录
+              this.setHistoricalRecords(newVal);
+            }
           } else {
             this.dp.switchVideo({
               url: ""
@@ -687,6 +701,8 @@ export default {
     if (this.volumeTimer) {
       clearTimeout(this.volumeTimer);
     }
+    this.dp.destroy();
+    this.removeListener();
   }
 };
 </script>

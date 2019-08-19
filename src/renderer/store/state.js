@@ -36,6 +36,8 @@ let defaultState = {
     historicalRecords: [],
     // 窗口是否总是在最前端
     isAlwaysOnTop: false,
+    // 是否开启无痕模式
+    isTrace:false,
     // 主题
     theme: {
         bgUrl:require('../assets/bg0.jpg'),

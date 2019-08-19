@@ -14,7 +14,6 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import connect from "../api/bus.js";
 export default {
   name: "my-progress",
   data() {

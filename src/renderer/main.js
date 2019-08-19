@@ -5,7 +5,7 @@ import store from './store'
 import './font-awesome-4.7.0/css/font-awesome.css'
 import './base.css'
 
-import {MessageBox,Col,Row} from 'element-ui'
+import { MessageBox, Col, Row } from 'element-ui'
 
 Vue.prototype.$prompt = MessageBox.prompt;
 
@@ -40,21 +40,22 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-import {ipcRenderer} from 'electron'
+import { ipcRenderer } from 'electron'
 import storage from 'good-storage'
 
-ipcRenderer.on('close',()=>{
-    if(store.state.currentVideo){
-        storage.set('state',Object.assign({},store.state,{currentVideo:{...store.state.currentVideo,currentTime:store.state.currentTime,speed:store.state.speed}}))
-    }else{
-        storage.set('state',store.state)
+// 窗口关闭前,保存store中的状态，以便下次打开恢复上次的状态
+ipcRenderer.on('close', () => {
+    if (store.state.currentVideo && !store.state.isTrace) {
+        storage.set('state', Object.assign({}, store.state, { currentVideo: { ...store.state.currentVideo, currentTime: store.state.currentTime, speed: store.state.speed } }))
+    } else {
+        storage.set('state', store.state)
     }
 })
 
 
 
 new Vue({
-    components: {App},
+    components: { App },
     template: '<App/>',
     store
 }).$mount('#app')

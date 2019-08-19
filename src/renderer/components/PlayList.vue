@@ -71,13 +71,23 @@
           v-show="isShowExtendMenu"
         >
           <li :class="theme.hover" class="line">清空此列表</li>
-          <li v-for='(item,index) in soreModeList' :key='item.title' :class="{[theme.hover]:true,'line':index==soreModeList.length-1}" @click="changeSoreMode(item.soreMode)">
+          <li
+            v-for="(item,index) in soreModeList"
+            :key="item.title"
+            :class="{[theme.hover]:true,'line':index==soreModeList.length-1}"
+            @click="changeSoreMode(item.soreMode)"
+          >
             <span v-show="sortMode==item.soreMode" class="fa fa-check"></span>
             {{item.title}}
           </li>
-          <li v-for="item in playModeList" :key="item.title" :class="theme.hover" @click="changeMode(item.playMode)">
-              <span v-if="playMode==item.playMode" class="fa fa-check"></span>
-              {{item.title}}
+          <li
+            v-for="item in playModeList"
+            :key="item.title"
+            :class="theme.hover"
+            @click="changeMode(item.playMode)"
+          >
+            <span v-if="playMode==item.playMode" class="fa fa-check"></span>
+            {{item.title}}
           </li>
         </ul>
       </transition>
@@ -163,8 +173,8 @@ export default {
     this.savePlayListWidth = 300;
     // 定时器
     this.playListTimer = null;
-    this.initEventListener()
-    this.initListener()
+    this.initEventListener();
+    this.initListener();
   },
   methods: {
     ...mapMutations([
@@ -182,11 +192,12 @@ export default {
       }
       this.playListTimer = setTimeout(this.createTimeOut, this.time);
     },
-    initEventListener(){
+    initEventListener() {
       this.$refs.playList.addEventListener("mouseleave", this.onMouseLeave);
-    this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
-    window.addEventListener("click", this.onClick);
+      this.$refs.playList.addEventListener("mouseenter", this.onMouseEnter);
+      window.addEventListener("click", this.onClick);
     },
+    // 初始化事件监听器
     initListener() {
       // 非全屏的时候显示头部和尾部
       connect.$on("showFooterAndHeader", () => {
@@ -207,6 +218,12 @@ export default {
         }
         this.createSetTimeOut();
       });
+    },
+    // 移除事件监听器
+    removeListener() {
+      connect.$off("showFooterAndHeader");
+      connect.$off("hideFooterAndHeader");
+      connect.$off("showPlayList");
     },
     // 显示或者隐藏列表最中间菜单
     showMenu() {
@@ -343,13 +360,22 @@ export default {
           label: "添加",
           submenu: [
             {
-              label: "添加文件"
+              label: "添加文件",
+              click: () => {
+                openDialog.openFile();
+              }
             },
             {
-              label: "添加文件夹"
+              label: "添加文件夹",
+              click: () => {
+                openDialog.openFolder();
+              }
             },
             {
-              label: "添加URL"
+              label: "添加URL",
+              click: () => {
+                connect.$emit("openUrl");
+              }
             }
           ]
         },
@@ -357,10 +383,16 @@ export default {
           type: "separator"
         },
         {
-          label: "清空播放列表"
+          label: "清空播放列表",
+          click: () => {
+            this.clearVideoList();
+          }
         },
         {
-          label: "删除无效文件"
+          label: "删除无效文件",
+          click: () => {
+            this.clearInvalidVideo();
+          }
         },
         {
           type: "separator"
@@ -481,13 +513,22 @@ export default {
           label: "添加",
           submenu: [
             {
-              label: "添加文件"
+              label: "添加文件",
+              click: () => {
+                openDialog.openFile();
+              }
             },
             {
-              label: "添加文件夹"
+              label: "添加文件夹",
+              click: () => {
+                openDialog.openFolder();
+              }
             },
             {
-              label: "添加URL"
+              label: "添加URL",
+              click: () => {
+                connect.$emit("openUrl");
+              }
             }
           ]
         },
@@ -674,6 +715,7 @@ export default {
     this.$refs.playList.removeEventListener("mouseleave", this.onMouseLeave);
     this.$refs.playList.removeEventListener("mouseenter", this.onMouseEnter);
     window.removeEventListener("click", this.onClick);
+    this.removeListener();
   }
 };
 </script>

@@ -115,3 +115,8 @@ export const setAlwaysOnTop = (state,isAlwaysOnTop) =>{
 export const setTheme = (state,theme) =>{
     state.theme = theme
 }
+
+// 设置无痕模式
+export const setTrace = (state,isTrace) => {
+    state.isTrace = isTrace
+}
