@@ -1,4 +1,4 @@
-# player
+# electron-player
 
 > 音视频播放器
 
