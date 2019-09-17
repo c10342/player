@@ -23,18 +23,18 @@
     >
       <div class="flexrowcenter" @click="openFile">
         <span class="fa fa-folder-open-o"></span>
-        <span>打开文件</span>
+        <span>{{$t('common.openFile')}}</span>
       </div>
       <span @click.stop="showMenu" class="fa fa-angle-down"></span>
       <transition name="router" mode="out-in">
         <ul :style="{'background-color':theme.bgColor}" v-if="isShowFileMenu" class="my-file">
           <li :class="theme.hover" @click="openFolder">
             <span class="fa fa-file-video-o"></span>
-            打开文件夹
+            {{$t('common.openFolder')}}
           </li>
           <li :class="theme.hover" @click="openUrl">
             <span class="fa fa-link"></span>
-            打开URL
+            {{$t('common.openUrl')}}
           </li>
         </ul>
       </transition>
@@ -322,22 +322,22 @@ export default {
       document.body.click();
       let contextMenuTemplate = [
         {
-          label: "打开",
+          label: this.$t('common.open'),
           submenu: [
             {
-              label: "打开文件",
+              label: this.$t('common.openFile'),
               click: () => {
                 openDialog.openFile();
               }
             },
             {
-              label: "打开文件夹",
+              label: this.$t('common.openFolder'),
               click: () => {
                 openDialog.openFolder();
               }
             },
             {
-              label: "打开URL",
+              label: this.$t('common.openUrl'),
               click: () => {
                 this.openUrl();
               }
@@ -348,16 +348,16 @@ export default {
           type: "separator"
         },
         {
-          label: "窗口置顶",
+          label: this.$t('common.winRoof'),
           submenu: [
             {
-              label: this.isAlwaysOnTop ? "     从不" : "√   从不",
+              label: this.isAlwaysOnTop ? "     "+this.$t('common.never') : "√   "+this.$t('common.never'),
               click: () => {
                 this.setAlwaysOnTop(false);
               }
             },
             {
-              label: this.isAlwaysOnTop ? "√   始终" : "     始终",
+              label: this.isAlwaysOnTop ? "√   "+this.$t('common.alway') : "     "+this.$t('common.alway'),
               click: () => {
                 this.setAlwaysOnTop(true);
               }
@@ -368,40 +368,40 @@ export default {
           type: "separator"
         },
         {
-          label: "播放列表",
+          label: this.$t('common.playList'),
           click: () => {
             connect.$emit("showPlayList");
           }
         },
         {
-          label: "播放顺序",
+          label: this.$t('common.playOrder'),
           submenu: [
             {
-              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              label: this.playMode == 1 ? "√ "+this.$t('common.singlePlay') : "   "+this.$t('common.singlePlay'),
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              label: this.playMode == 2 ? "√ "+this.$t('common.singleCycle') : "   "+this.$t('common.singleCycle'),
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              label: this.playMode == 3 ? "√ "+this.$t('common.loopList') : "   "+this.$t('common.loopList'),
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              label: this.playMode == 4 ? "√ "+this.$t('common.sequentialPlay') : "   "+this.$t('common.sequentialPlay'),
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              label: this.playMode == 5 ? "√ "+this.$t('common.randomPlay') : "   "+this.$t('common.randomPlay'),
               click: () => {
                 this.setPlayMode(5);
               }
@@ -412,7 +412,7 @@ export default {
           type: "separator"
         },
         {
-          label: "声音",
+          label: this.$t('common.voice'),
           submenu: [
             {
               label: this.volumePercent == 0.1 ? "√ 10%" : "   10%",
@@ -497,11 +497,11 @@ export default {
                 this.volumePercent != 0.9 &&
                 this.volumePercent != 1 &&
                 this.volumePercent != 0
-                  ? `√ 其他(${Math.round(this.volumePercent * 100)}%)`
-                  : "   其他"
+                  ? `√ ${this.$t('common.other')}(${Math.round(this.volumePercent * 100)}%)`
+                  : "   "+this.$t('common.other')
             },
             {
-              label: this.volumePercent == 0 ? "√ 静音" : "   静音",
+              label: this.volumePercent == 0 ? "√ "+this.$t('common.mute') : "   "+this.$t('common.mute'),
               click: () => {
                 let inWidth = 0;
                 this.setInWidth(inWidth);
@@ -513,7 +513,7 @@ export default {
           type: "separator"
         },
         {
-          label: "设置"
+          label: this.$t('common.setting')
         }
       ];
       if (this.currentVideo) {
@@ -776,6 +776,7 @@ export default {
       color: #878788;
       cursor: pointer;
       &:hover {
+        border-radius: 5px;
         color: #5dee00;
       }
     }

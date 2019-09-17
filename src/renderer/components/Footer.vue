@@ -5,7 +5,7 @@
     </div>
     <div class="footer">
       <div class="left">
-        <span @click="openFile" title="打开文件" class="fa fa-folder-open-o"></span>
+        <span @click="openFile" :title="$t('common.openFile')" class="fa fa-folder-open-o"></span>
         <span :title="title" @click.stop="showPlayMode" class="fa fa-random"></span>
         <span v-if="currentVideo" class="video-time">{{getCurrentTime}} / {{getTotalTime}}</span>
         <transition name="router" mode="out-in">
@@ -25,26 +25,26 @@
       <div class="middle">
         <span
           :style="{'color':currentVideo?'':'#454548'}"
-          title="停止"
+          :title="$t('common.stop')"
           class="fa fa-stop"
           @click="stop"
         ></span>
         <span
           :style="{'color':(videoList.length<=1)?'#454548':''}"
           @click="prev"
-          title="上一个文件"
+          :title="$t('common.previous')"
           class="fa fa-step-backward"
         ></span>
         <span
           @click.stop="switchPlaying(true)"
           v-if="!isPlaying"
-          title="播放"
+          :title="$t('common.play')"
           class="fa fa-play-circle-o"
           style="font-size: 50px;"
         ></span>
         <span
           v-if="isPlaying"
-          title="暂停"
+          :title="$t('common.suspend')"
           class="fa fa-pause-circle-o"
           style="font-size: 50px;"
           @click.stop="switchPlaying(false)"
@@ -52,18 +52,18 @@
         <span
           :style="{'color':(videoList.length<=1)?'#454548':''}"
           @click="next"
-          title="下一个文件"
+          :title="$t('common.next')"
           class="fa fa-step-forward"
         ></span>
         <span
-          title="静音"
+          :title="$t('common.mute')"
           v-if="isVolumeOn"
           style="width: 40px;height: 20px;"
           @click.stop="setVolume(false)"
           class="fa fa-volume-up"
         ></span>
         <span
-          title="取消静音"
+          :title="$t('common.cancelMute')"
           v-if="!isVolumeOn"
           style="width: 40px;height: 20px;"
           @click.stop="setVolume(true)"
@@ -73,7 +73,7 @@
       </div>
       <div class="right">
         <span
-          title="无痕模式"
+          :title="$t('common.noTrace')"
           class="fa fa-snowflake-o"
           :style="{'color':isTrace?'#1bb017':''}"
           @click="noTrace"
@@ -102,15 +102,7 @@ export default {
   data() {
     return {
       // 是否展开播放模式列表菜单
-      isShowPlayMode: false,
-      // 播放模式列表
-      playModeList: [
-        { title: "单个播放", playMode: 1 },
-        { title: "单个循环", playMode: 2 },
-        { title: "循环列表", playMode: 3 },
-        { title: "顺序播放", playMode: 4 },
-        { title: "随机播放", playMode: 5 }
-      ]
+      isShowPlayMode: false
     };
   },
   mounted() {
@@ -333,15 +325,15 @@ export default {
     ]),
     title() {
       if (this.playMode == 1) {
-        return "单个播放";
+        return this.$t('common.singlePlay');
       } else if (this.playMode == 2) {
-        return "单个循环";
+        return this.$t('common.singleCycle');
       } else if (this.playMode == 3) {
-        return "顺序播放";
+        return this.$t('common.loopList');
       } else if (this.playMode == 4) {
-        return "顺序循环";
+        return this.$t('common.sequentialPlay');
       } else if (this.playMode == 5) {
-        return "随机播放";
+        return this.$t('common.randomPlay');
       }
     },
     // 当前视频播放状态
@@ -353,6 +345,16 @@ export default {
     getTotalTime() {
       // 格式化时间
       return formatTime(this.totalTime);
+    },
+    // 播放模式列表
+    playModeList(){
+      return [
+        { title: this.$t('common.singlePlay'), playMode: 1 },
+        { title: this.$t('common.singleCycle'), playMode: 2 },
+        { title: this.$t('common.loopList'), playMode: 3 },
+        { title: this.$t('common.sequentialPlay'), playMode: 4 },
+        { title: this.$t('common.randomPlay'), playMode: 5 }
+      ]
     }
   },
   watch: {

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import store from './store'
 
+import i18n from './lang'
+
 import './font-awesome-4.7.0/css/font-awesome.css'
 import './base.css'
 
@@ -57,6 +59,7 @@ ipcRenderer.on('close', () => {
 new Vue({
     components: { App },
     template: '<App/>',
-    store
+    store,
+    i18n
 }).$mount('#app')
 

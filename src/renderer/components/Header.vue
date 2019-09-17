@@ -6,7 +6,7 @@
     <div class="left" v-if="!isFullScreen">
       <span class="fa fa-youtube-play"></span>
       <div @click.stop="showMenu">
-        <span ref="title" class="title" v-if="!currentVideo">播放器</span>
+        <span ref="title" class="title" v-if="!currentVideo">{{$t('header.title')}}</span>
         <span
           ref="icon"
           class="fa fa-angle-down my-angle-down"
@@ -27,7 +27,7 @@
         >
           <li
             :data-title="item.title"
-            v-for="(item,index) in lis"
+            v-for="(item,index) in list"
             :key="index"
             :class="{[theme.hover]:true,'set':item.set}"
           >
@@ -37,27 +37,28 @@
         </ul>
       </transition>
     </div>
+    <span class="toggleLang" @click="changeLang">{{$t('header.lang')}}</span>
     <div class="middle" v-if="!isFullScreen"></div>
     <div class="right" v-if="!isFullScreen">
       <span
         @click="setAlwaysOnTop(true)"
         v-if="!isAlwaysOnTop"
-        title="置顶"
+        :title="$t('header.roof')"
         class="fa fa-hand-o-left"
       ></span>
       <span
         @click="setAlwaysOnTop(false)"
         v-if="isAlwaysOnTop"
-        title="取消置顶"
+        :title="$t('header.cancelRoof')"
         class="fa fa-hand-o-down"
       ></span>
-      <span title="用户" class="fa fa-user-o"></span>
-      <span @click.stop="showTheme" title="更换皮肤" class="fa fa-tv"></span>
-      <span @click.stop="showHistory" title="播放记录" class="fa fa-clock-o"></span>
-      <span @click="minWindow" title="最小化" class="fa fa-window-minimize"></span>
-      <span v-if="!isMaxed" @click="maxWindow" title="最大化" class="fa fa-window-maximize"></span>
-      <span v-else @click="maxWindow" title="还原窗口" class="fa fa-window-restore"></span>
-      <span @click="close" title="关闭" class="fa fa-close"></span>
+      <span :title="$t('header.user')" class="fa fa-user-o"></span>
+      <span @click.stop="showTheme" :title="$t('header.skin')" class="fa fa-tv"></span>
+      <span @click.stop="showHistory" :title="$t('header.record')" class="fa fa-clock-o"></span>
+      <span @click="minWindow" :title="$t('header.minimize')" class="fa fa-window-minimize"></span>
+      <span v-if="!isMaxed" @click="maxWindow" :title="$t('header.Maximization')" class="fa fa-window-maximize"></span>
+      <span v-else @click="maxWindow" :title="$t('header.reset')" class="fa fa-window-restore"></span>
+      <span @click="close" :title="$t('header.close')" class="fa fa-close"></span>
       <transition name="router" mode="out-in">
         <div :style="{'background-color':theme.bgColor}" v-show="isShowHistory" class="m-history">
           <div class="history">
@@ -119,16 +120,6 @@ export default {
       themes,
       // 是否显示主题
       isShowTheme: false,
-      // 左上角菜单
-      lis: [
-        { title: "访问官网", icion: "fa fa-list-alt", set: false },
-        { title: "在线升级", icion: "fa fa-cloud-upload", set: false },
-        { title: "在线帮助", icion: "fa fa-question-circle-o", set: false },
-        { title: "意见反馈", icion: "fa fa-envelope-open-o", set: false },
-        { title: "设置", icion: "fa fa-cog fa-fw", set: true },
-        { title: "关于", icion: "fa fa-user-circle", set: false },
-        { title: "退出", icion: "fa fa-sign-out", set: true }
-      ],
       // 是否显示关于页面
       showAbout: false
     };
@@ -151,7 +142,7 @@ export default {
       window.addEventListener("click", this.onClick);
     },
     // 清空监听器
-    removeListener(){
+    removeListener() {
       window.removeEventListener("click", this.onClick);
       remote.getCurrentWindow().removeAllListeners();
     },
@@ -225,6 +216,15 @@ export default {
     },
     handlerAboutClick() {
       this.showAbout = false;
+    },
+    // 切换语言
+    changeLang(){
+      const locale = this.$i18n.locale
+      if(locale === 'cn'){
+        this.$i18n.locale = 'en'
+      }else{
+        this.$i18n.locale = 'cn'
+      }
     }
   },
   computed: {
@@ -234,7 +234,19 @@ export default {
       "historicalRecords",
       "isAlwaysOnTop",
       "theme"
-    ])
+    ]),
+    // 左上角菜单
+    list(){
+      return [
+        { title: this.$t('header.list.Website'), icion: "fa fa-list-alt", set: false },
+        { title: this.$t('header.list.Upgrade'), icion: "fa fa-cloud-upload", set: false },
+        { title: this.$t('header.list.Help'), icion: "fa fa-question-circle-o", set: false },
+        { title: this.$t('header.list.Feedback'), icion: "fa fa-envelope-open-o", set: false },
+        { title: this.$t('header.list.Settings'), icion: "fa fa-cog fa-fw", set: true },
+        { title: this.$t('header.list.About'), icion: "fa fa-user-circle", set: false },
+        { title: this.$t('header.list.Exit'), icion: "fa fa-sign-out", set: true }
+      ]
+    }
   },
   watch: {
     isFullScreen(newVal) {
@@ -252,7 +264,7 @@ export default {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    this.removeListener()
+    this.removeListener();
   }
 };
 </script>
@@ -336,6 +348,10 @@ export default {
         }
       }
     }
+  }
+  .toggleLang {
+    margin-left: 20px;
+    cursor: pointer;
   }
   .right {
     display: flex;
