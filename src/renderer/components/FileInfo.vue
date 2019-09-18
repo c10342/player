@@ -3,7 +3,7 @@
         <div @click.stop class="box">
             <el-row :gutter="20">
                 <el-col :span="6">
-                    <div>添加时间：</div>
+                    <div>{{$t('common.addTime')}}：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{time}}</div>
@@ -11,7 +11,7 @@
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>视频大小：</div>
+                    <div>{{$t('common.videoSize')}}：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{size}}</div>
@@ -19,23 +19,23 @@
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>播放状态：</div>
+                    <div>{{$t('common.playStatus')}}：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div>{{video?(video.isPlaying?'正在播放':'暂停播放'):''}}</div>
+                    <div>{{video?(video.isPlaying?$t('common.playing'):$t('common.suspend')):''}}</div>
                 </el-col>
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>文件类型：</div>
+                    <div>{{$t('common.fileType')}}：</div>
                 </el-col>
                 <el-col :span="18">
-                    <div>{{video?(video.mode=='local'?'本地文件':'网络文件'):''}}</div>
+                    <div>{{video?(video.mode=='local'?$t('common.localFile'):$t('common.networkFile')):''}}</div>
                 </el-col>
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>播放速度：</div>
+                    <div>{{$t('common.playSpeed')}}：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{video?`${video.speed}倍`:''}}</div>
@@ -43,7 +43,7 @@
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>文件路径：</div>
+                    <div>{{$t('common.filePath')}}：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{video?video.src:''}}</div>
@@ -51,7 +51,7 @@
             </el-row>
             <el-row class="mt20" :gutter="20">
                 <el-col :span="6">
-                    <div>文件名称：</div>
+                    <div>{{$t('common.fileName')}}：</div>
                 </el-col>
                 <el-col :span="18">
                     <div>{{video?video.filename:''}}</div>

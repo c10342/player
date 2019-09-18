@@ -30,6 +30,7 @@ export const deleteVideo = ({
     commit,
     state
 }, video) => {
+    // 现在的列表
     // 复制一份新的播放列表
     const videoList = state.videoList.slice()
     // 找出传递进来的视频在列表中的索引
@@ -37,6 +38,15 @@ export const deleteVideo = ({
     // 删除
     videoList.splice(index, 1)
     commit('changeList', videoList)
+
+    // 原本默认的列表
+    // 复制一份新的播放列表
+    const oldVideoList = state.oldVideoList.slice()
+    // 找出传递进来的视频在列表中的索引
+    const oldIndex = oldVideoList.findIndex(i => i.id == video.id)
+    // 删除
+    oldVideoList.splice(oldIndex, 1)
+    commit('changeOldList', oldVideoList)
 
     // 删除的是当前歌曲
     if (index == state.currentVideoIndex) {

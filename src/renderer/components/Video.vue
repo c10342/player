@@ -519,7 +519,7 @@ export default {
       if (this.currentVideo) {
         let addMenu = [
           {
-            label: this.isPlaying ? "暂停" : "播放",
+            label: this.isPlaying ? this.$t('common.suspend') : this.$t('common.play'),
             click: () => {
               this.setPlaying(!this.isPlaying);
             }
@@ -531,14 +531,14 @@ export default {
         contextMenuTemplate.unshift(...addMenu);
 
         contextMenuTemplate.splice(4, 0, {
-          label: this.isFullScreen ? "退出全屏" : "全屏",
+          label: this.isFullScreen ? this.$t('common.exitScreen'):this.$t('common.fullScreen'),
           click: () => {
             this.setFullScreen(!this.isFullScreen);
           }
         });
 
         contextMenuTemplate.push({
-          label: "文件信息",
+          label: this.$t('common.fileInfo'),
           click: () => {
             this.videoInfo = this.currentVideo;
             this.isShowInfo = true;

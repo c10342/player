@@ -16,30 +16,30 @@
       <span style="display:inline-block;width:210px;">{{item.filename}}</span>
     </div>
     <div v-if="!isCurrentVideo && item.currentTime!=0" class="middle">
-        播到：{{item.currentTime | formatTime}}
+        {{$t('common.broadcastTo')}}：{{item.currentTime | formatTime}}
     </div>
     <div v-if="!isCurrentVideo && item.currentTime==0" class="middle">
-        已播完
+        {{$t('common.finished')}}
     </div>
     <div v-if="isCurrentVideo" class="middle">
-        {{isPlaying?'正在播放':'暂停'}}
+        {{isPlaying?$t('common.playing'):$t('common.suspend')}}
     </div>
     <span class="msg" v-if="item.msg">{{item.msg}}</span>
     <div class="flexrowcenter right" v-if="!item.msg">
       <span
         @click.stop="playing"
         v-if="!isPlaying || !isCurrentVideo"
-        title="播放"
+        :title="$t('common.play')"
         class="my-fa fa fa-play-circle-o"
       ></span>
       <span
         @click.stop="setPlaying(false)"
         v-if="isPlaying && isCurrentVideo"
-        title="暂停"
+        :title="$t('common.suspend')"
         class="my-fa fa fa-pause-circle-o"
       ></span>
-      <span style="margin-left:8px;" title="打开文件所在位置" class="my-fa fa fa-file-archive-o"></span>
-      <span style="margin-left:8px;" title="从播放列表中删除" class="my-fa fa fa-close"></span>
+      <span style="margin-left:8px;" :title="$t('common.openLocation')" class="my-fa fa fa-file-archive-o"></span>
+      <span style="margin-left:8px;" :title="$t('common.deleteFile')" class="my-fa fa fa-close"></span>
     </div>
   </div>
 </template>

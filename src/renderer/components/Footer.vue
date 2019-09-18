@@ -81,7 +81,7 @@
         <span
           :style="{'color':currentVideo?'':'#454548'}"
           @click="fullScreen"
-          :title="isFullScreen?'退出全屏':'全屏'"
+          :title="isFullScreen?$t('common.exitScreen'):$t('common.fullScreen')"
           class="fa fa-expand my-expand"
         ></span>
       </div>

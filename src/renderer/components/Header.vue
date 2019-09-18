@@ -37,9 +37,13 @@
         </ul>
       </transition>
     </div>
-    <span class="toggleLang" @click="changeLang">{{$t('header.lang')}}</span>
     <div class="middle" v-if="!isFullScreen"></div>
     <div class="right" v-if="!isFullScreen">
+      <span
+      class="fa fa-language"
+      :title="$t('header.lang')"
+      @click="changeLang"
+      ></span>
       <span
         @click="setAlwaysOnTop(true)"
         v-if="!isAlwaysOnTop"
@@ -203,13 +207,13 @@ export default {
     handlerClick(e) {
       const title = e.target.dataset.title;
       switch (title) {
-        case "访问官网":
+        case this.$t('header.list.Website'):
           shell.openExternal("https://github.com/c10342/player");
           break;
-        case "退出":
+        case this.$t('header.list.Exit'):
           this.close();
           break;
-        case "关于":
+        case this.$t('header.list.About'):
           this.showAbout = true;
           break;
       }

@@ -120,7 +120,7 @@ export default {
       this.volumePercent = Math.round(
         (this.inWidth / parseInt(this.width)) * 100
       );
-      return `音量:${this.volumePercent}%`;
+      return `${this.$t('common.volume')}:${this.volumePercent}%`;
     }
   },
   beforeDestroy() {

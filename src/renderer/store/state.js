@@ -50,4 +50,5 @@ let defaultState = {
 
 let state = storage.get('state', defaultState)
 
+
 export default state;

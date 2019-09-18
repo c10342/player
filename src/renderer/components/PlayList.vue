@@ -9,56 +9,60 @@
       <span
         @click="hideList"
         v-show="!isHidenList&&!currentVideo"
-        title="收起列表"
+        :title="$t('common.packUpList')"
         class="fa fa-arrow-circle-o-right"
       ></span>
       <span
         @click="hideList"
         v-show="!isHidenList&&isFullScreen"
-        title="收起列表"
+        :title="$t('common.packUpList')"
         class="fa fa-arrow-circle-o-right"
       ></span>
-      <span @click="hideList" v-show="isHidenList" title="展开列表" class="fa fa-arrow-circle-o-left"></span>
+      <span 
+      @click="hideList" 
+      v-show="isHidenList" 
+      :title="$t('common.unrollList')"
+      class="fa fa-arrow-circle-o-left"></span>
       <span
         @click="lockList"
         v-show="currentVideo&&!isLock&&!isHidenList&&!isFullScreen"
         class="fa fa-lock"
-        title="锁定列表"
+        :title="$t('common.lockList')"
       ></span>
       <span
         @click="unLockList"
         v-show="currentVideo&&isLock&&!isHidenList"
         class="fa fa-unlock"
-        title="释放列表"
+        :title="$t('common.releaseList')"
       ></span>
     </div>
     <div class="content-container" v-show="!isHidenList">
       <div class="top">
-        <span>播放列表</span>
+        <span>{{$t('common.playList')}}</span>
         <div class="my-icon">
-          <span title="添加" class="fa fa-plus-square-o"></span>
-          <span title="删除" class="fa fa-trash-o fa-lg delete"></span>
-          <span @click.stop="showExtendMenu" title="扩展菜单" class="fa fa-angle-double-down"></span>
+          <span :title="$t('common.add')" class="fa fa-plus-square-o"></span>
+          <span :title="$t('common.delete')" class="fa fa-trash-o fa-lg delete"></span>
+          <span @click.stop="showExtendMenu" :title="$t('common.extensionMenu')" class="fa fa-angle-double-down"></span>
         </div>
         <div class="file" v-show="isShowOther && videoList.length==0">
           <div class="no-file">
             <span class="fa fa-file-o"></span>
-            <p>没有符合条件的文件</p>
+            <p>{{$t('common.noDocuments')}}</p>
           </div>
           <div :style="{'border': `1px solid ${theme.textColor}`}" class="open-file">
             <div @click="openFile" class="flexrowcenter">
               <span class="fa fa-folder-open-o"></span>
-              <span>添加文件</span>
+              <span>{{$t('common.addFile')}}</span>
             </div>
             <span @click.stop="showMenu" class="fa fa-angle-down"></span>
             <ul :style="{'background-color':theme.bgColor}" v-show="isShowFileMenu" class="my-file">
               <li :class="theme.hover" @click="openFolder">
                 <span class="fa fa-file-excel-o"></span>
-                添加文件夹
+                {{$t('common.addFolder')}}
               </li>
               <li :class="theme.hover">
                 <span class="fa fa-link"></span>
-                添加URL
+                {{$t('common.addUrl')}}
               </li>
             </ul>
           </div>
@@ -70,7 +74,7 @@
           class="extend-menu"
           v-show="isShowExtendMenu"
         >
-          <li :class="theme.hover" class="line">清空此列表</li>
+          <li :class="theme.hover" class="line">{{$t('common.clearList')}}</li>
           <li
             v-for="(item,index) in soreModeList"
             :key="item.title"
@@ -116,6 +120,7 @@ import OpenDialog from "../api/OpenDialog";
 import { remote, shell } from "electron";
 import path from "path";
 import storage from "good-storage";
+import fs from "fs";
 
 const openDialog = new OpenDialog();
 const { Menu } = remote;
@@ -149,23 +154,7 @@ export default {
       // 是否锁定播放列表
       isLock: isLock,
       // 定时器时间
-      time: 3000,
-      // 播放模式列表
-      playModeList: [
-        { title: "单个播放", playMode: 1 },
-        { title: "单个循环", playMode: 2 },
-        { title: "循环列表", playMode: 3 },
-        { title: "顺序播放", playMode: 4 },
-        { title: "随机播放", playMode: 5 }
-      ],
-      // 分类模式列表
-      soreModeList: [
-        { title: "默认排序", soreMode: 1 },
-        { title: "大小排序", soreMode: 2 },
-        { title: "时间排序", soreMode: 3 },
-        { title: "随机排序", soreMode: 4 },
-        { title: "名称排序", soreMode: 5 }
-      ]
+      time: 3000
     };
   },
   mounted() {
@@ -184,7 +173,7 @@ export default {
       "setPlaying",
       "clearVideoList"
     ]),
-    ...mapActions(["sortVideoList", "deleteVideo", "clearInvalidVideo"]),
+    ...mapActions(["sortVideoList", "deleteVideo", "clearInvalidVideo","changeVideoList"]),
     // 开启定时器
     createSetTimeOut() {
       if (this.playListTimer) {
@@ -357,22 +346,22 @@ export default {
       document.body.click();
       let playListMenuTemplate = [
         {
-          label: "添加",
+          label: this.$t('common.add'),
           submenu: [
             {
-              label: "添加文件",
+              label: this.$t('common.addFile'),
               click: () => {
                 openDialog.openFile();
               }
             },
             {
-              label: "添加文件夹",
+              label: this.$t('common.addFolder'),
               click: () => {
                 openDialog.openFolder();
               }
             },
             {
-              label: "添加URL",
+              label: this.$t('common.addUrl'),
               click: () => {
                 connect.$emit("openUrl");
               }
@@ -383,13 +372,13 @@ export default {
           type: "separator"
         },
         {
-          label: "清空播放列表",
+          label: this.$t('common.clearPlayList'),
           click: () => {
             this.clearVideoList();
           }
         },
         {
-          label: "删除无效文件",
+          label: this.$t('common.deleteInvalid'),
           click: () => {
             this.clearInvalidVideo();
           }
@@ -398,34 +387,34 @@ export default {
           type: "separator"
         },
         {
-          label: "播放顺序",
+          label: this.$t('common.playOrder'),
           submenu: [
             {
-              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              label: this.playMode == 1 ? "√ "+this.$t('common.singlePlay') : "   "+this.$t('common.singlePlay'),
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              label: this.playMode == 2 ? "√ "+this.$t('common.singleCycle') : "   "+this.$t('common.singleCycle'),
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              label: this.playMode == 3 ? "√ "+this.$t('common.loopList') : "   "+this.$t('common.loopList'),
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              label: this.playMode == 4 ? "√ "+this.$t('common.sequentialPlay') : "   "+this.$t('common.sequentialPlay'),
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              label: this.playMode == 5 ? "√ "+this.$t('common.randomPlay') : "   "+this.$t('common.randomPlay'),
               click: () => {
                 this.setPlayMode(5);
               }
@@ -433,34 +422,34 @@ export default {
           ]
         },
         {
-          label: "排序",
+          label: this.$t('common.sort'),
           submenu: [
             {
-              label: this.sortMode == 1 ? "√ 默认排序" : "   默认排序",
+              label: this.sortMode == 1 ? "√ "+this.$t('common.defaultSort') : "   "+this.$t('common.defaultSort'),
               click: () => {
                 this.setSortMode(1);
               }
             },
             {
-              label: this.sortMode == 2 ? "√ 大小排序" : "   大小排序",
+              label: this.sortMode == 2 ? "√ "+this.$t('common.sizeSort') : "   "+this.$t('common.sizeSort'),
               click: () => {
                 this.setSortMode(2);
               }
             },
             {
-              label: this.sortMode == 3 ? "√ 时间排序" : "   时间排序",
+              label: this.sortMode == 3 ? "√ "+this.$t('common.timeSort') : "   "+this.$t('common.timeSort'),
               click: () => {
                 this.setSortMode(3);
               }
             },
             {
-              label: this.sortMode == 4 ? "√ 随机排序" : "   随机排序",
+              label: this.sortMode == 4 ? "√ "+this.$t('common.randomSort') : "   "+this.$t('common.randomSort'),
               click: () => {
                 this.setSortMode(4);
               }
             },
             {
-              label: this.sortMode == 5 ? "√ 名称排序" : "   名称排序",
+              label: this.sortMode == 5 ? "√ "+this.$t('common.nameSort') : "   "+this.$t('common.nameSort'),
               click: () => {
                 this.setSortMode(5);
               }
@@ -494,7 +483,7 @@ export default {
       }
       let playListMenuTemplate = [
         {
-          label: flag ? "暂停" : "播放",
+          label: flag ? this.$t("common.suspend") : this.$t("common.play"),
           click: () => {
             if (isCurrentVideo) {
               this.setPlaying(!flag);
@@ -504,28 +493,28 @@ export default {
           }
         },
         {
-          label: "删除选中项",
+          label: this.$t("common.deleteItem"),
           click: () => {
             this.deleteVideo(video);
           }
         },
         {
-          label: "添加",
+          label: this.$t("common.add"),
           submenu: [
             {
-              label: "添加文件",
+              label: this.$t("common.addFile"),
               click: () => {
                 openDialog.openFile();
               }
             },
             {
-              label: "添加文件夹",
+              label: this.$t("common.addFolder"),
               click: () => {
                 openDialog.openFolder();
               }
             },
             {
-              label: "添加URL",
+              label: this.$t("common.addUrl"),
               click: () => {
                 connect.$emit("openUrl");
               }
@@ -536,13 +525,13 @@ export default {
           type: "separator"
         },
         {
-          label: "清空播放列表",
+          label: this.$t("common.clearPlayList"),
           click: () => {
             this.clearVideoList();
           }
         },
         {
-          label: "删除无效文件",
+          label: this.$t("common.deleteInvalid"),
           click: () => {
             this.clearInvalidVideo();
           }
@@ -551,34 +540,49 @@ export default {
           type: "separator"
         },
         {
-          label: "播放顺序",
+          label: this.$t("common.playOrder"),
           submenu: [
             {
-              label: this.playMode == 1 ? "√ 单个播放" : "   单个播放",
+              label:
+                this.playMode == 1
+                  ? "√ " + this.$t("common.singlePlay")
+                  : "   " + this.$t("common.singlePlay"),
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ? "√ 单个循环" : "   单个循环",
+              label:
+                this.playMode == 2
+                  ? "√ " + this.$t("common.singleCycle")
+                  : "   " + this.$t("common.singleCycle"),
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ? "√ 循环列表" : "   循环列表",
+              label:
+                this.playMode == 3
+                  ? "√ " + this.$t("common.loopList")
+                  : "   " + this.$t("common.loopList"),
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ? "√ 顺序播放" : "   顺序播放",
+              label:
+                this.playMode == 4
+                  ? "√ " + this.$t("common.sequentialPlay")
+                  : "   " + this.$t("common.sequentialPlay"),
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ? "√ 随机播放" : "   随机播放",
+              label:
+                this.playMode == 5
+                  ? "√ " + this.$t("common.randomPlay")
+                  : "   " + this.$t("common.randomPlay"),
               click: () => {
                 this.setPlayMode(5);
               }
@@ -586,34 +590,49 @@ export default {
           ]
         },
         {
-          label: "排序",
+          label: this.$t("common.sort"),
           submenu: [
             {
-              label: this.sortMode == 1 ? "√ 默认排序" : "   默认排序",
+              label:
+                this.sortMode == 1
+                  ? "√ " + this.$t("common.defaultSort")
+                  : "   " + this.$t("common.defaultSort"),
               click: () => {
                 this.setSortMode(1);
               }
             },
             {
-              label: this.sortMode == 2 ? "√ 大小排序" : "   大小排序",
+              label:
+                this.sortMode == 2
+                  ? "√ " + this.$t("common.sizeSort")
+                  : "   " + this.$t("common.sizeSort"),
               click: () => {
                 this.setSortMode(2);
               }
             },
             {
-              label: this.sortMode == 3 ? "√ 时间排序" : "   时间排序",
+              label:
+                this.sortMode == 3
+                  ? "√ " + this.$t("common.timeSort")
+                  : "   " + this.$t("common.timeSort"),
               click: () => {
                 this.setSortMode(3);
               }
             },
             {
-              label: this.sortMode == 4 ? "√ 随机排序" : "   随机排序",
+              label:
+                this.sortMode == 4
+                  ? "√ " + this.$t("common.randomSort")
+                  : "   " + this.$t("common.randomSort"),
               click: () => {
                 this.setSortMode(4);
               }
             },
             {
-              label: this.sortMode == 5 ? "√ 名称排序" : "   名称排序",
+              label:
+                this.sortMode == 5
+                  ? "√ " + this.$t("common.nameSort")
+                  : "   " + this.$t("common.nameSort"),
               click: () => {
                 this.setSortMode(5);
               }
@@ -624,14 +643,21 @@ export default {
           type: "separator"
         },
         {
-          label: "文件信息",
+          label: this.$t("common.fileInfo"),
           click: () => {
             connect.$emit("videoInfo", video);
           }
         },
         {
-          label: "打开文件所在位置",
+          label: this.$t("common.openLocation"),
           click: () => {
+            if (!fs.existsSync(video.src) && video.mode == "local") {
+              // 保存文件错误信息
+              let newVideo = Object.assign({}, video, { msg: "无效文件" });
+              // 修改播放列表
+              this.changeVideoList(newVideo);
+              return;
+            }
             let url = path.dirname(video.src);
             shell.openExternal(url);
           }
@@ -656,7 +682,27 @@ export default {
       "isFullScreen",
       "isPlaying",
       "theme"
-    ])
+    ]),
+    // 播放模式列表
+    playModeList(){
+      return [
+        { title: this.$t('common.singlePlay'), playMode: 1 },
+        { title: this.$t('common.singleCycle'), playMode: 2 },
+        { title: this.$t('common.loopList'), playMode: 3 },
+        { title: this.$t('common.sequentialPlay'), playMode: 4 },
+        { title: this.$t('common.randomPlay'), playMode: 5 }
+      ]
+    },
+     // 分类模式列表
+    soreModeList(){
+      return [
+        { title: this.$t('common.defaultSort'), soreMode: 1 },
+        { title: this.$t('common.sizeSort'), soreMode: 2 },
+        { title: this.$t('common.timeSort'), soreMode: 3 },
+        { title: this.$t('common.randomSort'), soreMode: 4 },
+        { title: this.$t('common.nameSort'), soreMode: 5 }
+      ]
+    }
   },
   watch: {
     sortMode: {
@@ -845,6 +891,7 @@ export default {
           height: 40px;
           padding: 10px 15px;
           color: #878788;
+          border-radius: 5px;
           cursor: pointer;
           &:hover {
             color: #5dee00;

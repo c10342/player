@@ -23,17 +23,17 @@
       <span
         @click.stop="playing"
         v-if="!isPlaying || !isCurrentVideo"
-        title="播放"
+        :title="$t('common.play')"
         class="my-fa fa fa-play-circle-o"
       ></span>
       <span
         @click.stop="setPlaying(false)"
         v-if="isPlaying && isCurrentVideo"
-        title="暂停"
+        :title="$t('common.suspend')"
         class="my-fa fa fa-pause-circle-o"
       ></span>
-      <span title="打开文件所在位置" class="my-fa fa fa-file-archive-o"></span>
-      <span title="从播放列表中删除" class="my-fa fa fa-close"></span>
+      <span :title="$t('common.openLocation')" class="my-fa fa fa-file-archive-o"></span>
+      <span :title="$t('common.deleteFile')" class="my-fa fa fa-close"></span>
     </div>
   </div>
 </template>

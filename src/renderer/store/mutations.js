@@ -58,6 +58,7 @@ export const setOldVideo = (state,oldVideo) => {
 // 清空播放列表
 export const clearVideoList = (state) =>{
     state.videoList = []
+    state.oldVideoList = []
 }
 
 // 修改播放列表
