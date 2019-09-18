@@ -29,6 +29,8 @@ npm run build
 - [express](http://www.expressjs.com.cn/)：负责把视频读取出来，把视频以流的形式返回
 - [html5相关技术](http://www.w3school.com.cn/html5/index.asp)：拖拽api，全屏api，Notification消息通知
 - [DPlayer](http://dplayer.js.org/#/zh-Hans/)：音视频播放器核心组件
+- [vue-i18n](https://github.com/kazupon/vue-i18n) : 实现国际化
+- [mousetrap](https://github.com/ccampbell/mousetrap) : 实现键盘组合监听
 
 ### 已实现功能
 - 视频播放：目前已经支持大多数视频格式，比如 MP4、WebM、mkv、avi、WMV、FLV、rmvb 等，后续会添加更多的视频格式
@@ -43,6 +45,7 @@ npm run build
 - 拖拽文件或文件夹：用户可以把文件或者文件夹拖拽进音视频播放器中，应用会过滤掉不能播放的文件
 - 全屏功能：实现了应用的全屏功能，这里是使用了electron提供的全屏api，没有使用html5的全屏api
 - 右键菜单功能：目前已经实现了大多数右键菜单的功能，没实现的后续实现
+- 国际化：目前已经实现了中英文切换，后期有需要再继续实现其他语言
 
 ### 效果图
 <p align="center">
@@ -73,7 +76,9 @@ npm run build
 <img src="http://120.79.209.208:9093/player7.png">
 </p>
 <h1 align="center">效果图7</h1>
+<p align="center">
+<img src="http://120.79.209.208:9093/player8.png">
+</p>
+<h1 align="center">效果图8</h1>
 
-
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[8fae476](https://github.com/SimulatedGREG/electron-vue/tree/8fae4763e9d225d3691b627e83b9e09b56f6c935) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+## 如果有喜欢的欢迎给我点赞star
