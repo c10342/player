@@ -90,7 +90,16 @@ const message = {
         author:'作者',
         technology:'技术',
         address:'地址',
-        version:'版本'
+        version:'版本',
+        playback:'加速播放',
+        deceleration:'减速播放',
+        normalSpeed:'正常速度',
+        reset:'按R恢复正常速度',
+        times:'倍',
+        sureBtn:'确定',
+        cancelBtn:'取消',
+        enterNetworkUrl:'请输入网络视频地址',
+        errorNetworkUrl:'网络视频地址不正确'
     }
 }
 

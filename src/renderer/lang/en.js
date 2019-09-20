@@ -90,7 +90,16 @@ const message = {
         author:'Author',
         technology:'Technology',
         address:'Address',
-        version:'Version'
+        version:'Version',
+        playback:'Accelerated Playback',
+        deceleration:'Deceleration Play',
+        normalSpeed:'Normal Speed',
+        reset:'Press R Reset',
+        times:'x',
+        sureBtn:'sure',
+        cancelBtn:'cancel',
+        enterNetworkUrl:'Please enter the network video address',
+        errorNetworkUrl:'Network Video Address Incorrect'
     }
 }
 

@@ -243,11 +243,11 @@ export default {
     },
     // 打开网络地址
     openUrl() {
-      this.$prompt("请输入网络视频地址", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$prompt(this.$t('common.enterNetworkUrl'), {
+        confirmButtonText: this.$t('common.sureBtn'),
+        cancelButtonText: this.$t('common.cancelBtn'),
         inputValidator: this.inputValidator,
-        inputErrorMessage: "网络视频地址不正确"
+        inputErrorMessage: this.$t('common.errorNetworkUrl')
       })
         .then(({ value }) => {
           openDialog.openUrl(value);
@@ -582,11 +582,11 @@ export default {
       this.$nextTick(() => {
         if (newVal) {
           this.isMusic && (this.animationPlayState = "running");
-          this.playModeTimers("已播放");
+          this.playModeTimers(this.$t('common.play'));
           this.dp.play();
         } else {
           this.isMusic && (this.animationPlayState = "paused");
-          this.playModeTimers("已暂停");
+          this.playModeTimers(this.$t('common.suspend'));
           this.dp.pause();
         }
       });
@@ -672,14 +672,14 @@ export default {
         this.$nextTick(() => {
           if (newVal > 1) {
             this.speedTimers(
-              `加速播放（ctrl+up）：${newVal}倍（按R恢复正常速度）`
+              `${this.$t('common.playback')}（ctrl+up）：${newVal}${this.$t('common.times')}（${this.$t('common.reset')}）`
             );
           } else if (newVal < 1) {
             this.speedTimers(
-              `减速播放（ctrl+down）：${newVal}倍（按R恢复正常速度）`
+              `${this.$t('common.deceleration')}（ctrl+down）：${newVal}${this.$t('common.times')}（${this.$t('common.reset')}）`
             );
           } else if (newVal == 1) {
-            this.speedTimers(`正常速度：1.0倍（按R恢复正常速度）`);
+            this.speedTimers(`${this.$t('common.normalSpeed')}：1.0${this.$t('common.times')}（${this.$t('common.reset')}）`);
           }
           this.dp.speed(newVal);
         });
@@ -690,7 +690,7 @@ export default {
       immediate: true,
       handler: function(newVal) {
         this.$nextTick(() => {
-          this.volumeTimers(`音量：${Math.round(newVal * 100)}%`);
+          this.volumeTimers(`${this.$t('common.volume')}：${Math.round(newVal * 100)}%`);
           this.dp.volume(newVal);
         });
       }
