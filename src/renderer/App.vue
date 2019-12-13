@@ -1,23 +1,14 @@
 <template>
-  <div 
-  :style="{'background-image': `url('${theme.bgUrl}')`}"
-  id="app" 
-  ref="app">
-    <div 
-    :class="{'header-fullScreen':isFullScreen}" 
-    ref="header" 
-    class="app-header">
-      <my-header/>
+  <div :style="{'background-image': `url('${theme.bgUrl}')`}" id="app" ref="app">
+    <div :class="{'header-fullScreen':isFullScreen}" ref="header" class="app-header">
+      <my-header />
     </div>
     <div ref="video" class="video" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-      <my-video/>
-      <play-list :play-list-height="playListHeight" :is-show-arrow="isShowArrow"/>
+      <my-video />
+      <play-list :play-list-height="playListHeight" :is-show-arrow="isShowArrow" />
     </div>
-    <div 
-    :class="{'footer-fullScreen':isFullScreen}" 
-    ref="footer" 
-    class="app-footer">
-      <my-footer/>
+    <div :class="{'footer-fullScreen':isFullScreen}" ref="footer" class="app-footer">
+      <my-footer />
     </div>
   </div>
 </template>
@@ -34,6 +25,7 @@ import OpenDialog from "./api/OpenDialog";
 import WindowUtil from "./api/window";
 const openDialog = new OpenDialog();
 const winUtil = new WindowUtil();
+const { ipcRenderer } = require("electron");
 
 export default {
   name: "player",
@@ -44,7 +36,7 @@ export default {
     };
   },
   mounted() {
-    this.count = 0
+    this.count = 0;
     this.initPlayListHeight();
     this.mouseMoveTimer = null;
     this.FullScreenTimer = null;
@@ -57,6 +49,17 @@ export default {
     };
     // 释放文件
     video.addEventListener("drop", this.onDrop);
+
+    ipcRenderer.on("message", (event, { message, data }) => {
+      if (message === "isUpdateNow") {
+        if (confirm("是否现在更新？")) {
+          ipcRenderer.send("updateNow");
+        }
+      }
+    });
+    this.$nextTick(()=>{
+      ipcRenderer.send('update');
+    })
   },
   methods: {
     ...mapMutations([
@@ -185,49 +188,49 @@ export default {
       let files = e.dataTransfer.files;
       files = Array.prototype.slice.call(files);
       let arr = [];
-      
+
       files.forEach(item => {
         const stat = fs.statSync(item.path).isDirectory();
         if (!stat) {
           let extname = path.extname(item.path);
-          let flag = reg.test(extname)
+          let flag = reg.test(extname);
           if (flag) {
             arr.push(item.path);
           }
-        }else{
-          arr.push(...this.readFileFromFolder([item.path]))
-          this.count = 0
+        } else {
+          arr.push(...this.readFileFromFolder([item.path]));
+          this.count = 0;
         }
       });
-      if(arr.length == 0){
-        return
+      if (arr.length == 0) {
+        return;
       }
-      let arrs = openDialog.getFileStatFromLocal(arr)
-      openDialog.changeStore(arrs)
+      let arrs = openDialog.getFileStatFromLocal(arr);
+      openDialog.changeStore(arrs);
     },
     // 从文件夹中读取文件
     readFileFromFolder(paths) {
-      this.count++
-        let arr = []
-        if(this.count>3){
-          return []
+      this.count++;
+      let arr = [];
+      if (this.count > 3) {
+        return [];
+      }
+      for (let i = 0; i < paths.length; i++) {
+        const p = paths[i];
+        const stat = fs.statSync(p);
+        if (stat.isDirectory() == true) {
+          let result = fs.readdirSync(p);
+          for (let j = 0; j < result.length; j++) {
+            result[j] = path.join(p, result[j]);
+          }
+          arr.push(...this.readFileFromFolder(result));
+        } else {
+          if (reg.test(p)) {
+            arr.push(p);
+          }
         }
-        for (let i = 0; i < paths.length; i++) {
-            const p = paths[i];
-            const stat = fs.statSync(p)
-            if (stat.isDirectory() == true) {
-                let result = fs.readdirSync(p)
-                for (let j = 0; j < result.length; j++) {
-                    result[j] = path.join(p, result[j])
-                }
-                arr.push(...this.readFileFromFolder(result))
-            } else {
-                if (reg.test(p)) {
-                    arr.push(p)
-                }
-            }
-        }
-        return arr
+      }
+      return arr;
     }
   },
   computed: {
@@ -244,10 +247,10 @@ export default {
     ])
   },
   watch: {
-    isAlwaysOnTop:{
+    isAlwaysOnTop: {
       immediate: true,
-      handler: function(newVal){
-        winUtil.setAlwaysOnTop(newVal)
+      handler: function(newVal) {
+        winUtil.setAlwaysOnTop(newVal);
       }
     },
     isPlaying() {

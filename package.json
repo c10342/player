@@ -1,6 +1,6 @@
 {
   "name": "player",
-  "version": "0.0.15",
+  "version": "0.0.14",
   "author": "c10342 <1376023740@qq.com>",
   "description": "音视频播放器",
   "license": null,
@@ -18,14 +18,9 @@
   },
   "build": {
     "productName": "player",
-    "appId": "com.example.yourapp",
+    "appId": "lin_player",
     "directories": {
-      "output": "build"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": true
+      "output": "release"
     },
     "files": [
       "dist/electron/**/*"
@@ -51,11 +46,23 @@
     "win": {
       "icon": "build/icons/icon.ico"
     },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "perMachine": false
+    },
     "linux": {
       "icon": "build/icons"
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://127.0.0.1:5500/"
+      }
+    ]
   },
   "dependencies": {
+    "electron-updater": "^4.2.0",
     "axios": "^0.18.0",
     "dplayer": "^1.25.0",
     "element-ui": "^2.4.11",
@@ -84,7 +91,7 @@
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.4",
+    "electron": "^4.0.1",
     "electron-builder": "^20.19.2",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.4",

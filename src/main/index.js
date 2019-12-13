@@ -1,7 +1,10 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import WindowUtil from './api/window'
 import OpenDialog from './api/OpenDialog'
-import createTray from './api/tray'
+// 引入自动更新模块
+const { autoUpdater } = require('electron-updater');
+
+const feedUrl = `http://127.0.0.1:5500/win32`; // 更新包位置
 
 /**
  * Set `__static` path to static files in production
@@ -48,15 +51,27 @@ function createWindow() {
     })
 
     // 只能开启一个应用窗口
-    const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-        if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore()
-            mainWindow.focus()
-        }
-    })
+    // const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    //     if (mainWindow) {
+    //         if (mainWindow.isMinimized()) mainWindow.restore()
+    //         mainWindow.focus()
+    //     }
+    // })
 
-    if (shouldQuit) {
+
+    // 限制只可以打开一个应用, 4.x的文档
+    const gotTheLock = app.requestSingleInstanceLock()
+    if (!gotTheLock) {
         app.quit()
+    } else {
+        app.on('second-instance', (event, commandLine, workingDirectory) => {
+            // 当运行第二个实例时,将会聚焦到mainWindow这个窗口
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) mainWindow.restore()
+                mainWindow.focus()
+                mainWindow.show()
+            }
+        })
     }
 
     // 隐藏菜单栏
@@ -75,6 +90,13 @@ function createWindow() {
 
     require('./api/express')
 
+
+    // 主进程监听渲染进程传来的信息
+    ipcMain.on('update', (e, arg) => {
+        console.log("update");
+        checkForUpdates();
+    });
+
 }
 
 app.on('ready', createWindow)
@@ -90,6 +112,52 @@ app.on('activate', () => {
         createWindow()
     }
 })
+
+
+let checkForUpdates = () => {
+    // 配置安装包远端服务器
+    autoUpdater.setFeedURL(feedUrl);
+
+    // 下面是自动更新的整个生命周期所发生的事件
+    autoUpdater.on('error', function (message) {
+        sendUpdateMessage('error', message);
+    });
+    autoUpdater.on('checking-for-update', function (message) {
+        sendUpdateMessage('checking-for-update', message);
+    });
+    autoUpdater.on('update-available', function (message) {
+        sendUpdateMessage('update-available', message);
+    });
+    autoUpdater.on('update-not-available', function (message) {
+        dialog.showMessageBox({
+            type: 'info',
+            title: 'update-available',
+            message: "发现可用更新"
+        })
+        sendUpdateMessage('update-not-available', message);
+    });
+
+    // 更新下载进度事件
+    autoUpdater.on('download-progress', function (progressObj) {
+        sendUpdateMessage('downloadProgress', progressObj);
+    });
+    // 更新下载完成事件
+    autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
+        sendUpdateMessage('isUpdateNow');
+        ipcMain.on('updateNow', (e, arg) => {
+            autoUpdater.quitAndInstall();
+        });
+    });
+
+    //执行自动更新检查
+    autoUpdater.checkForUpdates();
+};
+
+// 主进程主动发送消息给渲染进程函数
+function sendUpdateMessage(message, data) {
+    console.log({ message, data });
+    mainWindow.webContents.send('message', { message, data });
+}
 
 /**
  * Auto Updater
