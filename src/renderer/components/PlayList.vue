@@ -18,11 +18,12 @@
         :title="$t('common.packUpList')"
         class="fa fa-arrow-circle-o-right"
       ></span>
-      <span 
-      @click="hideList" 
-      v-show="isHidenList" 
-      :title="$t('common.unrollList')"
-      class="fa fa-arrow-circle-o-left"></span>
+      <span
+        @click="hideList"
+        v-show="isHidenList"
+        :title="$t('common.unrollList')"
+        class="fa fa-arrow-circle-o-left"
+      ></span>
       <span
         @click="lockList"
         v-show="currentVideo&&!isLock&&!isHidenList&&!isFullScreen"
@@ -42,7 +43,11 @@
         <div class="my-icon">
           <span :title="$t('common.add')" class="fa fa-plus-square-o"></span>
           <span :title="$t('common.delete')" class="fa fa-trash-o fa-lg delete"></span>
-          <span @click.stop="showExtendMenu" :title="$t('common.extensionMenu')" class="fa fa-angle-double-down"></span>
+          <span
+            @click.stop="showExtendMenu"
+            :title="$t('common.extensionMenu')"
+            class="fa fa-angle-double-down"
+          ></span>
         </div>
         <div class="file" v-show="isShowOther && videoList.length==0">
           <div class="no-file">
@@ -173,7 +178,12 @@ export default {
       "setPlaying",
       "clearVideoList"
     ]),
-    ...mapActions(["sortVideoList", "deleteVideo", "clearInvalidVideo","changeVideoList"]),
+    ...mapActions([
+      "sortVideoList",
+      "deleteVideo",
+      "clearInvalidVideo",
+      "changeVideoList"
+    ]),
     // 开启定时器
     createSetTimeOut() {
       if (this.playListTimer) {
@@ -346,22 +356,22 @@ export default {
       document.body.click();
       let playListMenuTemplate = [
         {
-          label: this.$t('common.add'),
+          label: this.$t("common.add"),
           submenu: [
             {
-              label: this.$t('common.addFile'),
+              label: this.$t("common.addFile"),
               click: () => {
                 openDialog.openFile();
               }
             },
             {
-              label: this.$t('common.addFolder'),
+              label: this.$t("common.addFolder"),
               click: () => {
                 openDialog.openFolder();
               }
             },
             {
-              label: this.$t('common.addUrl'),
+              label: this.$t("common.addUrl"),
               click: () => {
                 connect.$emit("openUrl");
               }
@@ -372,13 +382,13 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.clearPlayList'),
+          label: this.$t("common.clearPlayList"),
           click: () => {
             this.clearVideoList();
           }
         },
         {
-          label: this.$t('common.deleteInvalid'),
+          label: this.$t("common.deleteInvalid"),
           click: () => {
             this.clearInvalidVideo();
           }
@@ -387,34 +397,44 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.playOrder'),
+          label: this.$t("common.playOrder"),
           submenu: [
             {
-              label: this.playMode == 1 ? "√ "+this.$t('common.singlePlay') : "   "+this.$t('common.singlePlay'),
+              label: this.$t("common.singlePlay"),
+              type: "checkbox",
+              checked: this.playMode == 1,
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ? "√ "+this.$t('common.singleCycle') : "   "+this.$t('common.singleCycle'),
+              label: this.$t("common.singleCycle"),
+              type: "checkbox",
+              checked: this.playMode == 2,
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ? "√ "+this.$t('common.loopList') : "   "+this.$t('common.loopList'),
+              label: this.$t("common.loopList"),
+              type: "checkbox",
+              checked: this.playMode == 3,
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ? "√ "+this.$t('common.sequentialPlay') : "   "+this.$t('common.sequentialPlay'),
+              label: this.$t("common.sequentialPlay"),
+              checked: this.playMode == 4,
+              type: "checkbox",
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ? "√ "+this.$t('common.randomPlay') : "   "+this.$t('common.randomPlay'),
+              label: this.$t("common.randomPlay"),
+              checked: this.playMode == 5,
+              type: "checkbox",
               click: () => {
                 this.setPlayMode(5);
               }
@@ -422,34 +442,44 @@ export default {
           ]
         },
         {
-          label: this.$t('common.sort'),
+          label: this.$t("common.sort"),
           submenu: [
             {
-              label: this.sortMode == 1 ? "√ "+this.$t('common.defaultSort') : "   "+this.$t('common.defaultSort'),
+              label: this.$t("common.defaultSort"),
+              type: "checkbox",
+              checked: this.sortMode == 1,
               click: () => {
                 this.setSortMode(1);
               }
             },
             {
-              label: this.sortMode == 2 ? "√ "+this.$t('common.sizeSort') : "   "+this.$t('common.sizeSort'),
+              label: this.$t("common.sizeSort"),
+              type: "checkbox",
+              checked: this.sortMode == 2,
               click: () => {
                 this.setSortMode(2);
               }
             },
             {
-              label: this.sortMode == 3 ? "√ "+this.$t('common.timeSort') : "   "+this.$t('common.timeSort'),
+              label: this.$t("common.timeSort"),
+              type: "checkbox",
+              checked: this.sortMode == 3,
               click: () => {
                 this.setSortMode(3);
               }
             },
             {
-              label: this.sortMode == 4 ? "√ "+this.$t('common.randomSort') : "   "+this.$t('common.randomSort'),
+              label: this.$t("common.randomSort"),
+              checked: this.sortMode == 4,
+              type: "checkbox",
               click: () => {
                 this.setSortMode(4);
               }
             },
             {
-              label: this.sortMode == 5 ? "√ "+this.$t('common.nameSort') : "   "+this.$t('common.nameSort'),
+              label: this.$t("common.nameSort"),
+              type: "checkbox",
+              checked: this.sortMode == 5,
               click: () => {
                 this.setSortMode(5);
               }
@@ -543,46 +573,41 @@ export default {
           label: this.$t("common.playOrder"),
           submenu: [
             {
-              label:
-                this.playMode == 1
-                  ? "√ " + this.$t("common.singlePlay")
-                  : "   " + this.$t("common.singlePlay"),
+              label: this.$t("common.singlePlay"),
+              type: "checkbox",
+              checked: this.playMode == 1,
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label:
-                this.playMode == 2
-                  ? "√ " + this.$t("common.singleCycle")
-                  : "   " + this.$t("common.singleCycle"),
+              label: this.$t("common.singleCycle"),
+              type: "checkbox",
+              checked: this.playMode == 2,
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label:
-                this.playMode == 3
-                  ? "√ " + this.$t("common.loopList")
-                  : "   " + this.$t("common.loopList"),
+              label: this.$t("common.loopList"),
+              type: "checkbox",
+              checked: this.playMode == 3,
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label:
-                this.playMode == 4
-                  ? "√ " + this.$t("common.sequentialPlay")
-                  : "   " + this.$t("common.sequentialPlay"),
+              label: this.$t("common.sequentialPlay"),
+              type: "checkbox",
+              checked: this.playMode == 4,
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label:
-                this.playMode == 5
-                  ? "√ " + this.$t("common.randomPlay")
-                  : "   " + this.$t("common.randomPlay"),
+              label: this.$t("common.randomPlay"),
+              type: "checkbox",
+              checked: this.playMode == 5,
               click: () => {
                 this.setPlayMode(5);
               }
@@ -593,46 +618,41 @@ export default {
           label: this.$t("common.sort"),
           submenu: [
             {
-              label:
-                this.sortMode == 1
-                  ? "√ " + this.$t("common.defaultSort")
-                  : "   " + this.$t("common.defaultSort"),
+              label: this.$t("common.defaultSort"),
+              type: "checkbox",
+              checked: this.sortMode == 1,
               click: () => {
                 this.setSortMode(1);
               }
             },
             {
-              label:
-                this.sortMode == 2
-                  ? "√ " + this.$t("common.sizeSort")
-                  : "   " + this.$t("common.sizeSort"),
+              label: this.$t("common.sizeSort"),
+              type: "checkbox",
+              checked: this.sortMode == 2,
               click: () => {
                 this.setSortMode(2);
               }
             },
             {
-              label:
-                this.sortMode == 3
-                  ? "√ " + this.$t("common.timeSort")
-                  : "   " + this.$t("common.timeSort"),
+              label: this.$t("common.timeSort"),
+              type: "checkbox",
+              checked: this.sortMode == 3,
               click: () => {
                 this.setSortMode(3);
               }
             },
             {
-              label:
-                this.sortMode == 4
-                  ? "√ " + this.$t("common.randomSort")
-                  : "   " + this.$t("common.randomSort"),
+              label: this.$t("common.randomSort"),
+              type: "checkbox",
+              checked: this.sortMode == 4,
               click: () => {
                 this.setSortMode(4);
               }
             },
             {
-              label:
-                this.sortMode == 5
-                  ? "√ " + this.$t("common.nameSort")
-                  : "   " + this.$t("common.nameSort"),
+              label: this.$t("common.nameSort"),
+              type: "checkbox",
+              checked: this.sortMode == 5,
               click: () => {
                 this.setSortMode(5);
               }
@@ -684,24 +704,24 @@ export default {
       "theme"
     ]),
     // 播放模式列表
-    playModeList(){
+    playModeList() {
       return [
-        { title: this.$t('common.singlePlay'), playMode: 1 },
-        { title: this.$t('common.singleCycle'), playMode: 2 },
-        { title: this.$t('common.loopList'), playMode: 3 },
-        { title: this.$t('common.sequentialPlay'), playMode: 4 },
-        { title: this.$t('common.randomPlay'), playMode: 5 }
-      ]
+        { title: this.$t("common.singlePlay"), playMode: 1 },
+        { title: this.$t("common.singleCycle"), playMode: 2 },
+        { title: this.$t("common.loopList"), playMode: 3 },
+        { title: this.$t("common.sequentialPlay"), playMode: 4 },
+        { title: this.$t("common.randomPlay"), playMode: 5 }
+      ];
     },
-     // 分类模式列表
-    soreModeList(){
+    // 分类模式列表
+    soreModeList() {
       return [
-        { title: this.$t('common.defaultSort'), soreMode: 1 },
-        { title: this.$t('common.sizeSort'), soreMode: 2 },
-        { title: this.$t('common.timeSort'), soreMode: 3 },
-        { title: this.$t('common.randomSort'), soreMode: 4 },
-        { title: this.$t('common.nameSort'), soreMode: 5 }
-      ]
+        { title: this.$t("common.defaultSort"), soreMode: 1 },
+        { title: this.$t("common.sizeSort"), soreMode: 2 },
+        { title: this.$t("common.timeSort"), soreMode: 3 },
+        { title: this.$t("common.randomSort"), soreMode: 4 },
+        { title: this.$t("common.nameSort"), soreMode: 5 }
+      ];
     }
   },
   watch: {

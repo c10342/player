@@ -243,11 +243,11 @@ export default {
     },
     // 打开网络地址
     openUrl() {
-      this.$prompt(this.$t('common.enterNetworkUrl'), {
-        confirmButtonText: this.$t('common.sureBtn'),
-        cancelButtonText: this.$t('common.cancelBtn'),
+      this.$prompt(this.$t("common.enterNetworkUrl"), {
+        confirmButtonText: this.$t("common.sureBtn"),
+        cancelButtonText: this.$t("common.cancelBtn"),
         inputValidator: this.inputValidator,
-        inputErrorMessage: this.$t('common.errorNetworkUrl')
+        inputErrorMessage: this.$t("common.errorNetworkUrl")
       })
         .then(({ value }) => {
           openDialog.openUrl(value);
@@ -320,24 +320,36 @@ export default {
     // 右键菜单
     contextmenu() {
       document.body.click();
+      const isother =
+        this.volumePercent != 0.1 &&
+        this.volumePercent != 0.2 &&
+        this.volumePercent != 0.3 &&
+        this.volumePercent != 0.4 &&
+        this.volumePercent != 0.5 &&
+        this.volumePercent != 0.6 &&
+        this.volumePercent != 0.7 &&
+        this.volumePercent != 0.8 &&
+        this.volumePercent != 0.9 &&
+        this.volumePercent != 1 &&
+        this.volumePercent != 0;
       let contextMenuTemplate = [
         {
-          label: this.$t('common.open'),
+          label: this.$t("common.open"),
           submenu: [
             {
-              label: this.$t('common.openFile'),
+              label: this.$t("common.openFile"),
               click: () => {
                 openDialog.openFile();
               }
             },
             {
-              label: this.$t('common.openFolder'),
+              label: this.$t("common.openFolder"),
               click: () => {
                 openDialog.openFolder();
               }
             },
             {
-              label: this.$t('common.openUrl'),
+              label: this.$t("common.openUrl"),
               click: () => {
                 this.openUrl();
               }
@@ -348,16 +360,20 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.winRoof'),
+          label: this.$t("common.winRoof"),
           submenu: [
             {
-              label: this.isAlwaysOnTop ? "     "+this.$t('common.never') : "√   "+this.$t('common.never'),
+              label: this.$t("common.never"),
+              type: "checkbox",
+              checked: !this.isAlwaysOnTop,
               click: () => {
                 this.setAlwaysOnTop(false);
               }
             },
             {
-              label: this.isAlwaysOnTop ? "√   "+this.$t('common.alway') : "     "+this.$t('common.alway'),
+              label: this.$t("common.alway"),
+              type: "checkbox",
+              checked: this.isAlwaysOnTop,
               click: () => {
                 this.setAlwaysOnTop(true);
               }
@@ -368,40 +384,50 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.playList'),
+          label: this.$t("common.playList"),
           click: () => {
             connect.$emit("showPlayList");
           }
         },
         {
-          label: this.$t('common.playOrder'),
+          label: this.$t("common.playOrder"),
           submenu: [
             {
-              label: this.playMode == 1 ? "√ "+this.$t('common.singlePlay') : "   "+this.$t('common.singlePlay'),
+              label: this.$t("common.singlePlay"),
+              type: "checkbox",
+              checked: this.playMode == 1,
               click: () => {
                 this.setPlayMode(1);
               }
             },
             {
-              label: this.playMode == 2 ? "√ "+this.$t('common.singleCycle') : "   "+this.$t('common.singleCycle'),
+              label: this.$t("common.singleCycle"),
+              type: "checkbox",
+              checked: this.playMode == 2,
               click: () => {
                 this.setPlayMode(2);
               }
             },
             {
-              label: this.playMode == 3 ? "√ "+this.$t('common.loopList') : "   "+this.$t('common.loopList'),
+              label: this.$t("common.loopList"),
+              type: "checkbox",
+              checked: this.playMode == 3,
               click: () => {
                 this.setPlayMode(3);
               }
             },
             {
-              label: this.playMode == 4 ? "√ "+this.$t('common.sequentialPlay') : "   "+this.$t('common.sequentialPlay'),
+              label: this.$t("common.sequentialPlay"),
+              type: "checkbox",
+              checked: this.playMode == 4,
               click: () => {
                 this.setPlayMode(4);
               }
             },
             {
-              label: this.playMode == 5 ? "√ "+this.$t('common.randomPlay') : "   "+this.$t('common.randomPlay'),
+              label: this.$t("common.randomPlay"),
+              type: "checkbox",
+              checked: this.playMode == 5,
               click: () => {
                 this.setPlayMode(5);
               }
@@ -412,96 +438,111 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.voice'),
+          label: this.$t("common.voice"),
           submenu: [
             {
-              label: this.volumePercent == 0.1 ? "√ 10%" : "   10%",
+              label: "10%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.1,
               click: () => {
                 let inWidth = 0.1 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.2 ? "√ 20%" : "   20%",
+              label: "20%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.2,
               click: () => {
                 let inWidth = 0.2 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.3 ? "√ 30%" : "   30%",
+              label: "30%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.3,
               click: () => {
                 let inWidth = 0.3 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.4 ? "√ 40%" : "   40%",
+              label: "40%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.4,
               click: () => {
                 let inWidth = 0.4 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.5 ? "√ 50%" : "   50%",
+              label: "50%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.5,
               click: () => {
                 let inWidth = 0.5 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.6 ? "√ 60%" : "   60%",
+              label: "60%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.6,
               click: () => {
                 let inWidth = 0.6 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.7 ? "√ 70%" : "   70%",
+              label: "70%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.7,
               click: () => {
                 let inWidth = 0.7 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.8 ? "√ 80%" : "   80%",
+              label: "80%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.8,
               click: () => {
                 let inWidth = 0.8 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 0.9 ? "√ 90%" : "   90%",
+              label: "90%",
+              type: "checkbox",
+              checked: this.volumePercent == 0.9,
               click: () => {
                 let inWidth = 0.9 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label: this.volumePercent == 1 ? "√ 100%" : "   100%",
+              label: "100%",
+              type: "checkbox",
+              checked: this.volumePercent == 1,
               click: () => {
                 let inWidth = 1 * 62;
                 this.setInWidth(inWidth);
               }
             },
             {
-              label:
-                this.volumePercent != 0.1 &&
-                this.volumePercent != 0.2 &&
-                this.volumePercent != 0.3 &&
-                this.volumePercent != 0.4 &&
-                this.volumePercent != 0.5 &&
-                this.volumePercent != 0.6 &&
-                this.volumePercent != 0.7 &&
-                this.volumePercent != 0.8 &&
-                this.volumePercent != 0.9 &&
-                this.volumePercent != 1 &&
-                this.volumePercent != 0
-                  ? `√ ${this.$t('common.other')}(${Math.round(this.volumePercent * 100)}%)`
-                  : "   "+this.$t('common.other')
+              label: isother
+                ? `${this.$t("common.other")}(${Math.round(
+                    this.volumePercent * 100
+                  )}%)`
+                : this.$t("common.other"),
+              type: "checkbox",
+              checked: isother
             },
             {
-              label: this.volumePercent == 0 ? "√ "+this.$t('common.mute') : "   "+this.$t('common.mute'),
+              label: this.$t("common.mute"),
+              type: "checkbox",
+              checked: this.volumePercent == 0,
               click: () => {
                 let inWidth = 0;
                 this.setInWidth(inWidth);
@@ -513,13 +554,15 @@ export default {
           type: "separator"
         },
         {
-          label: this.$t('common.setting')
+          label: this.$t("common.setting")
         }
       ];
       if (this.currentVideo) {
         let addMenu = [
           {
-            label: this.isPlaying ? this.$t('common.suspend') : this.$t('common.play'),
+            label: this.isPlaying
+              ? this.$t("common.suspend")
+              : this.$t("common.play"),
             click: () => {
               this.setPlaying(!this.isPlaying);
             }
@@ -531,14 +574,16 @@ export default {
         contextMenuTemplate.unshift(...addMenu);
 
         contextMenuTemplate.splice(4, 0, {
-          label: this.isFullScreen ? this.$t('common.exitScreen'):this.$t('common.fullScreen'),
+          label: this.isFullScreen
+            ? this.$t("common.exitScreen")
+            : this.$t("common.fullScreen"),
           click: () => {
             this.setFullScreen(!this.isFullScreen);
           }
         });
 
         contextMenuTemplate.push({
-          label: this.$t('common.fileInfo'),
+          label: this.$t("common.fileInfo"),
           click: () => {
             this.videoInfo = this.currentVideo;
             this.isShowInfo = true;
@@ -582,11 +627,11 @@ export default {
       this.$nextTick(() => {
         if (newVal) {
           this.isMusic && (this.animationPlayState = "running");
-          this.playModeTimers(this.$t('common.play'));
+          this.playModeTimers(this.$t("common.play"));
           this.dp.play();
         } else {
           this.isMusic && (this.animationPlayState = "paused");
-          this.playModeTimers(this.$t('common.suspend'));
+          this.playModeTimers(this.$t("common.suspend"));
           this.dp.pause();
         }
       });
@@ -672,14 +717,24 @@ export default {
         this.$nextTick(() => {
           if (newVal > 1) {
             this.speedTimers(
-              `${this.$t('common.playback')}（ctrl+up）：${newVal}${this.$t('common.times')}（${this.$t('common.reset')}）`
+              `${this.$t("common.playback")}（ctrl+up）：${newVal}${this.$t(
+                "common.times"
+              )}（${this.$t("common.reset")}）`
             );
           } else if (newVal < 1) {
             this.speedTimers(
-              `${this.$t('common.deceleration')}（ctrl+down）：${newVal}${this.$t('common.times')}（${this.$t('common.reset')}）`
+              `${this.$t(
+                "common.deceleration"
+              )}（ctrl+down）：${newVal}${this.$t("common.times")}（${this.$t(
+                "common.reset"
+              )}）`
             );
           } else if (newVal == 1) {
-            this.speedTimers(`${this.$t('common.normalSpeed')}：1.0${this.$t('common.times')}（${this.$t('common.reset')}）`);
+            this.speedTimers(
+              `${this.$t("common.normalSpeed")}：1.0${this.$t(
+                "common.times"
+              )}（${this.$t("common.reset")}）`
+            );
           }
           this.dp.speed(newVal);
         });
@@ -690,7 +745,9 @@ export default {
       immediate: true,
       handler: function(newVal) {
         this.$nextTick(() => {
-          this.volumeTimers(`${this.$t('common.volume')}：${Math.round(newVal * 100)}%`);
+          this.volumeTimers(
+            `${this.$t("common.volume")}：${Math.round(newVal * 100)}%`
+          );
           this.dp.volume(newVal);
         });
       }
