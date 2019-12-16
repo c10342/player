@@ -49,36 +49,37 @@ npm run build
 
 ### 效果图
 <p align="center">
-<img src="http://120.79.209.208:9093/player1.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player1.png?raw=true">
 </p>
 <h1 align="center">效果图1</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player2.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player2.png?raw=true">
 </p>
 <h1 align="center">效果图2</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player3.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player3.png?raw=true">
 </p>
 <h1 align="center">效果图3</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player4.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player4.png?raw=true">
 </p>
 <h1 align="center">效果图4</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player5.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player5.png?raw=true">
 </p>
 <h1 align="center">效果图5</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player6.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player6.png?raw=true">
 </p>
 <h1 align="center">效果图6</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player7.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player7.png?raw=true">
 </p>
 <h1 align="center">效果图7</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player8.png">
+<img src="https://github.com/c10342/player/blob/master/screenshots/player8.png?raw=true">
 </p>
 <h1 align="center">效果图8</h1>
+
 
 ## 如果有喜欢的欢迎给我点赞star
