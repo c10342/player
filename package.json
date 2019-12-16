@@ -41,10 +41,10 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "static/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "static/icons/icon.ico"
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,
@@ -52,7 +52,7 @@
       "perMachine": false
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "static/icons"
     },
     "publish": [
       {
