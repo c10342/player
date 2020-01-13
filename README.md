@@ -29,8 +29,9 @@ npm run build
 - [express](http://www.expressjs.com.cn/)：负责把视频读取出来，把视频以流的形式返回
 - [html5相关技术](http://www.w3school.com.cn/html5/index.asp)：拖拽api，全屏api，Notification消息通知
 - [DPlayer](http://dplayer.js.org/#/zh-Hans/)：音视频播放器核心组件
-- [vue-i18n](https://github.com/kazupon/vue-i18n) : 实现国际化
+- [vue-i18n](https://github.com/kazupon/vue-i18n) : 实现国际化(中英文切换)
 - [mousetrap](https://github.com/ccampbell/mousetrap) : 实现键盘组合监听
+- [electron-updater](https://www.npmjs.com/package/electron-updater) : 实现自动更新功能
 
 ### 已实现功能
 - 视频播放：目前已经支持大多数视频格式，比如 MP4、WebM、mkv、avi、WMV、FLV、rmvb 等，后续会添加更多的视频格式
@@ -46,38 +47,39 @@ npm run build
 - 全屏功能：实现了应用的全屏功能，这里是使用了electron提供的全屏api，没有使用html5的全屏api
 - 右键菜单功能：目前已经实现了大多数右键菜单的功能，没实现的后续实现
 - 国际化：目前已经实现了中英文切换，后期有需要再继续实现其他语言
+- 自动更新功能
 
 ### 效果图
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player1.png?raw=true">
+<img src="http://120.79.209.208:9093/player1.png">
 </p>
 <h1 align="center">效果图1</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player2.png?raw=true">
+<img src="http://120.79.209.208:9093/player2.png?raw=true">
 </p>
 <h1 align="center">效果图2</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player3.png?raw=true">
+<img src="http://120.79.209.208:9093/player3.png?raw=true">
 </p>
 <h1 align="center">效果图3</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player4.png?raw=true">
+<img src="http://120.79.209.208:9093/player4.png?raw=true">
 </p>
 <h1 align="center">效果图4</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player5.png?raw=true">
+<img src="http://120.79.209.208:9093/player5.png?raw=true">
 </p>
 <h1 align="center">效果图5</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player6.png?raw=true">
+<img src="http://120.79.209.208:9093/player6.png?raw=true">
 </p>
 <h1 align="center">效果图6</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player7.png?raw=true">
+<img src="http://120.79.209.208:9093/player7.png?raw=true">
 </p>
 <h1 align="center">效果图7</h1>
 <p align="center">
-<img src="https://github.com/c10342/player/blob/master/screenshots/player8.png?raw=true">
+<img src="http://120.79.209.208:9093/player8.png?raw=true">
 </p>
 <h1 align="center">效果图8</h1>
 
