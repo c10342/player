@@ -1,0 +1,275 @@
+.bar{
+	background: rgb(0,200,140);
+	height: 3rem;
+	line-height: 3rem;
+	display: flex;
+}
+/********************************** 顶部导航栏 *******************************/
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.header-title{
+	width: 5rem;
+	position: absolute;
+	left: 50%;
+	margin-left: -2.5rem;
+	text-align: center;
+	color: white;
+	/* margin: auto;
+	margin-right: 25%;
+	color:white; */
+}
+#lastPage{
+	color: white;
+}
+#nextPage{
+	color:white;
+	margin: auto;
+	margin-right: 0;
+	text-align: center;
+	width: 4rem;
+}
+#vuemain{
+	height: 100%;
+}
+/****************************显示按钮**************************/
+.showBtn{
+	
+	height: 2rem;
+	width: 2rem;
+	border-radius: 5px;
+	z-index: 1000;
+	position: absolute;
+	bottom: 6rem;
+	right: .8rem;
+	background: white;
+	opacity: 0.7;
+	display: flex;
+}
+.showBtn img{
+	margin: auto;
+	width: 1.5rem;
+}
+/***************************地图Map*****************************/
+#container{
+	width: 100%;
+	height: 100%;
+}
+
+/***************************底部卡片******************************/
+.route_info{
+	position: absolute;
+	width: 96%;
+	left: 50%;
+	margin-left: -48%;
+	bottom: 1rem;
+}
+.routeInfo_card{
+	border-radius: 1rem;
+}
+.routeInfo_card_detail{
+	border-radius: 1rem;
+}
+.card-header{
+	height: 2rem;
+	display: flex;
+}
+.header_change{
+	margin: auto;
+	margin-right: 1rem;
+	margin-top: 0;
+	margin-bottom: 0;
+	display: flex;
+	
+}
+.header_change img{
+	width: 1.5rem;
+	margin: auto;
+}
+.card-content{
+	height: 12rem;
+}
+.route_detail{
+	max-height: 12rem;
+	overflow-y: scroll;
+}
+.userInfo{
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 18px;
+	margin-top: .3rem;
+	display: flex;
+}
+.username{
+	margin: auto;
+	margin-left: 1rem;
+}
+.mobile{
+	margin:auto;
+	margin-right: 2rem;
+}
+.change{
+	display: flex;
+	margin-right: 1rem;
+}
+.change img{
+	margin: auto;
+}
+.lable_close{
+	margin: auto;
+    width:0;
+    height:0;
+    border:.8rem solid #f00283;
+    border-style:dotted dotted solid dotted;
+    border-color: #333 transparent transparent transparent;
+}
+.other{
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 18px;
+	display: flex;
+}
+.time{
+	width: 60%;
+	display: flex;
+	margin-right: 0;
+}
+.time-img{
+	margin: auto;
+	width: 3rem;
+	margin-left: 2rem;
+	margin-right: 0;
+}
+.time-word{
+	margin: auto;
+	margin-left: 1rem;
+}
+.person{
+	width: 30%;
+	display: flex;
+	margin: auto;
+	margin-right: 2rem;
+	margin-left: 1rem;
+}
+.routeInfo{
+	height: 5rem;
+}
+.mui-slider .mui-slider-group .mui-slider-item img {
+	height: 2rem;
+	width: 2rem
+}
+.route-item{
+	height: 2.5rem;
+	display: flex;
+	margin-bottom: .3rem;
+}
+.title{
+	width: 60%;
+	display: flex;
+}
+.route-img{
+	margin: auto;
+	margin-left: 1rem;
+	margin-right: 0;
+}
+.word{
+	margin: auto;
+	margin-left: 1rem;
+	margin-right: 1rem;
+	font-size: 16px;
+}
+.serviceInfo{
+	display: flex;
+	width: 40%;
+	margin: auto;
+	margin-left: 1rem;
+}
+.rateNum{
+	margin: auto;
+	margin-left: 0.2rem;
+}
+.totalOrder{
+	margin: auto;
+	margin-right: 1rem;
+}
+.route-content{
+	width: 55%;
+	height: 2.5rem;
+	line-height: 2.5rem;
+	font-size: 16px;
+	margin: auto;
+	text-align: right;
+	margin-right: 1rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+/*****************底部订单按钮******************/
+.bottom-btn{
+	width: 100%;
+	height: 5rem;
+	position:fixed;
+	bottom: -1.3rem;
+	margin-top: -0.15rem;
+	background: linear-gradient(rgb(255,255,255), rgb(245,245,245)); /* 标准的语法 */
+	overflow: hidden;
+	background: rgba(0,0,0,0);
+	z-index: 10000;
+}
+.btn-word{
+	list-style: none;
+	position: absolute;
+	width: 8rem;
+	height: 8rem;
+	z-index: 100;
+	left: 50%;
+	margin-left: -4rem;
+	text-align: center;
+	line-height: 7rem;
+}
+
+.bottom-btn li img{
+	width: 100%;
+}
+.one{
+	position: absolute;
+	left: 50%;
+	margin-left: -4rem;
+	top: 0;
+	width: 8rem;
+	list-style: none;
+	animation: one 10s linear 0s infinite alternate;
+}
+.two{
+	position: absolute;
+	left: 50%;
+	margin-left: -4rem;
+	top: 0;
+	width: 8rem;
+	list-style: none;
+	animation: two 10s linear 0s infinite alternate;
+}
+@keyframes one {
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(100deg);
+	}
+}
+ @keyframes two {
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(-100deg);
+	}
+}
+.rate-tips{
+	text-align: center;
+	font-size: 18px;
+	margin-bottom: 1rem;
+}

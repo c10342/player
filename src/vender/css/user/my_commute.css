@@ -1,0 +1,77 @@
+.bar{
+	background: rgb(0,200,140);
+	height: 3rem;
+	line-height: 3rem;
+	display: flex;
+}
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.header-title{
+	margin: auto;
+	color:white;
+}
+.main{
+	margin-top: 5rem;
+}
+.tips{
+	font-size: 18px;
+	width: 80%;
+	margin-left: 2rem;
+}
+.route-item{
+	margin: 2rem auto;
+	width: 90%;
+	border-radius: 10px;
+}
+.mui-card-content:active{
+	background: #CCCCCC;
+}
+.item-header{
+	float: left;
+}
+.item-content{
+	height: 4rem;
+}
+.content-left{
+	display: flex;
+	height: 4rem;
+	float: left;
+	width: 38%;
+}
+.content-left-img{
+	margin:auto;
+	margin-left: 2rem;
+	margin-right: 0;
+	width: 2rem;
+}
+.content-left-word{
+	width: 3rem;
+	font-size: 16px;
+	margin:auto;
+	margin-left: 1rem;
+	margin-right: 0;
+}
+.content-right{
+	float: right;
+	font-size: 16px;
+	line-height: 4rem;
+	max-height: 4rem;
+	margin-right: 1.5rem;
+	text-align: right;
+	width: 40%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.disabled{
+	background: rgb(238, 238, 238);
+	color: rgb(192, 196, 204);
+}
+.disabled:active{
+	background: rgb(238, 238, 238);
+	color: rgb(192, 196, 204);
+}

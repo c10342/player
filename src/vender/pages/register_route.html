@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user/register_route.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css"/>
+		<script src="../js/mui.js"></script>
+		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/config.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-bar-nav-bg bar">
+			<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<span class="header-title">路线设置</span>
+		</header>
+		<div class="main" id="main">
+			<p class="tips">登记路线，我们将为您推荐顺路的司机</p>
+			<div class="mui-card route-item" id="work-route">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span class="item-header">上班路线</span>
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content">
+					<div v-if="startWork">
+						<div class="item-content" @click="setRoute(1)">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle1.png" alt="">
+								<span class="content-left-word">家</span>
+							</div>
+							<div class="content-right">
+								{{origin}}
+							</div>
+						</div>
+						<div class="item-content" @click="setRoute(2)">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle2.png" alt="">
+								<div class="content-left-word">公司</div>
+							</div>
+							<div class="content-right">
+								{{destination}}
+							</div>
+						</div>
+					</div>
+					<div v-if="offDuty">
+						<div class="item-content" @click="setRoute(3)">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle2.png" alt="">
+								<div class="content-left-word">公司</div>
+							</div>
+							<div class="content-right">
+								{{origin}}
+							</div>
+						</div>
+						<div class="item-content" @click="setRoute(4)">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle1.png" alt="">
+								<span class="content-left-word">家</span>
+							</div>
+							<div class="content-right">
+								{{destination}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="time">
+				<div class="depart_time" @click="choose_departTime" v-show="startWork">
+					<p class="time-title">上班出发时间</p>
+					{{depart_time}}
+				</div>
+				<div class="arrive_time" @click="choose_arriveTime" v-show="startWork">
+					<p class="time-title">到达时间</p>
+					{{arrive_time}}
+				</div>
+				<div class="work_off_time" @click="choose_offTime" v-show="offDuty">
+					<p class="time-title">下班时间</p>
+					{{off_time}}
+				</div>
+			</div>
+			
+			<ul class="mui-table-view list-group">
+				<li class="mui-table-view-cell mui-media info-item" @click="choose_person">
+					<a class="mui-navigate-right">
+						<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/person.png">
+						人数
+						<span class="person">{{person}}</span>
+					</a>
+				</li>
+			</ul>
+			<button class="my-btn" id="submit" @click="updateRoute()"><strong>确定</strong></button> 
+		</div>
+
+	</body>
+
+</html>
+<script type="text/javascript">
+	
+	var commute_choosePage = null
+	
+	function getDefaultData(){
+		return {
+			route_type: '',
+			depart_time: '请设置',
+			arrive_time: '请设置',
+			off_time: '请设置',
+			person:'请设置',
+			origin: '请设置',
+			origin_longitude: 0,
+			origin_latitude: 0,
+			destination: '请设置',
+			destination_longitude: 0,
+			destination_latitude: 0,
+			startWork: true,
+			offDuty: false
+		}
+	}
+	
+	var VueObject =  new Vue({
+		el: "#main",
+		data: getDefaultData(),
+		watch: {
+			route_type(newVal, oldVal){
+				if(newVal == 'work'){
+					this.startWork = true
+					this.offDuty = false
+				}else{
+					this.startWork = false;
+					this.offDuty = true
+				}
+			} 
+		},
+		methods:{
+			resetData() {
+				this.route_type = ''
+				this.depart_time = '请设置'
+				this.arrive_time = '请设置'
+				this.off_time = '请设置'
+				this.person ='请设置'
+				this.origin = '请设置'
+				this.origin_longitude = 0
+				this.origin_latitude = 0
+				this.destination = '请设置'
+				this.destination_longitude = 0
+				this.destination_latitude = 0
+				this.startWork = false
+				this.offDuty = false
+			},
+			choose_departTime() {
+				//选择出发时间
+				var dtPicker = new mui.DtPicker({
+					type: 'time'
+				});
+				var _this = this;
+				dtPicker.show(function (selectItems) { 
+					_this.depart_time = selectItems.h.value + ":" + selectItems.i.value
+					console.log(this.depart_time)
+				})
+			},
+			choose_arriveTime() {
+				//选择到达时间
+				var dtPicker = new mui.DtPicker({
+					type: 'time'
+				});
+				var _this = this;
+				dtPicker.show(function (selectItems) { 
+				    _this.arrive_time = selectItems.h.value + ":" + selectItems.i.value
+				})
+			},
+			choose_offTime() {
+				//选择下班时间
+				var dtPicker = new mui.DtPicker({
+					type: 'time'
+				});
+				var _this = this;
+				dtPicker.show(function (selectItems) { 
+				    _this.off_time = selectItems.h.value + ":" + selectItems.i.value
+				})
+			},
+			choose_person() {
+				//选择出行人数
+				var picker = new mui.PopPicker(); 
+				picker.setData([
+					{value:'1',text:'1'},
+					{value:'2',text:'2'},
+					{value:'3',text:'3'},
+					{value:'4',text:'4'},
+				]);
+				var _this = this;
+				picker.show(function (selectItems) {
+					_this.person = selectItems[0].value;
+				})
+			},
+			loadRoute() {
+				//初始化路线信息
+				
+			},
+			isEmpty(){
+				if(this.origin == '请设置'){
+					mui.toast('请设置起点')
+					return false
+				}
+				if(this.destination == '请设置'){
+					mui.toast('请设置终点')
+					return false
+				}
+				if(this.person == '请设置'){
+					mui.toast('请设置人数')
+					return false
+				}
+				if(this.depart_time == '请设置'){
+					mui.toast('请设置出发时间')
+					return false
+				}
+				if(this.route_type == 'work' && this.arrive_time == '请设置'){
+					mui.toast('请输入到达时间')
+					return false
+				}
+				return true
+			},
+			updateRoute() {
+				var isEmpty = this.isEmpty()
+				if(isEmpty === false){
+					return false;
+				}
+				//点击确认，更新路线信息
+				axios.post( baseURL + '/setRoute',
+					{
+						//1-上班,2-下班
+						routeType: this.route_type,
+						//起点信息
+						origin: this.origin,
+						//起点百度经度
+						origin_longitude: this.origin_longitude,
+						//起点百度纬度
+						origin_latitude: this.origin_latitude,
+						//终点信息
+						destination: this.destination,
+						//终点百度经度
+						destination_longitude: this.destination_longitude,
+						//终点百度纬度
+						destination_latitude: this.destination_latitude,
+						//人数
+						person: this.person,
+						//出发时间
+						depart_time: this.depart_time,
+						//到达时间
+						arrive_time: this.arrive_time
+					}).then(res => {
+						mui.toast("设置成功");
+						var my_commutePage = plus.webview.getWebviewById('my_commute.html');
+						var mainPage = plus.webview.getWebviewById('./pages/main.html');
+						mui.fire(mainPage, 'getRoute');
+						mui.fire(my_commutePage,'LoadRouteInfo');
+						mui.back()
+						my_commutePage.show('slide-in-right')
+						
+					}).catch(err => {
+						console.log(err);
+					})
+			},
+			getRoute(localeType, data) {
+				//获取路线信息
+				if(localeType == 1){
+					console.log(data);
+					this.route_type = 'work'
+					this.origin = data.title
+					this.origin_longitude = data.point.lng
+					this.origin_latitude = data.point.lat
+				}else if(localeType == 2){
+					this.route_type = 'work'
+					this.destination = data.title
+					this.destination_longitude = data.point.lng
+					this.destination_latitude = data.point.lat
+				}else if(localeType == 3){
+					this.route_type = 'offwork'
+					this.origin = data.title
+					this.origin_longitude = data.point.lng
+					this.origin_latitude = data.point.lat
+				}else if(localeType == 4){
+					this.route_type = 'offwork'
+					this.destination = data.title
+					this.destination_longitude = data.point.lng
+					this.destination_latitude = data.point.lat
+				}else{
+					this.route_type = 'work'
+					this.resetData()
+				}
+				plus.nativeUI.closeWaiting();
+			},
+			setRoute(localeType) {
+				//设置路线,页面跳转
+				mui.fire(commute_choosePage,'LoadMapSearch',{localeType: localeType})
+				commute_choosePage.show('slide-in-right');
+			}
+		}
+	})
+	
+	mui.plusReady(function(){
+
+	})
+	
+	//自定义加载事件
+	//初始化页面
+	document.addEventListener('RouteType', function(event) {
+		//获得事件参数
+		plus.nativeUI.showWaiting('加载中...', {
+			width: '100px',
+			height: '100px'
+		})
+		//VueObject.resetData()
+		VueObject.route_type = event.detail.name;
+		
+		axios.get(baseURL + '/getRoute?route_type=' + event.detail.name).then(res => {
+			
+			var routeInfo = res.data[0]
+			
+			VueObject.depart_time = routeInfo.depart_time.slice(0,5)
+			VueObject.arrive_time = routeInfo.arrive_time.slice(0,5)
+			VueObject.off_time = routeInfo.depart_time.slice(0,5)
+			VueObject.person = routeInfo.person
+			VueObject.origin = routeInfo.origin
+			VueObject.origin_longitude = routeInfo.origin_longitude
+			VueObject.origin_latitude = routeInfo.origin_latitude
+			VueObject.destination = routeInfo.destination
+			VueObject.destination_longitude = routeInfo.destination_longitude
+			VueObject.destination_latitude = routeInfo.destination_latitude
+		
+		})
+		
+		//预加载地址选择页
+		commute_choosePage = plus.webview.getWebviewById('my_commute_choose.html')
+		if(!commute_choosePage){
+			//页面跳转到地址选择页面
+			commute_choosePage = mui.preload({
+				id : 'my_commute_choose.html',
+				url: 'my_commute_choose.html'
+			})
+		}
+		plus.nativeUI.closeWaiting()
+	},false)
+	
+	//下级页面设置路线
+	document.addEventListener('LoadRouteBySub',function(event) {
+		var data = event.detail.data
+		var localeType = event.detail.localeType
+		if(data != undefined || localeType != undefined){
+			VueObject.getRoute(localeType, data);
+		}
+		plus.nativeUI.closeWaiting()
+	},false)
+	
+
+	
+</script>

@@ -1,0 +1,185 @@
+.mui-control-content {  
+	background-color: white;  
+}  
+.mui-control-content .mui-loading {  
+	margin-top: 50px;  
+}  
+/********************************** 顶部导航栏 *******************************/
+.bar{
+	background: rgb(0,200,140);
+	height: 3rem;
+	line-height: 3rem;
+	display: flex;
+	position: fixed;
+	top: 0;
+}
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.header-title{
+	width: 5rem;
+	position: absolute;
+	left: 50%;
+	margin-left: -2.5rem;
+	text-align: center;
+	color: white;
+}
+/********************************** 顶部选项卡 *******************************/
+.record-main{
+	margin-top: 1.3rem;
+}
+/********************************** 顶部选项卡 *******************************/
+.mybar{
+	position: fixed;
+	top: 2.6rem;
+	color: black;
+	background: rgb(0,200,140);
+	/* z-index: 100; */
+}
+.mui-slider-progress-bar{
+	height: 3px;
+	/* z-index: 200; */
+}
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+	color: white;
+}
+.mui-control-item{
+	font-size: 16px;
+}
+/********************************** 内容列表 *******************************/
+.mui-slider-group{
+	margin-top: 2.8rem;
+	height: 86%;
+}
+/***************************底部卡片******************************/
+.route_info{
+	position: absolute;
+	width: 96%;
+	left: 50%;
+	margin-left: -48%;
+	bottom: 1rem;
+}
+.routeInfo_card{
+	border-radius: 1rem;
+}
+/* .card-content:active{
+	background: rgba(197, 197, 197, .3);
+} */
+.routeInfo_card_detail{
+	border-radius: 1rem;
+}
+.card-header{
+	height: 2rem;
+	display: flex;
+}
+.header_change{
+	margin: auto;
+	margin-right: 1rem;
+	margin-top: 0;
+	margin-bottom: 0;
+	display: flex;
+	
+}
+.header_change img{
+	width: 1.5rem;
+	margin: auto;
+}
+.card-content{
+	height: 9rem;
+}
+.route_detail{
+	max-height: 12rem;
+	overflow-y: scroll;
+}
+.other{
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 18px;
+	display: flex;
+}
+.time{
+	width: 60%;
+	display: flex;
+	margin-right: 0;
+}
+.btngroup{
+	width: 35%;
+	display: flex;
+	margin: auto;
+}
+.delete{
+	margin: auto;
+	border-radius: 5px;
+	background: rgb(220, 81, 76);
+	height: 2rem;
+	width: 4rem;
+	color: white;
+}
+.detail{
+	margin: auto;
+	margin-right: .1rem;
+	border-radius: 5px;
+	background: white;
+	height: 2rem;
+	width: 4rem;
+	color: black;
+}
+.routeInfo{
+	height: 5rem;
+}
+ .mui-slider .mui-slider-group .mui-slider-item img {
+	height: 1rem;
+	width: 1rem
+} 
+.route-item{
+	height: 2.5rem;
+	display: flex;
+	margin-bottom: .3rem;
+}
+.title{
+	width: 40%;
+	display: flex;
+}
+.route-img{
+	margin: auto;
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+.route-clock-img{
+	margin: auto;
+	margin-left: 1rem;
+}
+.word{
+	margin: auto;
+	margin-left: 0;
+	font-size: 16px;
+}
+.word-time{
+	margin: auto;
+	font-size: 16px;
+}
+.route-content{
+	width: 55%;
+	height: 2.5rem;
+	line-height: 2.5rem;
+	font-size: 16px;
+	margin: auto;
+	text-align: right;
+	margin-right: 1rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+/********************************** 最下方等待提示 *******************************/
+.mui-pull-bottom-wrapper{
+	height: 3rem;
+	line-height: 3rem;
+	text-align: center;
+}
+.mui-pull-loading{
+
+}
+	

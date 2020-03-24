@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/main/main.css">
+		<link rel="stylesheet" href="../css/main/userdetail.css">
+		<script src="../js/mui.js"></script>
+		<script src="../js/axios.min.js" type="text/javascript"></script>
+		<script src="../js/base.js" type="text/javascript"></script>
+		<script src="../js/config.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav main-bar" style="border: 0; box-shadow: none;">
+			<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title main-title">用户信息</h1>
+		</header>
+	</body>
+	<div class="base-info">
+		<ul class="mui-table-view" style="border-radius: 20px;">
+			<li class="mui-table-view-cell mui-media" >
+				<a href="javascript:;" style="line-height: 5rem;">
+					<span class="mui-pull-left">用户头像</span>
+					<div class="mui-media-body" style="max-height: 5rem;" align="right">
+						<img class="avater" src="../imgs/icons/driver.png" alt="">
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;" class="info-item">
+					<span class="mui-pull-left">姓名</span>
+					<div class="mui-media-body info-item-content" align="right">
+						<p class='mui-ellipsis' id="realname">123</p>
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;" class="info-item">
+					<span class="mui-pull-left">手机号码</span>
+					<div class="mui-media-body info-item-content" align="right">
+						<p class='mui-ellipsis' id="mobile">挫冰吃瓜，冬天围炉取暖.</p>
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;" class="info-item">
+					<span class="mui-pull-left">身份证号</span>
+					<div class="mui-media-body info-item-content" align="right">
+						<p class='mui-ellipsis' id="id_number">想瓜，冬天围炉取暖.</p>
+					</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;" class="info-item">
+					<span class="mui-pull-left">地址</span>
+					<div class="mui-media-body info-item-content" align="right">
+						<p class='mui-ellipsis' id="address">想瓜，冬天围炉取暖.</p>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="message">
+		<img class="icon-logo-big" src="../imgs/icons/sign.png" alt="">
+		还没有通过审核
+	</div>
+	<button type="button" id="verify" class="mui-btn mui-btn-danger">立即上传</button>
+</html>
+<script type="text/javascript">
+	if(window.plus){
+		plusReady();
+	}else{
+		document.addEventListener("plusready",plusReady,false);
+	}
+	function plusReady(){
+		// 弹出系统等待对话框
+		var waiting = plus.nativeUI.showWaiting( "等待中..." );
+		getPassengerInfo(waiting);
+	}
+	/* mui.ready(function(){
+		getPassengerInfo()
+	}); */
+	
+	//渲染页面信息
+	function getPassengerInfo(waiting){
+		//获取用户信息
+		axios.get(baseURL + '/getUserInfo').then( (res) => {
+			console.log(res);
+			userInfo = res.data.user;
+			mui("#realname")[0].innerHTML = userInfo.realname;
+			mui("#mobile")[0].innerHTML = userInfo.mobile;
+			mui("#id_number")[0].innerHTML = userInfo.ID_number;
+			mui("#address")[0].innerHTML = userInfo.address;
+		
+			
+			//判断上传类型
+			if(!userInfo.ID_number){
+				mui("#verify")[0].setAttribute('verify_type','ID');
+			}else{
+				//隐藏按钮
+				document.querySelector('.message').classList.add('mui-hidden');
+				document.querySelector('#verify').classList.add('mui-hidden');
+			}
+			//完成渲染,关闭等待框
+			waiting.close();
+		})
+	}
+	mui(document.body).on('tap', '#verify', function(e) {
+		var verify_type = e.target.getAttribute('verify_type')
+		if(verify_type == "ID"){
+			goToPages("../pages/id_verify.html");
+		}else{
+			return false;
+		}
+		
+	})
+
+</script>

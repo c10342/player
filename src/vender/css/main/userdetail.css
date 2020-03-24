@@ -1,0 +1,67 @@
+#icon-menu{
+	color: white;
+}
+.mask{
+	width: 100%;
+	height: 12rem;
+	position: absolute;
+	background: rgb(0,200,140);
+}
+.base-info{
+	position: absolute;
+	margin-top: 6rem;
+	margin-left: 10%;
+	width: 80%;
+	border-radius: 20px;
+}
+.avater{
+	height: 5rem;
+	border-radius: 50%;
+}
+.info-item{
+	line-height: 2.8rem;
+}
+.info-item-content{
+	margin-right: .5rem;
+}
+.mui-table-view-cell > a:not(.mui-btn).mui-active
+{
+    background-color: rgba(0, 200, 140, 0.5);
+}
+.mui-table-view-cell:first-child > a:not(.mui-btn).mui-active{
+	border-top-left-radius:20px;
+	border-top-right-radius:20px;
+}
+.mui-table-view-cell:last-child > a:not(.mui-btn).mui-active{
+	border-bottom-left-radius:20px;
+	border-bottom-right-radius:20px;
+}
+.message{
+	position: absolute;
+	bottom: 6rem;
+	left: 50%;
+	width: 20rem;
+	margin-left: -10rem;
+	text-align: center;
+	display: flex;
+	height: 4rem;
+	line-height: 4rem;
+}
+.message img{
+	margin: auto;
+	margin-right: 1rem;
+	margin-left: 20%;
+}
+#verify{
+	position: absolute;
+	bottom: 3rem;
+	width: 8rem;
+	height: 2.8rem;
+	border-radius: 20px;
+	left: 50%;
+	margin-left: -4rem;
+	font-size: 16px;
+}
+#address{
+	width: 80%;
+}

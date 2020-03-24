@@ -1,0 +1,49 @@
+
+.main {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px: left: 0px;
+	background: #fff;
+	text-align: center;
+}
+
+.img-wrapper {
+	width: 100%;
+	height: 45%;
+	text-align: center;
+	position: relative;
+}
+
+.logo {
+	width: 60%;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	left: 50%;
+	margin-left: -28%;
+	text-align: center;
+}
+
+.content {
+	width: 16rem;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.my-line {
+	width: 88%;
+	margin: 0 auto;
+	margin-bottom: .5rem;
+}
+
+.my-btn {
+	background: rgb(0, 200, 140);
+	font-size: 16px;
+	color: #fff;
+	margin: 0 auto;
+	margin-top: 1rem;
+	margin-bottom: .36rem;
+	width: 10rem;
+	border-radius: 2rem;
+}

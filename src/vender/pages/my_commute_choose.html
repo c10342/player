@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/user/my_commute_choose.css">
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/config.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=aqY4rWHU4KtRiHnzWO8k0EzQ5ik4K6xv"></script>
+		<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+		<script src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+		
+	<body>
+		<div id="vuemain">
+			<header class="mui-bar mui-bar-nav mui-bar-nav-bg bar">
+				<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<span class="header-title"><input type="text" v-model.trim="keyword" class="search-input" id="suggestId" style="background:transparent;color: white;border: 0;border-bottom:2px solid #ffffff" placeholder="请输入搜索地址"></span>
+				<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto;display: none;"></div>
+			</header>
+			
+			<div id="main">
+				<div id="container"></div>
+				<div class="goto-map">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell map-btn" @click="goToMap">
+							<img src="../imgs/map.png" class="btn-img" alt="">
+							<span class="btn-word">地址选择</span>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="used_address"  v-if="!searchListShow">
+					<p class="address_header"><strong>常用地址</strong></p>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell address-item"
+						 v-for="(item,index) in used_address" 
+						:key="index"
+						@click="setRoute(item)">
+							<p class="address-name">{{item.title}}</p>
+							<p class="address-subjection">{{item.address}}</p>
+						</li>
+						<li class="mui-table-view-cell address-item" v-if="!used_address">
+							<p class="address-name">无</p>
+							<p class="address-subjection">暂无</p>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="search_address"  v-if="!searchListShow">
+					<p class="address_header"><strong>周边热门</strong></p>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell address-item" 
+						  v-for="(item,index) in nearbyList" 
+						 :key="index"
+						 @click="setRoute(item)">
+							<p class="address-name">{{item.title}}</p>
+							<p class="address-subjection">{{item.address}}</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="choose-input-search-list" v-if="searchListShow">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell address-item" 
+					  v-for="(item,index) in searchList" 
+					  :key="index" 
+					  @click="findPlace(item)">
+						<p class="address-name">{{item.business}}</p>
+						<p class="address-subjection">{{item.city}}{{item.district}}</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script type="text/javascript">
+	
+	//获取原始窗口的高度
+	//解决软键盘出现顶起页面的样式扭曲问题
+	var originalHeight = document.documentElement.clientHeight || document.body.clientHeight;
+	
+	window.onresize = function() {
+		//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+		var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+		if(resizeHeight * 1 < originalHeight * 1) { //resizeHeight<originalHeight证明窗口被挤压了
+			plus.webview.currentWebview().setStyle({
+				height: originalHeight
+			});
+		}
+	}
+	
+	var commute_mapPage = null
+	
+	var VueObject = new Vue({
+		el: "#vuemain",
+		data: function(){
+			return {
+				used_address: [],
+				searchListShow: false,
+				keyword: '',
+				searchList: [],
+				nearbyList: [],
+				localeType: 0
+			}
+		},
+		watch: {
+			searchList(newVal,oldVal) {
+				if(newVal.length > 0){
+					this.searchListShow = true
+				}
+			},
+			keyword(newVal, oldVal){
+				if(newVal == '' || newVal == null){
+					this.searchListShow = false;
+					this.searchList = []
+				}
+			}
+		},
+		methods:{
+			goToMap() {
+				//页面跳转
+				mui.fire(commute_mapPage, 'getLocation',{localeType: this.localeType})
+				commute_mapPage.show('slide-in-right');
+			},
+			setRoute(routeInfo) {
+				console.log(123)
+				//错误处理
+				var register_routePage = mui.preload({
+					url:'register_route.html',
+					id:'register_route.html',
+				})
+				if(this.localeType == 0){
+					plus.nativeUI.showWaiting('网络错误,跳转中..', {
+						width: '100px',
+						height: '100px'
+					})
+					setTimeout(function(){
+						//跳转到my_commute.html
+						mui.fire(register_routePage,'LoadRouteBySub',{localeType: this.localeType})
+						mui.back()
+						register_routePage.show('slide-in-right')
+						plus.nativeUI.closeWaiting()
+					},1000)
+					return false;
+				}else{
+					var used_address = JSON.parse(localStorage.getItem('used_address'))
+					console.log(used_address)
+					if(used_address == null){
+						used_address = []
+						used_address.unshift(routeInfo);
+					}else if(used_address.length < 3){
+						//判断是否重复
+						var repetition = false;
+						for(var i=0; i<used_address.length; i++){
+							if(used_address[i].title == routeInfo.title && used_address[i].address == routeInfo.address){
+								var repetition = true;
+								break;
+							}
+						}
+						repetition ? '' : used_address.unshift(routeInfo)
+					}else{
+						//判断是否重复
+						var repetition = false;
+						for(var i=0; i<used_address.length; i++){
+							if(used_address[i].title == routeInfo.title && used_address[i].address == routeInfo.address){
+								repetition = true;
+								break;
+							}
+						}
+						if(repetition == false){
+							used_address.pop();
+							used_address.unshift(routeInfo);
+						}
+					}
+					//使用localstorage存储常用地点,保存最新三个有效地址
+					localStorage.setItem('used_address',JSON.stringify(used_address));
+					mui.fire(register_routePage,'LoadRouteBySub',{localeType: this.localeType,data: routeInfo})
+					mui.back()
+					register_routePage.show('slide-in-right')
+				}
+			},
+			//查找地点
+			findPlace(data) {
+				console.log(data)
+				var _this = this;
+				function myFun(){
+					var pp = local.getResults().getPoi(0);    //获取第一个智能搜索的结果
+					var obj = {
+						title: pp.title,
+						address: pp.address,
+						point: pp.point
+					}
+					_this.setRoute(obj);
+				}
+				var local = new BMap.LocalSearch(map, {
+					onSearchComplete: myFun
+				});
+				var place = data.province + data.city + data.district + data.street + data.business;
+				local.search(place)
+			}
+		}
+	})
+	
+	mui.plusReady(function(){
+	})
+
+	//自定义加载事件,加载地点搜索
+	document.addEventListener('LoadMapSearch', function(event) {
+		plus.nativeUI.showWaiting('加载中...', {
+			width: '100px',
+			height: '100px'
+		})
+		var localeType = event.detail.localeType
+		VueObject.localeType = localeType
+		VueObject.used_address = JSON.parse(localStorage.getItem('used_address'))
+		
+		//预加载地址页面
+		commute_mapPage = plus.webview.getWebviewById('commute_map.html')
+		if(!commute_mapPage){
+			commute_mapPage = mui.preload({
+				id: 'commute_map.html',
+				url: 'commute_map.html'
+			})
+		}
+		VueObject.searchList = []
+		VueObject.keyword = ''
+		getLocation()
+	})
+	
+	//全局map对象
+	var map = null
+	//全局Point对象
+	var myPoint = null
+	
+	function getLocation(){
+		map = new BMap.Map('container')
+		var geolocation = new BMap.Geolocation();
+		geolocation.getCurrentPosition(function(r){
+			if(this.getStatus() == BMAP_STATUS_SUCCESS){
+				myPoint = r.point
+				loadNearBy(myPoint)
+			}
+			else {
+				alert('系统超时，请刷新');
+			}        
+		},{enableHighAccuracy: true});
+	}
+	
+	/* function getLocation(){
+		//获取h5定位(GPS经纬度),使用IOS定位时偏差范围大
+		plus.geolocation.getCurrentPosition(translatePoint, function(e) {
+			mui.toast("异常:" + e.message);
+		});
+	} */
+	
+	//GPS经纬度换算
+	/* function translatePoint(position) {
+		var currentLon = position.coords.longitude;
+		var currentLat = position.coords.latitude;
+		map = new BMap.Map('container')
+		myPoint = new BMap.Point(currentLon, currentLat);
+		BMap.Convertor.translate(myPoint, 2, loadNearBy); //坐标转换
+	} */
+	
+	//获取附近地点信息
+	function loadNearByJS(webNearBy){
+		var options = {
+			onSearchComplete: function(res){
+				var nearbyList = []
+				if(res == '' || res == [] || res == 'undefined'){
+					return false
+				}
+				for(var i = 0; i< res.length; i++){
+					for(var j = 0; j < res[i].Qq.length; j++){
+						var obj = {
+							title:res[i].Qq[j].title,
+							address: res[i].Qq[j].address,
+							point: res[i].Qq[j].point
+						}
+						nearbyList.push(obj)
+					}
+				}
+				var List = webNearBy
+				for(var j = 0; j < nearbyList.length; j++){
+					List.push(nearbyList[j])
+				}
+				var res = unique1(List);
+				VueObject.nearbyList = res
+				plus.nativeUI.closeWaiting();
+			}
+		}
+		
+		var local = new BMap.LocalSearch(myPoint, options);
+		//最多10个关键词,搜索半径500m
+		local.searchNearby(['宿舍','楼','街','公园','饭堂','商场','超市','影院','加油站','路'],myPoint,300);
+	}
+	
+	function loadNearBy() {
+		axios.get(baseURL + '/getNearBy',{params: {
+			point: myPoint
+		}}).then( res => {
+			var data = res.data.recommendStops;
+			var nearbyList = []
+			for(var i = 0; i< data.length; i++){
+				var point = {
+					lat: data[i].baidu_x,
+					lng: data[i].baidu_y
+				}
+				var obj = {
+					title:data[i].address || data[i].name,
+					address: data[i].name,
+					point: point
+				}
+				nearbyList.push(obj)
+			}
+			loadNearByJS(nearbyList)
+		})
+	}
+	
+	var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+		{"input" : "suggestId",
+		"location" : map,
+		"onSearchComplete": function (data) {
+			VueObject.searchList = data.Qq
+			ac.hide()
+		}
+	})
+	
+	function G(id) {
+		return document.getElementById(id);
+	}
+	
+	ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+	var str = "";
+		var _value = e.fromitem.value;
+		var value = "";
+		if (e.fromitem.index > -1) {
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}
+		str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+		
+		value = "";
+		if (e.toitem.index > -1) {
+			_value = e.toitem.value;
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}    
+		str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+		
+		G("searchResultPanel").innerHTML = str;
+	});
+	
+	
+	//数组去重
+	function unique1(arr){
+		for (var i = 0; i < arr.length; i++) {
+			for(var j = 0; j< arr.length; j++) {
+				if(arr[i].title == arr[j].title && arr[i].address == arr[j].address && i != j){
+					arr.splice(j,1);
+					continue;
+				}
+			}
+		}
+		return arr;
+	}
+	
+	
+</script>

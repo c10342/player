@@ -1,0 +1,49 @@
+.list-icon{
+	margin-right: 1rem;
+	margin-top: .5rem;
+}
+.goto-user-detail{
+	line-height: 44px;
+}
+#icon-menu{
+	color: white;
+}
+.userdetail-btn{
+	color: white;
+}
+.my-info{
+	margin-top: 2.6rem;
+	background: rgb(0,200,140);
+	color: white;
+	height: 6rem;
+}
+.my-info-item{
+	max-height: 5rem;
+	height: 4rem;
+	margin-top: .5rem;
+	margin-right: 2rem;
+	line-height: 2rem;
+}
+#realname{
+	color:white;
+	font-size: 18px;
+}
+#mobile{
+	color: white;
+	font-size: 18px;
+}
+.list-group{
+	margin-top: .8rem;
+	margin-bottom: 1rem;
+}
+.info-item{
+	line-height: 2.8rem;
+}
+.avater{
+	width: 3.5rem;
+	margin-top: 1rem;
+}
+.mui-table-view-cell > a:not(.mui-btn).mui-active
+{
+    background-color: rgba(0, 200, 140, 0.5);
+}

@@ -1,0 +1,144 @@
+.bar{
+	background: rgb(0,200,140);
+	height: 3rem;
+	line-height: 3rem;
+	display: flex;
+}
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.header-title{
+	margin: auto;
+	color:white;
+}
+.main{
+	margin-top: 5rem;
+}
+.tips{
+	font-size: 16px;
+	width: 80%;
+	margin-left: 2rem;
+}
+.route-item{
+	margin: 1.5rem auto;
+	width: 90%;
+	border-radius: 10px;
+}
+.item-header{
+	float: left;
+}
+.item-content{
+	height: 4rem;
+	min-height: 4rem;
+}
+.item-content:active{
+	background: #CCCCCC;
+}
+.content-left{
+	display: flex;
+	height: 4rem;
+	float: left;
+	width: 38%;
+}
+.content-left-img{
+	margin:auto;
+	margin-left: 2rem;
+	margin-right: 0;
+	width: 2rem;
+}
+.content-left-word{
+	width: 3rem;
+	font-size: 16px;
+	margin:auto;
+	margin-left: 1rem;
+	margin-right: 0;
+}
+.content-right{
+	float: right;
+	font-size: 16px;
+	line-height: 4rem;
+	max-height: 4rem;
+	margin-right: 1.5rem;
+	text-align: right;
+	width: 40%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.time{
+	width: 90%;
+	height: 6rem;
+	margin: 1.5rem auto;
+	border-radius: 10px;
+	background: white;
+}
+.time-title{
+	margin-top: 1rem;
+	font-size: 18px;
+	color: black;
+	margin-bottom: 1rem;
+}
+.depart_time{
+	height: 6rem;
+	float: left;
+	font-size: 16px;
+	width: 40%;
+	text-align: center;
+	color: rgb(87, 87, 87);
+}
+.depart_time:active{
+	background: #CCCCCC;
+}
+.arrive_time{
+	height: 6rem;
+	float: right;
+	font-size: 18px;
+	width: 40%;
+	text-align: center;
+	font-size: 16px;
+	color: rgb(87, 87, 87);
+}
+.arrive_time:active{
+	background: #CCCCCC;
+}
+.work_off_time{
+	margin-top: 1rem;
+	text-align: center;
+	height: 100%;
+	padding-top: .5rem;
+	border-radius: 10px;
+}
+.work_off_time:active{
+	background: #CCCCCC;
+}
+
+.list-icon{
+	width: 3rem;
+	margin-right: 1.5rem;
+}
+.list-group{
+	width: 90%;
+	margin: 0 auto;
+	border-radius: 10px;
+}
+.info-item{
+	line-height: 3rem;
+}
+.person{
+	float: right;
+	margin-right: 3rem;
+}
+.my-btn{
+	position: absolute;
+	bottom: 2rem;
+	left: 50%;
+	margin-left: -5rem;
+	background: rgb(0,200,140);
+	font-size: 16px;
+	color: #fff;
+	width: 10rem;
+	border-radius: 2rem;
+}
