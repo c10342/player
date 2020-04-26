@@ -51,35 +51,35 @@ npm run build
 
 ### 效果图
 <p align="center">
-<img src="http://120.79.209.208:9093/player1.png">
+<img src="http://player.linjiafu.top/player1.png?raw=true">
 </p>
 <h1 align="center">效果图1</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player2.png?raw=true">
+<img src="http://player.linjiafu.top/player2.png?raw=true">
 </p>
 <h1 align="center">效果图2</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player3.png?raw=true">
+<img src="http://player.linjiafu.top/player3.png?raw=true">
 </p>
 <h1 align="center">效果图3</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player4.png?raw=true">
+<img src="http://player.linjiafu.top/player4.png?raw=true">
 </p>
 <h1 align="center">效果图4</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player5.png?raw=true">
+<img src="http://player.linjiafu.top/player5.png?raw=true">
 </p>
 <h1 align="center">效果图5</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player6.png?raw=true">
+<img src="http://player.linjiafu.top/player6.png?raw=true">
 </p>
 <h1 align="center">效果图6</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player7.png?raw=true">
+<img src="http://player.linjiafu.top/player7.png?raw=true">
 </p>
 <h1 align="center">效果图7</h1>
 <p align="center">
-<img src="http://120.79.209.208:9093/player8.png?raw=true">
+<img src="http://player.linjiafu.top/player8.png?raw=true">
 </p>
 <h1 align="center">效果图8</h1>
 
