@@ -134,9 +134,9 @@ export default {
     currentTime: {
       immediate: true,
       handler: function(newVal) {
-        if(!this.oldVideo){
-          this.videoPercent = 0
-          return
+        if (!this.oldVideo) {
+          this.videoPercent = 0;
+          return;
         }
         // 计算出内层占外层进度条的百分比
         this.videoPercent = (newVal / this.oldVideo.totalTime) * 100;
