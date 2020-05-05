@@ -126,6 +126,7 @@ import { remote, shell } from "electron";
 import path from "path";
 import storage from "good-storage";
 import fs from "fs";
+import { playOrderList, sortList } from "../config";
 
 const openDialog = new OpenDialog();
 const { Menu } = remote;
@@ -354,6 +355,7 @@ export default {
     contextmenu() {
       this.clearTimerAndListener();
       document.body.click();
+      const commonTemp = this.createContextmenuList();
       let playListMenuTemplate = [
         {
           label: this.$t("common.add"),
@@ -396,104 +398,13 @@ export default {
         {
           type: "separator"
         },
-        {
-          label: this.$t("common.playOrder"),
-          submenu: [
-            {
-              label: this.$t("common.singlePlay"),
-              type: "checkbox",
-              checked: this.playMode == 1,
-              click: () => {
-                this.setPlayMode(1);
-              }
-            },
-            {
-              label: this.$t("common.singleCycle"),
-              type: "checkbox",
-              checked: this.playMode == 2,
-              click: () => {
-                this.setPlayMode(2);
-              }
-            },
-            {
-              label: this.$t("common.loopList"),
-              type: "checkbox",
-              checked: this.playMode == 3,
-              click: () => {
-                this.setPlayMode(3);
-              }
-            },
-            {
-              label: this.$t("common.sequentialPlay"),
-              checked: this.playMode == 4,
-              type: "checkbox",
-              click: () => {
-                this.setPlayMode(4);
-              }
-            },
-            {
-              label: this.$t("common.randomPlay"),
-              checked: this.playMode == 5,
-              type: "checkbox",
-              click: () => {
-                this.setPlayMode(5);
-              }
-            }
-          ]
-        },
-        {
-          label: this.$t("common.sort"),
-          submenu: [
-            {
-              label: this.$t("common.defaultSort"),
-              type: "checkbox",
-              checked: this.sortMode == 1,
-              click: () => {
-                this.setSortMode(1);
-              }
-            },
-            {
-              label: this.$t("common.sizeSort"),
-              type: "checkbox",
-              checked: this.sortMode == 2,
-              click: () => {
-                this.setSortMode(2);
-              }
-            },
-            {
-              label: this.$t("common.timeSort"),
-              type: "checkbox",
-              checked: this.sortMode == 3,
-              click: () => {
-                this.setSortMode(3);
-              }
-            },
-            {
-              label: this.$t("common.randomSort"),
-              checked: this.sortMode == 4,
-              type: "checkbox",
-              click: () => {
-                this.setSortMode(4);
-              }
-            },
-            {
-              label: this.$t("common.nameSort"),
-              type: "checkbox",
-              checked: this.sortMode == 5,
-              click: () => {
-                this.setSortMode(5);
-              }
-            }
-          ]
-        },
+        ...commonTemp,
         {
           type: "separator"
         }
       ];
 
       let m = Menu.buildFromTemplate(playListMenuTemplate);
-
-      Menu.setApplicationMenu(m);
 
       m.popup({ window: remote.getCurrentWindow() });
 
@@ -511,6 +422,7 @@ export default {
       if (this.currentVideo && isCurrentVideo && this.isPlaying) {
         flag = true;
       }
+      const commonTemp = this.createContextmenuList();
       let playListMenuTemplate = [
         {
           label: flag ? this.$t("common.suspend") : this.$t("common.play"),
@@ -569,96 +481,7 @@ export default {
         {
           type: "separator"
         },
-        {
-          label: this.$t("common.playOrder"),
-          submenu: [
-            {
-              label: this.$t("common.singlePlay"),
-              type: "checkbox",
-              checked: this.playMode == 1,
-              click: () => {
-                this.setPlayMode(1);
-              }
-            },
-            {
-              label: this.$t("common.singleCycle"),
-              type: "checkbox",
-              checked: this.playMode == 2,
-              click: () => {
-                this.setPlayMode(2);
-              }
-            },
-            {
-              label: this.$t("common.loopList"),
-              type: "checkbox",
-              checked: this.playMode == 3,
-              click: () => {
-                this.setPlayMode(3);
-              }
-            },
-            {
-              label: this.$t("common.sequentialPlay"),
-              type: "checkbox",
-              checked: this.playMode == 4,
-              click: () => {
-                this.setPlayMode(4);
-              }
-            },
-            {
-              label: this.$t("common.randomPlay"),
-              type: "checkbox",
-              checked: this.playMode == 5,
-              click: () => {
-                this.setPlayMode(5);
-              }
-            }
-          ]
-        },
-        {
-          label: this.$t("common.sort"),
-          submenu: [
-            {
-              label: this.$t("common.defaultSort"),
-              type: "checkbox",
-              checked: this.sortMode == 1,
-              click: () => {
-                this.setSortMode(1);
-              }
-            },
-            {
-              label: this.$t("common.sizeSort"),
-              type: "checkbox",
-              checked: this.sortMode == 2,
-              click: () => {
-                this.setSortMode(2);
-              }
-            },
-            {
-              label: this.$t("common.timeSort"),
-              type: "checkbox",
-              checked: this.sortMode == 3,
-              click: () => {
-                this.setSortMode(3);
-              }
-            },
-            {
-              label: this.$t("common.randomSort"),
-              type: "checkbox",
-              checked: this.sortMode == 4,
-              click: () => {
-                this.setSortMode(4);
-              }
-            },
-            {
-              label: this.$t("common.nameSort"),
-              type: "checkbox",
-              checked: this.sortMode == 5,
-              click: () => {
-                this.setSortMode(5);
-              }
-            }
-          ]
-        },
+        ...commonTemp,
         {
           type: "separator"
         },
@@ -691,6 +514,39 @@ export default {
       m.addListener("menu-will-close", () => {
         this.resetTimerAndListener();
       });
+    },
+    // 创建共同右键菜单Template
+    createContextmenuList() {
+      const playOrderArr = playOrderList.map(item => {
+        return {
+          label: this.$t(item.label),
+          type: "checkbox",
+          checked: this.playMode == item.playMode,
+          click: () => {
+            this.setPlayMode(item.playMode);
+          }
+        };
+      });
+      const sortArr = sortList.map(item => {
+        return {
+          label: this.$t(item.label),
+          type: "checkbox",
+          checked: this.sortMode == item.sortMode,
+          click: () => {
+            this.setSortMode(item.sortMode);
+          }
+        };
+      });
+      return [
+        {
+          label: this.$t("common.playOrder"),
+          submenu: playOrderArr
+        },
+        {
+          label: this.$t("common.sort"),
+          submenu: sortArr
+        }
+      ];
     }
   },
   computed: {

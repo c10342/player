@@ -53,6 +53,7 @@ import DPlayer from "DPlayer";
 import { musicReg } from "../api/util";
 import { remote } from "electron";
 import fs from "fs";
+import { playOrderList, volumePercentList } from "../config";
 
 const openDialog = new OpenDialog();
 
@@ -320,18 +321,31 @@ export default {
     // 右键菜单
     contextmenu() {
       document.body.click();
-      const isother =
-        this.volumePercent != 0.1 &&
-        this.volumePercent != 0.2 &&
-        this.volumePercent != 0.3 &&
-        this.volumePercent != 0.4 &&
-        this.volumePercent != 0.5 &&
-        this.volumePercent != 0.6 &&
-        this.volumePercent != 0.7 &&
-        this.volumePercent != 0.8 &&
-        this.volumePercent != 0.9 &&
-        this.volumePercent != 1 &&
-        this.volumePercent != 0;
+      const isother = !volumePercentList.includes(this.volumePercent);
+      const playOrderArr = playOrderList.map(item => {
+        return {
+          label: this.$t(item.label),
+          type: "checkbox",
+          checked: this.playMode == item.playMode,
+          click: () => {
+            this.setPlayMode(item.playMode);
+          }
+        };
+      });
+      const voiceArr = [];
+      volumePercentList.forEach(item => {
+        if (item !== 0) {
+          voiceArr.push({
+            label: `${item * 100}%`,
+            type: "checkbox",
+            checked: this.volumePercent == item,
+            click: () => {
+              let inWidth = item * 62;
+              this.setInWidth(inWidth);
+            }
+          });
+        }
+      });
       let contextMenuTemplate = [
         {
           label: this.$t("common.open"),
@@ -391,48 +405,7 @@ export default {
         },
         {
           label: this.$t("common.playOrder"),
-          submenu: [
-            {
-              label: this.$t("common.singlePlay"),
-              type: "checkbox",
-              checked: this.playMode == 1,
-              click: () => {
-                this.setPlayMode(1);
-              }
-            },
-            {
-              label: this.$t("common.singleCycle"),
-              type: "checkbox",
-              checked: this.playMode == 2,
-              click: () => {
-                this.setPlayMode(2);
-              }
-            },
-            {
-              label: this.$t("common.loopList"),
-              type: "checkbox",
-              checked: this.playMode == 3,
-              click: () => {
-                this.setPlayMode(3);
-              }
-            },
-            {
-              label: this.$t("common.sequentialPlay"),
-              type: "checkbox",
-              checked: this.playMode == 4,
-              click: () => {
-                this.setPlayMode(4);
-              }
-            },
-            {
-              label: this.$t("common.randomPlay"),
-              type: "checkbox",
-              checked: this.playMode == 5,
-              click: () => {
-                this.setPlayMode(5);
-              }
-            }
-          ]
+          submenu: playOrderArr
         },
         {
           type: "separator"
@@ -440,96 +413,7 @@ export default {
         {
           label: this.$t("common.voice"),
           submenu: [
-            {
-              label: "10%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.1,
-              click: () => {
-                let inWidth = 0.1 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "20%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.2,
-              click: () => {
-                let inWidth = 0.2 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "30%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.3,
-              click: () => {
-                let inWidth = 0.3 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "40%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.4,
-              click: () => {
-                let inWidth = 0.4 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "50%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.5,
-              click: () => {
-                let inWidth = 0.5 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "60%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.6,
-              click: () => {
-                let inWidth = 0.6 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "70%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.7,
-              click: () => {
-                let inWidth = 0.7 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "80%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.8,
-              click: () => {
-                let inWidth = 0.8 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "90%",
-              type: "checkbox",
-              checked: this.volumePercent == 0.9,
-              click: () => {
-                let inWidth = 0.9 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
-            {
-              label: "100%",
-              type: "checkbox",
-              checked: this.volumePercent == 1,
-              click: () => {
-                let inWidth = 1 * 62;
-                this.setInWidth(inWidth);
-              }
-            },
+            ...voiceArr,
             {
               label: isother
                 ? `${this.$t("common.other")}(${Math.round(

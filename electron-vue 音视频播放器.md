@@ -317,6 +317,8 @@ if (range) {
 </p>
 <h1 align="center">效果图7</h1>
 
+<!-- https://segmentfault.com/a/1190000018533945?utm_source=tag-newest -->
+
 ### 安装包下载：[http://zhifa.daiqee.com/player%20Setup%200.0.1.exe](http://zhifa.daiqee.com/player%20Setup%200.0.1.exe)
 
 ### 最后如果大家觉得我这个音视频播放器还可以的话，欢迎去我的github：[https://github.com/c10342/player](https://github.com/c10342/player)  给个star
