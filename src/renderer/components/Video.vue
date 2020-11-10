@@ -54,6 +54,7 @@ import { musicReg } from "../api/util";
 import { remote } from "electron";
 import fs from "fs";
 import { playOrderList, volumePercentList } from "../config";
+import { log } from "util";
 
 const openDialog = new OpenDialog();
 
@@ -579,6 +580,14 @@ export default {
               : `http://localhost:6789/video?video=${encodeURIComponent(
                   newVal.src
                 )}`;
+            // console.log(url);
+
+            // this.dp.switchVideo({
+            //   video: {
+            //     url: url,
+            //     type: "auto"
+            //   }
+            // });
             this.dp.switchVideo({
               url
             });
