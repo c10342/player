@@ -3,7 +3,7 @@
   "version": "0.0.15",
   "author": "c10342 <1376023740@qq.com>",
   "description": "音视频播放器",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
