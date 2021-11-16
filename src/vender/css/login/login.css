@@ -1,0 +1,108 @@
+
+.main{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px : left : 0px;
+	background: #fff;
+	text-align: center;
+}
+.img-wrapper{
+	width: 100%;
+	height: 45%;
+	text-align: center;
+	position: relative;
+}
+.logo{
+	width: 60%;
+	position: absolute;
+	top: 50%;
+	transform:translateY(-50%);
+	left: 50%;
+	margin-left: -28%;
+	text-align: center;
+}
+.content{
+	width: 16rem;
+	margin: 0 auto;
+	text-align: center;
+}
+.my-line{
+	width: 88%;
+	margin: 0 auto;
+	margin-bottom: .5rem;
+}
+.my-btn{
+	background: rgb(0,200,140);
+	font-size: 16px;
+	color: #fff;
+	margin: 0 auto;
+	margin-top: 1rem;
+	margin-bottom: .36rem;
+	width: 10rem;
+	border-radius: 2rem;
+}
+.tips{
+	font-size: .88rem;
+	color: rgb(141, 141, 141);
+	margin: .2rem;
+}
+.other-methods{
+	color: rgb(141, 141, 141);
+	font-size: .8rem;
+	margin-top: 1rem;
+}
+.other-login{
+	width: 3rem;
+	margin: -.8rem .5rem;
+}
+.my-input {
+	opacity: 0;
+	position: absolute;
+	z-index: -1;
+}
+
+.my-sex {
+	width: 70%;
+	float: left;
+	margin-top: 1rem;
+}
+.sex-line {
+	width: 88%;
+	margin: -.6rem auto;
+}
+.women {
+	float: right;
+}
+
+.circle-btn {
+	width: 18px;
+	height: 18px;
+	border-radius: 100%;
+	border: 1px solid #808080;
+	transition: all 0.4s;
+	-moz-transition: all 0.4s ease;
+	-o-transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+	transition: all 0.4s ease;
+	display: inline-block;
+	vertical-align: middle;
+	margin: -4px 3px 0 0;
+}
+
+.circle-btn.active {
+	border-width: 5px;
+	border-color: #1dace8;
+}
+
+.send {
+	margin-top: .2rem;
+	width: 3.2rem;
+	height: 2rem;
+	border: 1px #C0C0C0 solid;
+	border-radius: .5rem;
+	font-size: .9rem;
+	position: absolute;
+	right: 0;
+	color: dimgrey;
+}

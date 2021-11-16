@@ -1,0 +1,471 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet"  href="../css/main/main.css"/>
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="../js/axios.min.js"></script>
+		<script type="text/javascript" src="../js/base.js"></script>
+		<script type="text/javascript" src="../js/config.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://cdn-hangzhou.goeasy.io/goeasy.js"></script>
+		<script src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		<div id="vuemain">
+		<header class="mui-bar mui-bar-nav mui-bar-nav-bg main-bar">
+			<a id="personal-center" class="mui-icon"><img class="icon-logo-min" src="../imgs/user.png" alt=""></a>
+			<a id="cooperative-partner" class="mui-icon mui-pull-right"><img class="icon-logo-min" src="../imgs/business.png" alt=""></a>
+			<h1 class="mui-title main-title">拼车网乘客端</h1>
+		</header>
+		<div class="mui-slider">
+			<div class="mui-slider-group mui-slider-loop main-slider">
+				<!--支持循环，需要重复图片节点-->
+				<div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../imgs/pic3.jpg" /></a></div>
+				<div class="mui-slider-item"><a href="#"><img src="../imgs/pic1.jpg" /></a></div>
+				<div class="mui-slider-item"><a href="#"><img src="../imgs/pic2.jpg" /></a></div>
+				<div class="mui-slider-item"><a href="#"><img src="../imgs/pic3.jpg" /></a></div>
+				<!--支持循环，需要重复图片节点-->
+				<div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../imgs/pic1.jpg" /></a></div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<div class="mui-indicator"></div>
+				<div class="mui-indicator"></div>
+			</div>
+		</div>
+		
+		<div class="icons">
+			<div class="icon">
+				<div class="icon-img">
+					<img class="icon-img-content" src="../imgs/icons/qiye.png" alt="">
+				</div>
+				<p class="icon-desc">同城拼车</p>
+			</div>
+			<div class="icon">
+				<div class="icon-img">
+					<img class="icon-img-content" src="../imgs/icons/chuchashenqing.png" alt="">
+				</div>
+				<p class="icon-desc">长途拼车</p>
+			</div>
+			<div class="icon">
+				<div class="icon-img">
+					<img class="icon-img-content" src="../imgs/icons/kaoqin.png" alt="">
+				</div>
+				<p class="icon-desc">考勤打卡</p>
+			</div>
+			<div class="icon">
+				<div class="icon-img">
+					<img class="icon-img-content" src="../imgs/icons/kaoqin-.png" alt="">
+				</div>
+				<p class="icon-desc">外勤打卡</p>
+			</div>
+			<div class="icon">
+				<div class="icon-img">
+					<img class="icon-img-content" src="../imgs/icons/dailix-.png" alt="">
+				</div>
+				<p class="icon-desc">拼车记录</p>
+			</div>
+		</div>
+
+		<ul class="mui-table-view my-nav-group">
+			<li class="mui-table-view-cell" style="line-height: 1rem;" id="my-journey">
+				<a class="mui-navigate-right"><span class="my-trip">我的行程</span></a>
+			</li>
+			 <li class="mui-table-view-cell mui-media">
+				<a class="mui-navigate-right" id="setRoute">
+					<div class="mui-media-body">
+						<span class="my-free-ride">超级顺风车</span>
+						<!-- <p class="my-free-ride-error">
+							<img class="icon-logo-big" src="../imgs/icons/sign.png" alt="">
+							<p align="center">还未设置上下班路线</p>
+						</p> -->
+						<div class="item-content" style="margin-top: 1rem;">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle1.png" alt="">
+								<div class="content-left-word">家</div>
+							</div>
+							<div class="content-right">
+								{{route.origin || '请设置'}}
+							</div>
+						</div>
+						<div class="item-content">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle2.png" alt="">
+								<span class="content-left-word">公司</span>
+							</div>
+							<div class="content-right">
+								{{route.destination || '请设置'}}
+							</div>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+		
+		<ul class="bottom-btn">
+			<li class='btn-word' @click='publishTrip'>{{ListenStatus}}</li>
+			<li class="one"><img src="../imgs/1.png" alt=""></li>
+			<li class="two"><img src="../imgs/2.png" alt=""></li>
+		</ul>
+		
+		<div class="bottomPopover">
+			<div class="PopoverHeader">
+				<span class="PopoverTitle"><strong>选择路线</strong></span>
+				<div class="PopoverBtn"><img src="../imgs/close.png" alt=""></div>
+			</div>
+			<div class="my-route">
+				<div class="route-item">
+					<span class="my-tip">上班</span>
+					<span class="circle-btn" value="1" id='work-route'></span>
+					<input type="radio" style="display:none;" />
+				</div>
+				<div class="route-item">
+					<span class="my-tip">下班</span>
+					<span class="circle-btn" value="2" id='offwork-route'></span>
+					<input type="radio" style="display:none;" />
+				</div>
+			</div>
+		</div>
+		
+		</div>
+	</body>
+</html>
+
+<script type="text/javascript">
+
+	var my_commutePage = null
+	var route_computedPage = null
+	var goEasy = null
+	
+	var VueObject = new Vue({
+		el: '#vuemain',
+		data: function(){
+			return {
+				route: {},
+				ListenStatus: '发布',
+				Listening: false,
+				trip_ids: [],
+				time: 0,
+				record_list: [],
+				isClick: false
+			}
+		},
+		methods: {
+			publishTrip() {
+				if(this.Listening === true){
+					/**************************************** 取消订单 ****************************************/
+					var btnArray = ['否','是']
+					var _this = this
+					mui.confirm('确定取消订单?','通知',btnArray,function(e){
+						if (e.index == 1) {
+							//重置状态
+							closeListen()
+							//发送订单取消
+							axios.get(baseURL + '/cancelTrip',{ params: { trip_ids: _this.trip_ids}})
+							.then(res => {
+								if(res.data.status == 10000){
+									mui.toast(res.data.message)
+								}else{
+									mui.toast(res.data.message)
+								}
+							})
+							//取消倒计时
+							_this.destroyTime()
+						}
+					})
+				}
+				else{
+					plus.nativeUI.showWaiting('加载中...', {
+						width: '100px',
+						height: '100px'
+					})
+					/**************************************** 发布订单 ****************************************/
+					var work_route_switch = localStorage.getItem('work-route-switch') || 0;
+					var offwork_route_switch = localStorage.getItem('offwork-route-switch') || 0;
+					
+					if(work_route_switch == 1 && offwork_route_switch == 1){
+						//发布上下班路线
+						var type = 3
+					}else if(work_route_switch == 1 && offwork_route_switch == 0){
+						//发布上班路线
+						var type = 1
+					}else if(work_route_switch == 0 && offwork_route_switch == 1){
+						//发布下班路线
+						var type = 2
+					}else{
+						//没有设置上下班路线
+						mui.toast('请设置上下班路线')
+						return false;
+					}
+					var _this = this
+					axios.get(baseURL + '/publishTrip',{params: {type: type}})
+					.then(res => {
+						if(res.data.status == 10000){
+							//发布成功,返回trip_release表中的ID
+							mui.toast('发布成功')
+							var trip_ids = res.data.trip_ids
+							this.trip_ids = trip_ids;
+							//等待时间跳动
+							this.initTime()
+							//显示等待时间
+							this.ListenStatus = this.showTime
+							//改变监听状态
+							this.Listening = true
+							//开启GoEasy监听
+							openGoEasy(trip_ids)
+							//设置发布标识
+							//localStorage.setItem('canPublish', false);
+						}else{
+							//身份审核状态异常
+							alert(res.data.status)
+							mui.toast(res.data.message);
+							//重置状态
+							closeListen()
+						}
+					})
+					//关闭等待框
+					plus.nativeUI.closeWaiting()
+				}
+			},
+			initTime() {
+				this.timer = setInterval(() => {
+					this.time++
+					this.ListenStatus = this.showTime
+				}, 1000)
+			},
+			destroyTime(){
+				if (this.timer){
+					clearInterval( this.timer )
+					this.time = 0
+				}
+			}
+		},
+		computed: {
+			showTime() {
+			  let s = this.time % 60;
+			  s = s < 10 ? `0${s}` : s;
+			  let m = parseInt(this.time / 60) % 60;
+			  m = m < 10 ? `0${m}` : m;
+			  return `${m}: ${s}`;
+			}
+		}
+	})
+	
+	mui.plusReady(function(){
+		clearLastPages()
+		//加载页面内容
+		if(!my_commutePage){ 
+			my_commutePage = mui.preload({
+				id: 'my_commute.html',
+				url: 'my_commute.html'
+			})
+		}
+		if(!route_computedPage){
+			route_computedPage = mui.preload({
+				id: 'route_computed.html',
+				url: 'route_computed.html'
+			})
+		}
+		getRoute()
+		getOrder()
+		
+	})
+	
+	document.addEventListener('getRoute', function(){
+		getRoute()
+	})
+	
+	
+	function clearLastPages(){
+		//清除登录、注册页面
+		var wvs = plus.webview.all();
+		var curr = plus.webview.currentWebview();
+		for (var i = 0, len = wvs.length; i < len; i++) {
+			//关闭除setting页面外的其他页面
+			if (wvs[i].getURL() == curr.getURL())
+				continue;
+			plus.webview.close(wvs[i]);
+		}
+	}
+	
+	var gallery = mui('.mui-slider');
+	gallery.slider({
+	  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+	});
+	
+	//跳转到个人中心
+	mui(document.body).on('tap', '#personal-center', function(e) {
+		goToPages('./personal_center.html')
+	})
+	
+	//跳转到我的行程
+	mui(document.body).on('tap', '#my-journey', function(e){
+		goToPages('myRoute.html')
+	})
+	
+	//跳转到路线设置页
+	mui(document.body).on('tap', '#setRoute', function(e) {
+		mui.fire(my_commutePage, 'LoadRouteInfo');
+		my_commutePage.show('slide-in-right')
+	})
+
+	//获取自己的上下班路线
+	function getRoute() {
+		axios.get(baseURL + '/getRoute',{})
+		.then(res=>{
+			//生成下班路线
+			if(res.data){
+				//显示路线
+				VueObject.route = res.data[0]
+			}else{
+				//显示提示语
+				document.querySelector('.my-free-ride-error').classList.add('mui-hidden')
+			}
+		})
+	}
+	
+
+	//获取订单
+	function getOrder(){
+		axios.get(baseURL + '/getOrder',{})
+		.then( res => {
+			//若有,则显示确认框,点击确认则跳转到行驶路线页,获取到Record_id
+			var trip_ids = res.data.trip_releases
+			if(!trip_ids) return
+			var record_list = [];
+			
+			for(var i=0; i< trip_ids.length; i++){
+				record_list.push( trip_ids[i].record_id )
+			}
+			if(record_list.length == 0){
+				return false;
+			}
+			var btnArray = ['否', '是'];
+			if(res.data){
+				//若有多个订单,则整合【上班、下班】
+				mui.confirm('检测到你有订单，是否进入?','通知',btnArray,function(e){
+					if (e.index == 1) {
+						//跳转到行驶路线页
+						mui.fire(route_computedPage,'LoadOrderDetail',{list: record_list, complete: false});
+						route_computedPage.show('slide-in-right');
+					}
+				})
+			}
+			//若无,则不显示
+		})
+	}
+	
+	//开启GoEasy
+	function openGoEasy(trip_ids){
+		goEasy = new GoEasy({
+			appkey: "BC-332c028910124ce0b471dde875ba240d",
+			onConnected: function () {
+				console.log('开启GoEasy成功')
+			}
+		});
+		for(let i=0; i<trip_ids.length; i++){
+			//接受信息
+			goEasy.subscribe({
+				channel: trip_ids[i] + '',
+				onMessage: function (message) {
+					//接收到trip_release表中的trip_id
+					//震动蜂鸣提示
+					vibration()
+					beep()
+					var record_id = message.content
+					var btnArray = ['否', '是'];
+					VueObject.record_list.push(record_id)
+					console.log(VueObject.record_list)
+					if(VueObject.record_list.length < trip_ids.length){
+						//接了一个单
+						mui.confirm('您的一个订单已被接,是否进入?','通知',btnArray,function(e){
+							if (e.index == 1) {
+								console.log('单个进入订单详情页')
+								//关闭该频道
+								closeGoEasy(trip_ids[i])
+								//跳转到行驶路线页,传递参数格式为 Array
+								mui.fire(route_computedPage,'LoadOrderDetail', {list: VueObject.record_list, complete: false});
+								route_computedPage.show('slide-in-right');
+							}else{
+								//关闭该频道
+								closeGoEasy(trip_ids[i])
+							}
+						})
+					}else if ( VueObject.record_list.length == trip_ids.length){
+						//关闭定时器
+						VueObject.destroyTime()
+						//重置状态
+						closeListen()
+						//全部订单已被接
+						mui.confirm('您的全部订单已被接,是否进入?', '通知', btnArray, function(e){
+							if (e.index == 1){
+								console.log('全部进入订单详情页')
+								//点击是,页面跳转,加载订单详情
+								console.log(VueObject.record_list)
+								mui.fire(route_computedPage,'LoadOrderDetail',{list: VueObject.record_list, complete: false});
+								//关闭该频道
+								closeGoEasy(trip_ids[i])
+								route_computedPage.show('slide-in-right');
+							}else{
+								//重置状态
+								closeListen()
+								//关闭该频道
+								closeGoEasy(trip_ids[i])
+							}
+						})
+					}else{}
+				}
+			});
+		}
+	}
+	
+	
+	//关闭GoEasy接收信息
+	function closeGoEasy(channel){
+		goEasy.unsubscribe ({
+			channel: channel + ''
+		});
+	}
+	
+	//重置状态
+	function closeListen(){
+		VueObject.Listening = false
+		VueObject.ListenStatus = '发布'
+	}
+	
+	//手机震动
+	function vibration(){
+	/* navigator.vibrate = navigator.vibrate
+			|| navigator.webkitVibrate
+			|| navigator.mozVibrate
+			|| navigator.msVibrate;
+		navigator.vibrate([500, 300, 400,300]); */
+	   plus.device.vibrate( 500 );
+	}
+	
+	 //手机蜂鸣
+	function beep(){
+		//默认蜂鸣一声,可以在beep方法中设置蜂鸣时间
+		switch ( plus.os.name ) { //判断设备类型
+			case "iOS":
+				if ( plus.device.model.indexOf("iPhone") >= 0 ) { //判断是否为iPhone
+					plus.device.beep();
+				} else {
+				}
+			break;
+			default:
+				plus.device.beep();
+			break;
+		}
+	}
+</script>

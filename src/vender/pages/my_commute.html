@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/user/my_commute.css"/>
+		<script src="../js/mui.js"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/axios.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav mui-bar-nav-bg bar">
+			<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<span class="header-title">路线设置</span>
+		</header>
+		
+		<div class="main" id="main">
+			<p class="tips">设置线路，上下班拼车回家</p>
+				<div class="mui-card route-item" id="work-route">
+					<!--页眉，放置标题-->
+					<div class="mui-card-header">
+						<span class="item-header">上班路线</span>
+						<div class="mui-switch" id="work-route-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<!--内容区-->
+					<div class="mui-card-content" @click="changeRoute('work')" id="work-route-content">
+						<div class="item-content">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle1.png" alt="">
+								<span class="content-left-word">家</span>
+							</div>
+							<div class="content-right">
+								{{work_route.origin || '请设置'}}
+							</div>
+						</div>
+						<div class="item-content">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle2.png" alt="">
+								<div class="content-left-word">公司</div>
+							</div>
+							<div class="content-right">
+								{{work_route.destination || '请设置'}}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mui-card route-item" id="work-route">
+					<!--页眉，放置标题-->
+					<div class="mui-card-header">
+						<span class="item-header">下班路线</span>
+						<div class="mui-switch" id="offwork-route-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<!--内容区-->
+					<div class="mui-card-content"  @click="changeRoute('offwork')" id="offwork-route-content">
+						<div class="item-content">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle2.png" alt="">
+								<span class="content-left-word">公司</span>
+							</div>
+							<div class="content-right">
+								{{offwork_route.origin || '请设置'}}
+							</div>
+						</div>
+						<div class="item-content">
+							<div class="content-left">
+								<img class="content-left-img" src="../imgs/user/circle1.png" alt="">
+								<div class="content-left-word">家</div>
+							</div>
+							<div class="content-right">
+								{{offwork_route.destination || '请设置'}}
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+			
+		
+	</body>
+
+</html>
+<script type="text/javascript">
+	var registerRoutePage = null;
+	
+	var VueObject = new Vue({
+		el: "#main",
+		data: function(){
+			return {
+				work_route: {},
+				offwork_route: {}
+			}
+		},
+		methods:{
+			changeRoute(name) {
+				//判断是否有关闭
+				var work_route_switch = localStorage.getItem('work-route-switch');
+				var offwork_route_switch = localStorage.getItem('offwork-route-switch');
+				if(name == 'work' && work_route_switch == 0){
+					return false;
+				}
+				if(name == 'offwork' && offwork_route_switch == 0){
+					return false;
+				}
+				mui.fire(registerRoutePage,'RouteType',{name: name})
+				registerRoutePage.show('slide-in-right');
+			}
+		}
+	})
+	
+	mui.plusReady(function(){
+		registerRoutePage = plus.webview.getWebviewById('register_route.html')
+		if(!registerRoutePage){
+			registerRoutePage = mui.preload({
+				id : 'register_route.html',
+				url: 'register_route.html'
+			})
+		}
+		
+		//判断开关状态
+		var work_route_switch = localStorage.getItem('work-route-switch');
+		var offwork_route_switch = localStorage.getItem('offwork-route-switch');
+		console.log(work_route_switch)
+		console.log(offwork_route_switch)
+		
+		if(work_route_switch == 1){
+			mui("#work-route-switch").switch().toggle();
+			document.querySelector('#work-route-content').classList.remove('disabled');
+		}else{
+			document.querySelector('#work-route-content').classList.add('disabled');
+		}
+		
+		if(offwork_route_switch == 1){
+			mui("#offwork-route-switch").switch().toggle();
+			document.querySelector('#offwork-route-content').classList.remove('disabled');
+		}else{
+			document.querySelector('#offwork-route-content').classList.add('disabled');
+		}
+		
+	})
+	
+	document.addEventListener('LoadRouteInfo', function(){
+		plus.nativeUI.showWaiting('加载中...', {
+			width: '100px',
+			height: '100px'
+		})
+		//清除旧数据
+		VueObject.work_route = {}
+		VueObject.offwork_route = {}
+		//清除页面栈
+		var views = plus.webview.all();
+	    for(var i = 0; i < views.length - 1; i++) {
+			console.log(views[i].id)
+			//plus.webview.close(views[i].id);
+		}
+		
+		//请求新数据
+		axios.get(baseURL + '/getRoute').then(res => {
+			var list = res.data;
+			if(list != null && list.length >= 1){
+				for(var i = 0; i< list.length; i++){
+					console.log(list[i])
+					if(list[i].locale_type == 1){
+						VueObject.work_route = list[i]
+					}else{
+						VueObject.offwork_route = list[i]
+					}
+				}
+			}
+			
+			plus.nativeUI.closeWaiting()
+		})
+		plus.nativeUI.closeWaiting()
+	})
+	
+	//上班线路开关状态监测
+	document.getElementById("work-route-switch").addEventListener("toggle",function(event){
+		if(event.detail.isActive){
+			document.querySelector('#work-route-content').classList.remove('disabled');
+			localStorage.setItem('work-route-switch',1)
+		}else{
+			document.querySelectorAll('#work-route-content')[0].classList.add('disabled');
+			localStorage.setItem('work-route-switch',0);
+		}
+	})
+	
+	//下班线路开关状态监测
+	document.getElementById("offwork-route-switch").addEventListener("toggle",function(event){
+		if(event.detail.isActive){
+			document.querySelector('#offwork-route-content').classList.remove('disabled');
+			localStorage.setItem('offwork-route-switch',1)
+		}else{
+			document.querySelectorAll('#offwork-route-content')[0].classList.add('disabled');
+			localStorage.setItem('offwork-route-switch',0);
+		}
+	})
+	
+</script>

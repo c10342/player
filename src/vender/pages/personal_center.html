@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/main/personal_center.css">
+		<link rel="stylesheet" href="../css/main/main.css">
+		<script src="../js/mui.js"></script>
+		<script src="../js/axios.min.js"></script>
+		<script src="../js/base.js"></script>
+		<script type="text/javascript" src="../js/config.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav main-bar" style="border: 0; box-shadow: none;">
+			<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a id="cooperative-partner" class="mui-pull-right goto-user-detail"><span class="userdetail-btn">详情</span></a>
+			<h1 class="mui-title main-title">个人中心</h1>
+		</header>
+		
+		<div class="userinfo-group">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media my-info" >
+					<a href="javascript:;">
+						<img class="avater mui-pull-left" src="../imgs/icons/driver.png" alt="">
+						<div class="mui-media-body my-info-item" align="right">
+							<p align="right" id="realname"></p>
+							<p align="right" id="mobile"></p>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<ul class="mui-table-view list-group">
+			<li class="mui-table-view-cell mui-media info-item" id="my-journey">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/trip.png">
+					我的行程
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/wallet.png">
+					我的钱包
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/paper.png">
+					我的票据
+				</a>
+			</li>
+		</ul>
+		
+		<ul class="mui-table-view list-group">
+			<li class="mui-table-view-cell mui-media info-item" id="my-route">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/route.png">
+					我的线路
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/prefer.png">
+					我的偏好
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/grade.png">
+					我的等级
+				</a>
+			</li>
+		</ul>
+		
+		<ul class="mui-table-view list-group">
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/safe.png">
+					账号与安全
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media info-item">
+				<a class="mui-navigate-right">
+					<img class="mui-pull-left icon-logo-mid list-icon" src="../imgs/user/message.png">
+					消息中心
+				</a>
+			</li>
+		</ul>
+	</body>
+</html>
+
+<script type="text/javascript">
+	//请求个人信息
+	var userDetailPage = null
+	var my_commutePage = null
+	
+	mui.plusReady(function(){
+		plus.nativeUI.showWaiting('加载中...', {
+			width: '100px',
+			height: '100px'
+		})
+		getDriverInfo();
+		//预加载个人信息页面
+		userDetailPage = mui.preload({
+			id : 'user_detail.html',
+			url: 'user_detail.html'
+		})
+		my_commutePage = mui.preload({
+			url:'my_commute.html',
+			id:'my_commute.html',
+		})
+	})
+	
+	
+	function plusReady(){
+		// 弹出系统等待对话框
+		
+	}
+	//跳转到个人中心
+	mui(document.body).on('tap', '.userdetail-btn', function(e) {
+		userDetailPage.show('slide-in-right');
+	})
+	mui(document.body).on('tap', '.userinfo-group', function(e) {
+		userDetailPage.show('slide-in-right');
+	})
+	
+	//我的行程
+	mui(document.body).on('tap', '#my-journey', function(e){
+		goToPages('myRoute.html')
+	})
+	
+	//我的线路
+	mui(document.body).on('tap','#my-route',function(e){
+		my_commutePage = plus.webview.getWebviewById('my_commute.html')
+		mui.fire(my_commutePage,'LoadRouteInfo')
+		my_commutePage.show('slide-in-right')
+	})
+	
+	//获取个人信息
+	function getDriverInfo(){
+		axios.get(baseURL + '/getUserInfo').then( (res) => {
+			console.log(res);
+			userInfo = res.data.user;
+			mui("#realname")[0].innerHTML = userInfo.realname;
+			mui("#mobile")[0].innerHTML = userInfo.mobile;
+			plus.nativeUI.closeWaiting()
+		})
+	}
+	
+	
+</script>

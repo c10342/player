@@ -1,0 +1,256 @@
+.icon-logo-min{
+	width: 1.1rem;
+}
+.icon-logo-mid{
+	width: 1.5rem;
+}
+.icon-logo-big{
+	width: 2rem;
+}
+
+.main-bar{
+	background: rgb(0,200,140);
+}
+.main-title{
+	color: white;
+	font-size: 1rem;
+	font-family: "微软雅黑";
+}
+.main-slider{
+	margin-top: 2.3rem;
+}
+/************************遮罩层**********************/
+.mask{
+	width: 100%;
+	height: 100%;
+	position:absolute;
+    left:0;
+    top:0;
+    z-index:998;
+	background: rgba(0,0,0, 0.3);
+	display: none;
+}
+.icons{
+	padding-bottom: 48%;
+	margin-left: .2rem;
+	background: white;
+}
+.icon{
+	position: relative;
+	float: left;
+	width: 15%;
+	height: 0;
+	padding-bottom: 14%;
+	margin-left: 8%;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+.icon-img{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: .16rem;
+	box-sizing: border-box;
+	padding: .1rem;
+}
+.icon-img-content{
+	display: block;
+	margin: 0 auto;
+	height: 100%;
+}
+.icon-desc{
+	position: absolute;
+	font-size: 12px;
+	left: 0;
+	right: 0;
+	bottom: -1.5rem;
+	height: .8rem;
+	line-height: .8rem;
+	text-align: center;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-size: .8rem;
+	color: #111111;
+}
+.my-nav-group{
+	margin-top: 1rem;
+}
+.my-trip{
+	color: rgb(140, 140, 140);
+	font-family: arial;
+}
+.my-free-ride{
+	color: rgb(221,57,12);
+	font-weight: 500;
+	font-family: arial;
+}
+.my-free-ride-error{
+	text-align: center;
+	padding: .3rem;
+}
+
+/*****************底部订单按钮******************/
+.bottom-btn{
+	width: 100%;
+	height: 5rem;
+	position:fixed;
+	bottom: -1.3rem;
+	margin-top: -0.15rem;
+	background: linear-gradient(rgb(255,255,255), rgb(245,245,245)); /* 标准的语法 */
+	overflow: hidden;
+}
+.btn-word{
+	list-style: none;
+	position: absolute;
+	width: 8rem;
+	height: 8rem;
+	z-index: 100;
+	left: 50%;
+	margin-left: -4rem;
+	text-align: center;
+	line-height: 7rem;
+}
+
+.bottom-btn li img{
+	width: 100%;
+}
+.one{
+	position: absolute;
+	left: 50%;
+	margin-left: -4rem;
+	top: 0;
+	width: 8rem;
+	list-style: none;
+	animation: one 10s linear 0s infinite alternate;
+}
+.two{
+	position: absolute;
+	left: 50%;
+	margin-left: -4rem;
+	top: 0;
+	width: 8rem;
+	list-style: none;
+	animation: two 10s linear 0s infinite alternate;
+}
+@keyframes one {
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(100deg);
+	}
+}
+ @keyframes two {
+	from{
+		transform: rotate(0deg);
+	}
+	to{
+		transform: rotate(-100deg);
+	}
+}
+
+/*******************上下班路线********************/
+.item-content{
+	width: 100%;
+	max-height: 2rem;
+	height: 2rem;
+}
+.content-left{
+	display: flex;
+	height: 2rem;
+	float: left;
+	width: 38%;
+}
+.content-left-img{
+	margin:auto;
+	margin-left: 2rem;
+	margin-right: 0;
+	width: 1rem;
+}
+.content-left-word{
+	width: 3rem;
+	font-size: 16px;
+	margin:auto;
+	margin-left: 1rem;
+	margin-right: 0;
+}
+.content-right{
+	float: right;
+	font-size: 16px;
+	line-height: 2rem;
+	max-height: 2rem;
+	margin-right: 2rem;
+	text-align: right;
+	width: 40%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+/*******************弹出框**********************/
+.bottomPopover{
+	width: 80%;
+	height: 10rem;
+	position: absolute;
+	left: 50%;
+	margin-left: -40%;
+	bottom: 40%;
+	z-index: 1000;
+	border-radius: 10px;
+	background: white;
+	display: none;
+}
+.PopoverHeader{
+	display: flex;
+	height: 28%;
+	border-bottom: 1px solid #CCCCCC;
+}
+.PopoverTitle{
+	font-size: 18px;
+	margin: auto;
+	margin-left: 2rem;
+}
+.PopoverBtn{
+	width: 15%;
+	margin: auto;
+	margin-right: 1rem;
+	text-align: center;
+}
+.PopoverBtn img{
+	width: 2rem;
+}
+
+.my-route{
+	height: 70%;
+	width: 100%;
+	text-align: center;
+	border-radius: 0 0 10px 10px;
+}
+.route-item{
+	height: 50%;
+	display: flex;
+}
+.my-tip{
+	margin: auto;
+	margin-left: 2rem;
+}
+.circle-btn {
+	margin: auto;
+	margin-right: 2rem;
+	width: 18px;
+	height: 18px;
+	border-radius: 100%;
+	border: 1px solid #808080;
+	transition: all 0.4s;
+	-moz-transition: all 0.4s ease;
+	-o-transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+	transition: all 0.4s ease;
+	display: inline-block;
+	vertical-align: middle;
+}
+.circle-btn.active {
+	border-width: 5px;
+	border-color: #1dace8;
+}

@@ -1,0 +1,87 @@
+.icon-logo-min{
+	width: 1.1rem;
+}
+.icon-logo-mid{
+	width: 1.5rem;
+}
+.icon-logo-big{
+	width: 5rem;
+}
+.bar{
+	background: rgb(0,200,140);
+	height: 3rem;
+	line-height: 3rem;
+	display: flex;
+}
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.mui-title{
+	color: white;
+	margin: auto;
+	line-height: 3rem;
+	font-size: 18px;
+}
+.main{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px : left : 0px;
+	background: #fff;
+}
+.my-btn{
+	position: absolute;
+	bottom: 3rem;
+	left: 50%;
+	margin-left: -5rem;
+	background: rgb(0,200,140);
+	font-size: 16px;
+	color: #fff;
+	width: 10rem;
+	border-radius: 2rem;
+}
+.content{
+	margin-top: 5rem;
+}
+.my-form-item{
+	height: 12rem;
+	width: 100%;
+	display: flex;
+}
+.my-form-item > .my-icon{
+	float: left;
+	margin: auto;
+	margin-left: 1.5rem;
+	margin-right: 4rem;
+}
+.my-form-item > .my-img{
+	margin: auto;
+}
+img[src=""],img:not([src]){
+	opacity:0;
+	display: none;
+}
+.my-file{
+	margin: auto;
+	margin-left: 0;
+	width: 200px;
+	height: 112.5px;
+	line-height: 112.5px;
+	border: .18rem #ccc dashed;
+	text-align: center;
+	font-size: 2rem;
+	color: #242424;
+}
+.my-photo{
+	display: none;
+}
+.tips{
+	margin-top: -1.5rem;
+	text-align: center;
+	margin-left: 2rem;
+	color: red;
+	font-size: 20px;
+}

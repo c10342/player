@@ -1,0 +1,135 @@
+/*********************************页面主体*********************************/
+#main{
+	height: 100%;
+}
+
+/*********************************顶部导航栏*********************************/
+.bar{
+	background: rgb(0,200,140);
+	height: 8%;
+	display: flex;
+	position: fixed;
+	width: 100%;
+	top: 0;
+}
+#icon-menu{
+	color:white;
+	margin: auto;
+	margin-left: -1rem;
+	margin-right: 0;
+}
+.header-title{
+	margin: auto;
+	color:white;
+	width: 100%;
+}
+.search-input{
+	width: 100%;
+}
+.search-input::-webkit-input-placeholder{
+	color:white;
+}
+/*********************************地址跳转按钮*********************************/
+.goto-map{
+	position: fixed;
+	width: 100%;
+	top: 3.2rem;
+	z-index: 100;
+}
+.map-btn{
+	height: 3.5rem;
+	line-height: 2rem;
+}
+.btn-img{
+	width: 2rem;
+	position: absolute;
+	top: 50%;
+	left: 45%;
+	margin-left: -2rem;
+	margin-top: -1rem;
+}
+.btn-word{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -1rem;
+	margin-left: -1rem;
+	
+}
+/*********************************常用地址*********************************/
+.used_address{
+	width: 100%;
+	margin-top: 8rem;
+	min-height: 4rem;
+}
+/*********************************搜索结果*********************************/
+.search_address{
+	width: 100%;
+	margin-top: 1rem;
+}
+/*********************************地址item*********************************/
+.address_header{
+	color: red;
+	font-size: 16px;
+	margin-left: 1rem;
+}
+.address-item{
+	line-height: 2rem;
+}
+.address-name{
+	font-size: 18px;
+	color: black;
+}
+.address-subjection{
+}
+
+/*********************************地图DIV*********************************/
+.show-map{
+	position: fixed;
+	top: 8%;
+	width: 100%;
+	height: 40%;
+}
+.search-list{
+	position: fixed;
+	width: 100%;
+	height: 52%;
+	top: 48%;
+	overflow-y:scroll;
+}
+#container{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+/*********************************地图组件样式*********************************/
+.tangram-suggestion{
+	z-index: 99;
+	width: 100%;
+	line-height: 2rem;
+	/* display: none; */
+}
+/********百度Logo**********/
+.anchorBL{
+	display: none;
+}
+/**********************************搜索列表*********************************/
+.input-search-list{
+	position: fixed;
+	top: 8%;
+	width: 100%;
+	height: 100%;
+	line-height: 3rem;
+	background: white;
+	overflow: scroll;
+}
+.choose-input-search-list{
+	position: fixed;
+	top: 17%;
+	width: 100%;
+	height: 100%;
+	line-height: 3rem;
+	background: white;
+	overflow: scroll;
+	z-index: 999;
+}

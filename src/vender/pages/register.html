@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta http-equiv="content-security-policy">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../css/login/login.css">
+		<link href="../css/mui.css" rel="stylesheet" />
+		<script src="../js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav mui-bar-nav-bg">
+			<a id="icon-menu" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-back mui-icon mui-icon-home mui-pull-right mui-a-color"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="main">
+			<div class="img-wrapper">
+				<img src="../imgs/register.jpg" alt="" class="logo">
+			</div>
+			<div class="content">
+				<form class="">
+					<div class="mui-input-row">
+						<label class='my-icon'><span class="mui-icon mui-icon mui-icon-phone"></span></label>
+						<input type="text" class='mobile' placeholder="请输入手机号码" value='15521634926'>
+					</div>
+					<hr class="my-line">
+					<div class="mui-input-row">
+						<label class='my-icon'><span class="mui-icon mui-icon-locked"></span></label>
+						<input type="password" class="mui-input-password password" placeholder="请输入密码" value='123456'>
+					</div>
+					<hr class="my-line">
+					<div class="mui-input-row">
+						<label class='my-icon'><span class="mui-icon mui-icon-person"></span></label>
+						<div class="my-sex">
+							<span class="man">
+								<span class="my-sex-tip">男</span>
+								<span class="circle-btn" value="1" id='male'></span>
+								<input type="radio" style="display:none;" />
+							<span>
+							<span class="women">
+								<span class="my-sex-tip">女</span>
+								<span class="circle-btn" value="2" id='female'></span>
+								<input type="radio" style="display:none;" />
+							</span>
+						</div>
+           			</div>
+					<hr class="sex-line">
+					<div class="mui-input-row" style="margin-top: 1rem;">
+						<label class='my-icon'><span class="mui-icon mui-icon-email"></span></label>
+						<input type="text" class="code" placeholder="请输入验证码" value=''>
+						<button class="send">发送</button>
+					</div>
+					<hr class="my-line">
+				</form>
+				<button class="my-btn"><strong>注册</strong></button> 
+			</div>
+		</div>
+		
+	</body>
+
+</html>
+
+<script type="text/javascript">
+	mui(document.body).on('tap', '.circle-btn', function(e) {
+		document.querySelector('#female').classList.remove('active'); 
+		document.querySelector('#male').classList.remove('active');
+		e.target.classList.add('active');
+	})
+	mui(document.body).on('tap','.send',function(e) {
+		senmobile(60);
+	});
+	mui(document.body).on('tap','.my-btn',function(e) {
+		register();
+	});
+	
+	
+	var issend=true; 
+	
+	//发送验证码
+	function senmobile(t) 
+	{ 
+		 if(issend){ 
+		//验证电话号码手机号码 
+		var phoneObj = document.querySelector('.mobile');
+		var pw = document.querySelector('.password')
+		var get_code= document.querySelector('.code');
+		var sex = document.querySelector('.active');
+		
+		if(sex == null){
+			mui.toast('请选择性别');
+			return false;
+		}
+		
+		if (phoneObj.value != ""){  
+			var phoneVal=phoneObj.value;  
+			var p1 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;  
+			var me = false;  
+			if (p1.test(phoneVal)) me=true;  
+			if (!me){  
+				phoneObj.value='';  
+				mui.toast('请输入正确的手机号码'); 
+				phoneObj.focus();  
+				return false;  
+			}else if(pw.length<6){ 
+				mui.toast('密码长度不够6'); 
+				return false;  
+			}else{ 
+				issend=false; 
+				mui.ajax({
+					  url:"http://www.hitch.com:8080/send_code", 
+					  dataType:"json", 
+					  type:"POST",
+					  header:{'Access-Control-Allow-Origin' : '*'},
+					  data:{'mobile':phoneObj.value}, 
+					  success:function(data){ 
+						if(data.status != 200){ 
+							mui.toast(data.message);
+							return false;
+						}else{
+							mui.toast(data.message);
+						} 
+						for(i=1;i<=t;i++) {  
+							window.setTimeout("update_a(" + i + ","+t+")", i * 1000);  
+						}  
+					  } 
+				}); 
+			} 
+		}else{ 
+			mui.toast('手机号码不能为空！');
+			return false; 
+		} 
+	} 
+	} 
+	 
+	//验证码倒计时
+	function update_a(num,t) {  
+		var get_code=document.querySelector('.send'); 
+		if(num == t) {  
+			get_code.innerHTML ="发送 ";  
+			issend=true;  
+		}  
+		else {  
+		   var printnr = t-num;  
+			get_code.innerHTML =printnr +" S";  
+		}  
+	}
+	
+	//注册
+	function register(){
+		var mobile = document.querySelector('.mobile').value;
+		var password = document.querySelector('.password').value;
+		var message_code= document.querySelector('.code').value;
+		var sex = document.querySelector('.active');
+	
+		if(sex == null){
+			mui.toast('请选择性别');
+		}
+		
+		mui.ajax('http://www.hitch.com:8080/register',{
+			data:{
+				mobile:mobile,
+				password:password,
+				message_code: message_code,
+				sex: sex.attributes['value'].nodeValue
+			},
+			dataType:'json',//服务器返回json格式数据
+			type:'POST',//HTTP请求类型
+			timeout:10000,//超时时间设置为10秒
+			success:function(data){
+				//服务器返回响应，根据响应结果，分析是否登录成功；
+				console.log(data);
+			},
+			error:function(xhr,type,errorThrown){
+				//异常处理；
+				console.log(type);
+			}
+		})
+	}
+	
+</script>
