@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "dplayer": "^1.25.0",
+    "dplayer": "^1.27.0",
     "electron-updater": "^4.2.0",
     "element-ui": "^2.4.11",
     "express": "^4.16.4",
