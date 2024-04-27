@@ -1,18 +1,55 @@
 .app-container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  user-select: none;
 
   .icon {
     display: inline-block;
     color: #bababb;
   }
 
+  .player-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    background-color: #1E1E20;
+
+    .action-button-container{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+
+      .action-button-item{
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover{
+          color: #60b224;
+        }
+      }
+
+      .action-button-close{
+        &:hover{
+          color: red;
+        }
+      }
+    }
+  }
+
   .video-container {
     position: relative;
+    flex: 1;
     width: 100%;
-    height: 100%;
+    height: 0;
 
     .video {
       width: 100%;
@@ -22,8 +59,6 @@
   }
 
   .control-bar {
-    position: absolute;
-    bottom: 0;
     display: flex;
     flex-direction: column;
     width: 100%;
