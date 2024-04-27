@@ -1,0 +1,53 @@
+{
+    "path": "cz-conventional-changelog",
+      "types": {
+        "feat": {
+          "description": "新增功能",
+          "title": "feat"
+        },
+        "fix": {
+          "description": "bug 修复",
+          "title": "fix"
+        },
+        "docs": {
+          "description": "文档更新",
+          "title": "docs"
+        },
+        "examples": {
+          "description": "开发测试",
+          "title": "examples"
+        },
+        "build": {
+          "description": "主要目的是修改项目构建系统(例如 glup，webpack，rollup 的配置等)的提交",
+          "title": "build"
+        },
+        "ci": {
+          "description": "主要目的是修改项目继续集成流程(例如 Travis，Jenkins，GitLab CI，Circle等)的提交",
+          "title": "ci"
+        },
+        "perf": {
+          "description": "性能优化",
+          "title": "perf"
+        },
+        "refactor": {
+          "description": "重构代码(既没有新增功能，也没有修复 bug)",
+          "title": "refactor"
+        },
+        "style": {
+          "description": "不影响程序逻辑的代码修改(修改空白字符，补全缺失的分号等)",
+          "title": "style"
+        },
+        "test": {
+          "description": "测试",
+          "title": "test"
+        },
+        "revert": {
+          "description": "回滚某个更早之前的提交",
+          "title": "revert"
+        },
+        "chore": {
+          "description": "不属于以上类型的其他类型(日常事务)",
+          "title": "chore"
+        }
+      }
+}
