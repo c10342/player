@@ -34,9 +34,12 @@ const init = async () => {
   setLang(store.get("lang") as LangEnum);
   // 主窗口
   const mainWin = createWindow({
-    minWidth: 1000,
-    minHeight: 700,
-    winName: "index"
+    minWidth: 900,
+    minHeight: 600,
+    width: 900,
+    height: 600,
+    winName: "index",
+    autoHideMenuBar: false
   });
   mainWin.on("closed", closeApp);
 };
