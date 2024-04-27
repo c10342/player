@@ -1,6 +1,6 @@
 <template>
   <div class="player-header" @mousedown="onMousedown">
-    <div>name</div>
+    <div class="video-name">name</div>
     <div class="action-button-container" @mousedown.stop>
       <icon class="action-button-item" name="minimize" :size="15" @click="onMinimize"></icon>
       <icon

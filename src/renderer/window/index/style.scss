@@ -1,3 +1,5 @@
+$primaryColor: #60b224;
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -6,50 +8,81 @@
   overflow: hidden;
   user-select: none;
 
+  .scroll-bar {
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: #151517;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #4f4f51;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: #5c5c5c;
+      }
+    }
+  }
+
   .icon {
     display: inline-block;
     color: #bababb;
   }
 
-  .player-header{
+  .player-header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     height: 40px;
-    background-color: #1E1E20;
+    background-color: #1e1e20;
 
-    .action-button-container{
+    .action-button-container {
       display: flex;
       flex-direction: row;
       align-items: center;
       height: 100%;
 
-      .action-button-item{
+      .action-button-item {
         width: 32px;
         height: 32px;
         line-height: 32px;
         text-align: center;
         cursor: pointer;
 
-        &:hover{
-          color: #60b224;
+        &:hover {
+          color: $primaryColor;
         }
       }
 
-      .action-button-close{
-        &:hover{
+      .action-button-close {
+        &:hover {
           color: red;
         }
       }
     }
+
+    .video-name {
+      padding-left: 10px;
+      font-size: 14px;
+      color: #999;
+    }
+  }
+
+  .middle-container {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    width: 100%;
+    height: 0;
   }
 
   .video-container {
     position: relative;
     flex: 1;
-    width: 100%;
-    height: 0;
+    width: 0;
+    height: 100%;
 
     .video {
       width: 100%;
@@ -83,16 +116,16 @@
       .progress-inner {
         width: 0%;
         height: 100%;
-        background-color: #60b224;
+        background-color: $primaryColor;
       }
 
-      .time-tip{
+      .time-tip {
         position: absolute;
         top: 0;
         left: 0;
         padding: 4px 6px;
         font-size: 12px;
-        color: #BABABB;
+        color: #bababb;
         background-color: #303031;
         transform: translateY(-100%);
       }
@@ -128,6 +161,96 @@
         margin-right: 14px;
         cursor: pointer;
       }
+    }
+  }
+
+  .play-list {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 270px;
+    height: 100%;
+    background-color: rgb(0 0 0 / 70%);
+    transition: width 0.3s;
+
+    .action-button-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 100%;
+      transform: translateX(-100%);
+    }
+
+    .item-container {
+      height: 100%;
+      overflow: auto;
+    }
+
+    .action-button {
+      width: 100%;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      cursor: pointer;
+      background-color: rgb(0 0 0 / 60%);
+    }
+  }
+
+  .play-list-item {
+    position: relative;
+    width: 100%;
+    height: 36px;
+    overflow: hidden;
+
+    .info-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 0 6px;
+      font-size: 12px;
+    }
+
+    &.active {
+      .info-container {
+        color: $primaryColor;
+        background-color: rgb(0 0 0 / 50%);
+      }
+    }
+
+    .video-name-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+
+      .video-icon {
+        margin-right: 8px;
+        color: $primaryColor;
+      }
+
+      .video-name {
+        width: 160px;
+        overflow: hidden; //超出的文本隐藏
+        text-overflow: ellipsis; //用省略号显示
+        white-space: nowrap; //不换行（文字不允许换行，单行文本）
+      }
+    }
+
+    .mask-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 40%;
+      height: 100%;
+      background-color: rgb(0 0 0 / 15%);
     }
   }
 }

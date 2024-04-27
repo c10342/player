@@ -1,63 +1,79 @@
 @font-face {
-  font-family: iconfont; /* Project id 4527313 */
-  src: url('iconfont.woff2?t=1714218977079') format('woff2'),
-       url('iconfont.woff?t=1714218977079') format('woff'),
-       url('iconfont.ttf?t=1714218977079') format('truetype');
+  font-family: "iconfont"; /* Project id 4527313 */
+  src: url('iconfont.woff2?t=1714226869149') format('woff2'),
+       url('iconfont.woff?t=1714226869149') format('woff'),
+       url('iconfont.ttf?t=1714226869149') format('truetype');
 }
 
 .iconfont {
-  font-family: iconfont !important;
+  font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-minimize::before {
+.icon-triangle-left:before {
+  content: "\e709";
+}
+
+.icon-lock:before {
+  content: "\e676";
+}
+
+.icon-unlock:before {
+  content: "\e682";
+}
+
+.icon-triangle:before {
+  content: "\e61a";
+}
+
+.icon-minimize:before {
   content: "\e7bf";
 }
 
-.icon-maximize::before {
+.icon-maximize:before {
   content: "\e7c0";
 }
 
-.icon-window-maximize::before {
+.icon-window-maximize:before {
   content: "\e669";
 }
 
-.icon-pause::before {
+.icon-pause:before {
   content: "\e723";
 }
 
-.icon-folder::before {
+.icon-folder:before {
   content: "\e61f";
 }
 
-.icon-skip-previous::before {
+.icon-skip-previous:before {
   content: "\e6d3";
 }
 
-.icon-skip-next::before {
+.icon-skip-next:before {
   content: "\e8aa";
 }
 
-.icon-close::before {
+.icon-close:before {
   content: "\e7fc";
 }
 
-.icon-play::before {
+.icon-play:before {
   content: "\e726";
 }
 
-.icon-stop::before {
+.icon-stop:before {
   content: "\e68b";
 }
 
-.icon-jingyin::before {
+.icon-jingyin:before {
   content: "\e865";
 }
 
-.icon-volume-fill::before {
+.icon-volume-fill:before {
   content: "\e847";
 }
 
