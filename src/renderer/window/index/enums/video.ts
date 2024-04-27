@@ -10,5 +10,9 @@ export enum MethodName {
   Play = "play",
   Pause = "pause",
   TogglePlay = "togglePlay",
-  Seek = "seek"
+  Seek = "seek",
+  GetCurrentTime = "getCurrentTime",
+  SetSpeed = "setSpeed",
+  GetSpeed = "getSpeed",
+  GetPaused = "getPaused"
 }

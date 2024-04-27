@@ -8,6 +8,10 @@ interface MethodMap {
   [MethodName.Pause]?: () => Promise<void>;
   [MethodName.TogglePlay]?: () => Promise<void>;
   [MethodName.Seek]?: (time: number) => void;
+  [MethodName.GetCurrentTime]?: () => number;
+  [MethodName.SetSpeed]?: (rate: number) => void;
+  [MethodName.GetSpeed]?: () => number;
+  [MethodName.GetPaused]?: () => boolean;
 }
 
 const methodMap: MethodMap = {};

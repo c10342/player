@@ -57,10 +57,28 @@ const getDuration = () => {
   return videoRef.value?.duration ?? 0;
 };
 
+const getCurrentTime = () => {
+  return videoRef.value?.currentTime ?? 0;
+};
+
+const setSpeed = (rate: number) => {
+  if (videoRef.value) {
+    videoRef.value.playbackRate = rate;
+  }
+};
+
+const getSpeed = () => {
+  return videoRef.value?.playbackRate ?? 1;
+};
+
 const seek = (time: number) => {
   if (videoRef.value) {
     videoRef.value.currentTime = time;
   }
+};
+
+const getPaused = () => {
+  return videoRef.value?.paused ?? true;
 };
 
 exportMethod({
@@ -68,6 +86,10 @@ exportMethod({
   play,
   pause,
   togglePlay,
-  seek
+  seek,
+  getCurrentTime,
+  setSpeed,
+  getSpeed,
+  getPaused
 });
 </script>
