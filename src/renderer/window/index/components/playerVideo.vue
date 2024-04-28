@@ -1,5 +1,5 @@
 <template>
-  <div class="video-container" @click="togglePlay">
+  <div class="video-container" @click="togglePlay" @contextmenu="onContentMenu">
     <video
       ref="videoRef"
       src="http://player.linjiafu.top/test.mp4"
@@ -18,8 +18,13 @@ import { VideoEvent } from "../enums/video";
 import { triggerEvent } from "../hooks/useEvent";
 import { throttle } from "lodash";
 import { exportMethod } from "../hooks/useMethod";
+import { openMenu } from "../utils/menu";
 
 const videoRef = ref<HTMLVideoElement | null>(null);
+
+const onContentMenu = () => {
+  openMenu();
+};
 
 const onPlay = (event: Event) => {
   triggerEvent(VideoEvent.Play, event);

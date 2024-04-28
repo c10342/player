@@ -2,6 +2,7 @@ import { resolve } from "path";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 
 const getInput = () => {
   const dirRoot = resolve(__dirname, "src/renderer/window");
@@ -42,7 +43,7 @@ export default defineConfig({
         "@resources": resolve("resources")
       }
     },
-    plugins: [vue()],
+    plugins: [vue(), vueJsx()],
     build: {
       rollupOptions: {
         input: getInput()

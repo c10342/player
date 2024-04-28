@@ -103,6 +103,10 @@ const api = {
   // 安装更新
   [BridgeEnum.InstallUpdate]() {
     ipcRenderer.send(BridgeEnum.InstallUpdate);
+  },
+  // 获取鼠标位置
+  [BridgeEnum.GetMousePosition](): Promise<Electron.Point> {
+    return ipcRenderer.invoke(BridgeEnum.GetMousePosition);
   }
 };
 

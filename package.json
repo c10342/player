@@ -27,6 +27,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "ant-design-vue": "^4.2.1",
     "electron-log": "^5.1.1",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.1",
@@ -45,6 +46,7 @@
     "@types/lodash": "^4.14.202",
     "@types/node": "^18.17.5",
     "@vitejs/plugin-vue": "^4.3.1",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "cz-conventional-changelog": "^3.3.0",

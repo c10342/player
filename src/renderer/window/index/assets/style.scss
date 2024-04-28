@@ -29,6 +29,7 @@ $primaryColor: #60b224;
     color: #bababb;
   }
 
+
   .player-header {
     display: flex;
     flex-direction: row;
@@ -253,4 +254,23 @@ $primaryColor: #60b224;
       background-color: rgb(0 0 0 / 15%);
     }
   }
+
+  .function-grid{
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    width: 0;
+    height: 100%;
+  }
 }
+
+
+.menu-container{
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  z-index: 100;
+}
+

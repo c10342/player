@@ -9,7 +9,7 @@ import {
   ShowOpenDialogParrams,
   SetIgnoreMouseEventsParams
 } from "@share/type";
-import { BrowserWindow, app, dialog, ipcMain, shell } from "electron";
+import { BrowserWindow, app, dialog, ipcMain, shell, screen } from "electron";
 import os from "os";
 import { store } from "./store";
 import { getLang, setLang } from "../locale";
@@ -140,4 +140,8 @@ export const initBridge = () => {
   ipcMain.handle(BridgeEnum.CheckUpdate, checkUpdate);
   // 安装更新
   ipcMain.on(BridgeEnum.InstallUpdate, installUpdate);
+  ipcMain.handle(BridgeEnum.GetMousePosition, () => {
+    const cursor = screen.getCursorScreenPoint();
+    return cursor;
+  });
 };

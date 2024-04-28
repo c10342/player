@@ -39,7 +39,9 @@ export enum BridgeEnum {
   // 检查更新
   CheckUpdate = "checkUpdate",
   // 安装更新
-  InstallUpdate = "installUpdate"
+  InstallUpdate = "installUpdate",
+  // 获取鼠标位置
+  GetMousePosition = "getMousePosition"
 }
 
 // 全局事件广播
