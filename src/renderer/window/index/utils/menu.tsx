@@ -1,33 +1,56 @@
 import { createVNode, defineComponent, render } from "vue";
-import { ItemType, Menu, MenuItem, Dropdown } from "ant-design-vue";
+import { Menu, MenuItem } from "ant-design-vue";
+import { Instance, createPopper } from "@popperjs/core";
 
 // 单例
 let destroyMenu: null | (() => any) = null;
 
-export const openMenu = async () => {
+interface MenuItemType {
+  label: string;
+  action: (...args: any) => any;
+}
+
+export const openMenu = async (menus: MenuItemType[]) => {
   if (destroyMenu) {
     destroyMenu();
     destroyMenu = null;
   }
   const mousePosition = await window.api.getMousePosition();
   const winPosition = await window.api.getWinPosition();
+  // 计算鼠标在窗口的位置
   const pageX = mousePosition.x - (winPosition?.x ?? 0) - 5;
   const pageY = mousePosition.y - (winPosition?.y ?? 0) - 50;
-
+  let popperInstance: Instance | null = null;
+  let vm: any = null;
+  // Popper容器
+  let popperDiv: HTMLDivElement | null = document.createElement("div");
+  popperDiv.style.left = `${pageX}px`;
+  popperDiv.style.top = `${pageY}px`;
+  popperDiv.style.position = "fixed";
+  popperDiv.style.zIndex = "100";
+  // jsx附着的容器，也是Popper需要显示的内容
+  let div: HTMLDivElement | null = document.createElement("div");
   const onDocumemtClick = () => {
     destroyMenu?.();
   };
-  const div = document.createElement("div");
   destroyMenu = () => {
+    popperInstance?.destroy();
     document.body.removeChild(vm.el as HTMLElement);
-    render(null, div);
+    popperDiv && document.body.removeChild(popperDiv);
+    div && render(null, div);
     document.removeEventListener("click", onDocumemtClick);
+    // 销毁。防止闭包造成内存泄漏
     destroyMenu = null;
+    popperDiv = null;
+    vm = null;
+    div = null;
   };
 
   const tsxComponent = defineComponent({
     setup() {
-      const onMenuClick = () => {
+      const onMenuClick = (data: { key: number }) => {
+        const action = menus[data.key].action;
+        action?.();
         destroyMenu?.();
       };
 
@@ -36,34 +59,23 @@ export const openMenu = async () => {
     render() {
       const { onMenuClick } = this;
       return (
-        <div class="menu-container" style={{ left: `${pageX}px`, top: `${pageY}px` }}>
-          <Dropdown
-            open={true}
-            v-slots={{
-              overlay() {
-                return (
-                  <Menu onClick={onMenuClick}>
-                    <MenuItem>1st menu item</MenuItem>
-                    <MenuItem>2nd menu item</MenuItem>
-                    <MenuItem>3rd menu item</MenuItem>
-                  </Menu>
-                );
-              },
-              default() {
-                return "";
-              }
-            }}
-          ></Dropdown>
-        </div>
+        <Menu onClick={onMenuClick}>
+          {menus.map((menu, index) => {
+            return <MenuItem key={index}>{menu.label}</MenuItem>;
+          })}
+        </Menu>
       );
     }
   });
 
-  const vm = createVNode(tsxComponent);
+  vm = createVNode(tsxComponent);
 
   render(vm, div);
 
   document.body.appendChild(vm.el as HTMLElement);
-
+  document.body.appendChild(popperDiv);
+  popperInstance = createPopper(popperDiv, vm.el as HTMLElement, {
+    placement: "right-start"
+  });
   document.addEventListener("click", onDocumemtClick);
 };

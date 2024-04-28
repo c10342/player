@@ -41,7 +41,9 @@ export enum BridgeEnum {
   // 安装更新
   InstallUpdate = "installUpdate",
   // 获取鼠标位置
-  GetMousePosition = "getMousePosition"
+  GetMousePosition = "getMousePosition",
+  // 从文件路径中获取文件名
+  GetFileNameFromPath = "getFileNameFromPath"
 }
 
 // 全局事件广播

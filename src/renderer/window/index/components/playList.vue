@@ -16,7 +16,11 @@
     </div>
 
     <div class="item-container scroll-bar">
-      <play-list-item v-for="i in 20" :key="i"></play-list-item>
+      <play-list-item
+        v-for="video in videoStore.videoList"
+        :key="video.path"
+        :video="video"
+      ></play-list-item>
     </div>
   </div>
 </template>
@@ -26,6 +30,9 @@ import PlayListItem from "./playListItem.vue";
 import Icon from "./icon/index.vue";
 import { ref } from "vue";
 import { importMethod } from "../hooks/useMethod";
+import { useVideoStore } from "../store/video";
+
+const videoStore = useVideoStore();
 
 const { togglePlay } = importMethod();
 

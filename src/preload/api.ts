@@ -107,6 +107,10 @@ const api = {
   // 获取鼠标位置
   [BridgeEnum.GetMousePosition](): Promise<Electron.Point> {
     return ipcRenderer.invoke(BridgeEnum.GetMousePosition);
+  },
+  // 从文件路径中获取文件名
+  [BridgeEnum.GetFileNameFromPath](pathStr: string): Promise<string> {
+    return ipcRenderer.invoke(BridgeEnum.GetFileNameFromPath, pathStr);
   }
 };
 

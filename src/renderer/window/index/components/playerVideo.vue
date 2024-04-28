@@ -19,11 +19,59 @@ import { triggerEvent } from "../hooks/useEvent";
 import { throttle } from "lodash";
 import { exportMethod } from "../hooks/useMethod";
 import { openMenu } from "../utils/menu";
+import { useLocale } from "@renderer/services/hooks/useLocale";
+import { VideoItem } from "../types/video";
+import { useVideoStore } from "../store/video";
+
+const { t } = useLocale();
+
+const videoStore = useVideoStore();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 
 const onContentMenu = () => {
-  openMenu();
+  openMenu([
+    {
+      label: t("openFile"),
+      action() {
+        window.api
+          .showOpenDialog({
+            modal: true,
+            title: t("selectFile"),
+            properties: ["openFile", "multiSelections"],
+            filters: [{ name: "Videos", extensions: ["mp4"] }]
+          })
+          .then((res) => {
+            const task = res.filePaths.map((path) => {
+              return window.api.getFileNameFromPath(path).then((name) => {
+                const obj: VideoItem = {
+                  name,
+                  path
+                };
+                return obj;
+              });
+            });
+            Promise.all(task).then((result) => {
+              videoStore.videoList = result;
+            });
+          });
+      }
+    },
+    {
+      label: t("openDirectory"),
+      action() {
+        window.api
+          .showOpenDialog({
+            modal: true,
+            title: t("selectDirectory"),
+            properties: ["openDirectory", "multiSelections"]
+          })
+          .then((res) => {
+            console.log(res.filePaths);
+          });
+      }
+    }
+  ]);
 };
 
 const onPlay = (event: Event) => {

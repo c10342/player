@@ -14,6 +14,7 @@ import os from "os";
 import { store } from "./store";
 import { getLang, setLang } from "../locale";
 import { checkUpdate, installUpdate } from "./update";
+import path from "path";
 
 /**
  * 初始化主/渲染进程通信
@@ -140,8 +141,13 @@ export const initBridge = () => {
   ipcMain.handle(BridgeEnum.CheckUpdate, checkUpdate);
   // 安装更新
   ipcMain.on(BridgeEnum.InstallUpdate, installUpdate);
+  // 获取鼠标位置
   ipcMain.handle(BridgeEnum.GetMousePosition, () => {
     const cursor = screen.getCursorScreenPoint();
     return cursor;
+  });
+  // 从文件路径中获取文件名
+  ipcMain.handle(BridgeEnum.GetFileNameFromPath, (_event, pathStr: string) => {
+    return path.basename(pathStr);
   });
 };

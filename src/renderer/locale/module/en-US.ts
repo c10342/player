@@ -1,6 +1,6 @@
 export default {
-  test: "Test",
-  list: {
-    t: "t{num}"
-  }
+  openFile: "Open File",
+  openDirectory: "Open Directory",
+  selectFile: "Select File",
+  selectDirectory: "Select Directory"
 };
