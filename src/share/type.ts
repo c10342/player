@@ -93,3 +93,10 @@ export interface SetStoreParams {
 export interface StoreState {
   lang: string;
 }
+
+export interface GetFileFromDirRespond {
+  path: string;
+  name: string;
+  // 后缀
+  ext: string;
+}

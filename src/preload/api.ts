@@ -10,7 +10,8 @@ import {
   SetStoreParams,
   ShowOpenDialogParrams,
   SetIgnoreMouseEventsParams,
-  StoreState
+  StoreState,
+  GetFileFromDirRespond
 } from "@share/type";
 import { OpenDialogReturnValue, ipcRenderer } from "electron";
 import { UpdateCheckResult } from "electron-updater";
@@ -111,6 +112,10 @@ const api = {
   // 从文件路径中获取文件名
   [BridgeEnum.GetFileNameFromPath](pathStr: string): Promise<string> {
     return ipcRenderer.invoke(BridgeEnum.GetFileNameFromPath, pathStr);
+  },
+  // 获取目录下的所有文件，包括子孙文件
+  [BridgeEnum.GetFileFromDir](dir: string[]): Promise<GetFileFromDirRespond[]> {
+    return ipcRenderer.invoke(BridgeEnum.GetFileFromDir, dir);
   }
 };
 
