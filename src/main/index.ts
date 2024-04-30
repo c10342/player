@@ -7,6 +7,7 @@ import { initBridge } from "./services/bridge";
 import { initMonitor } from "./services/monitor";
 import { setLang } from "./locale";
 import { LangEnum } from "@share/enum";
+import { initIoHook } from "./services/iohook";
 
 //   取消警告
 //   Render process output: 2-%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security
@@ -32,6 +33,8 @@ const init = async () => {
   initMonitor();
   // 设置语言
   setLang(store.get("lang") as LangEnum);
+  // 初始化io监听
+  initIoHook();
   // 主窗口
   const mainWin = createWindow({
     minWidth: 900,

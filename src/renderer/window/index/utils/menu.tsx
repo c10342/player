@@ -1,6 +1,7 @@
 import { createVNode, defineComponent, render } from "vue";
 import { Menu, MenuItem } from "ant-design-vue";
 import { Instance, createPopper } from "@popperjs/core";
+import { GlobalEventEnum } from "@share/enum";
 
 // 单例
 let destroyMenu: null | (() => any) = null;
@@ -30,7 +31,7 @@ export const openMenu = async (menus: MenuItemType[]) => {
   popperDiv.style.zIndex = "100";
   // jsx附着的容器，也是Popper需要显示的内容
   let div: HTMLDivElement | null = document.createElement("div");
-  const onDocumemtClick = () => {
+  const onClick = () => {
     destroyMenu?.();
   };
   destroyMenu = () => {
@@ -38,7 +39,7 @@ export const openMenu = async (menus: MenuItemType[]) => {
     document.body.removeChild(vm.el as HTMLElement);
     popperDiv && document.body.removeChild(popperDiv);
     div && render(null, div);
-    document.removeEventListener("click", onDocumemtClick);
+    window.api.off(GlobalEventEnum.Click, onClick);
     // 销毁。防止闭包造成内存泄漏
     destroyMenu = null;
     popperDiv = null;
@@ -77,5 +78,6 @@ export const openMenu = async (menus: MenuItemType[]) => {
   popperInstance = createPopper(popperDiv, vm.el as HTMLElement, {
     placement: "right-start"
   });
-  document.addEventListener("click", onDocumemtClick);
+  // document.addEventListener("click", onDocumemtClick);
+  window.api.on(GlobalEventEnum.Click, onClick);
 };

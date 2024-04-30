@@ -63,7 +63,9 @@ export enum GlobalEventEnum {
   // 下载进度
   DownloadProgress = "download-progress",
   // 下载完成
-  UpdateDownloaded = "update-downloaded"
+  UpdateDownloaded = "update-downloaded",
+  // 鼠标点击事件
+  Click = "click"
 }
 
 // 语言
