@@ -2,6 +2,7 @@
 import { LangEnum } from "@share/enum";
 import { StoreState } from "@share/type";
 import Store from "electron-store";
+import { name } from "../../../package.json";
 
 export let store: Store<StoreState> | null = null;
 
@@ -12,7 +13,7 @@ export let store: Store<StoreState> | null = null;
  */
 export const initStore = () => {
   store = new Store<StoreState>({
-    name: "electron-player",
+    name,
     watch: false,
     schema: {
       lang: {

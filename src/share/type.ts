@@ -92,6 +92,7 @@ export interface SetStoreParams {
 
 export interface StoreState {
   lang: string;
+  [key: string]: any;
 }
 
 export interface GetAllFileRespond {
