@@ -1,6 +1,6 @@
-import { logError } from "@share/log";
 import { onBeforeUnmount } from "vue";
 import { MethodName } from "../enums/video";
+import { Ipc } from "../utils/ipc";
 
 interface MethodMap {
   [MethodName.GetDuration]?: () => number;
@@ -14,31 +14,17 @@ interface MethodMap {
   [MethodName.GetPaused]?: () => boolean;
 }
 
-const methodMap: MethodMap = {};
+export const ipc = new Ipc();
 
 // 导入全局方法
 export const exportMethod = (object: MethodMap) => {
   Object.keys(object).forEach((key) => {
-    if (methodMap[key]) {
-      logError(`${key}方法已经存在了`);
-      return;
-    }
-    methodMap[key] = object[key];
+    ipc.handle(key, object[key]);
   });
 
   onBeforeUnmount(() => {
     Object.keys(object).forEach((key) => {
-      delete methodMap[key];
+      ipc.off(key);
     });
   });
-};
-
-// 导出方法
-export const importMethod = (): MethodMap => {
-  const obj = new Proxy(methodMap, {
-    get(target, key, receiver) {
-      return Reflect.get(target, key, receiver);
-    }
-  });
-  return obj;
 };

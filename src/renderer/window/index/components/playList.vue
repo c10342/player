@@ -5,7 +5,7 @@
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <div class="action-button-container" @click="togglePlay">
+    <div class="action-button-container" @click="onToggle">
       <div v-if="isEnter" class="action-button" @click.stop>
         <icon v-if="isFold" name="triangle-left" :size="22" @click="openMenu"></icon>
         <template v-else>
@@ -29,12 +29,10 @@
 import PlayListItem from "./playListItem.vue";
 import Icon from "./icon/index.vue";
 import { ref } from "vue";
-import { importMethod } from "../hooks/useMethod";
 import { useVideoStore } from "../store/video";
+import { ipc } from "../hooks/useMethod";
 
 const videoStore = useVideoStore();
-
-const { togglePlay } = importMethod();
 
 const isEnter = ref(false);
 
@@ -81,5 +79,9 @@ const onLock = () => {
 
 const onUnLock = () => {
   isLock.value = false;
+};
+
+const onToggle = () => {
+  ipc.invoke("togglePlay");
 };
 </script>

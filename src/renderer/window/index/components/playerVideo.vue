@@ -9,7 +9,6 @@
       @pause="onPause"
       @timeupdate="onTimeUpdate"
       @loadedmetadata="onLoadedmetadata"
-      @ended="onEnded"
     ></video>
   </div>
 </template>
@@ -122,10 +121,6 @@ const seek = (time: number) => {
 
 const getPaused = () => {
   return videoRef.value?.paused ?? true;
-};
-
-const onEnded = () => {
-  console.log("end");
 };
 
 exportMethod({

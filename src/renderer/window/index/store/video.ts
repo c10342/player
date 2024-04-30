@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { VideoItem } from "../types/video";
+import { triggerEvent } from "../hooks/useEvent";
+import { VideoEvent } from "../enums/video";
 
 // 支持播放的视频文件
 const whiteList = [".mp4"];
@@ -53,6 +55,8 @@ export const useVideoStore = defineStore("video", () => {
     } else {
       activeVideo.value = null;
     }
+
+    triggerEvent(VideoEvent.ActiveChange, video);
   };
   return { videoList, addVideo, addVideoFromDir, activeVideo, setActiveVideo };
 });

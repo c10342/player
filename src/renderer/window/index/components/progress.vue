@@ -17,10 +17,8 @@ import { computed, nextTick, ref } from "vue";
 import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
 
-import { importMethod } from "../hooks/useMethod";
 import { formatTime } from "../utils/formatTime";
-
-const { getDuration, seek, getCurrentTime } = importMethod();
+import { ipc } from "../hooks/useMethod";
 
 const duration = ref(0);
 
@@ -56,7 +54,7 @@ const onClick = (event: MouseEvent) => {
   const target = event.target as HTMLDivElement;
   const width = target.offsetWidth;
   const time = (event.offsetX / width) * duration.value;
-  seek?.(time);
+  ipc.invoke("seek", time);
 };
 
 const onMouseMove = (event: MouseEvent) => {
@@ -79,8 +77,12 @@ const onMouseLeave = () => {
 };
 
 const init = () => {
-  duration.value = getDuration?.() ?? 0;
-  currentTime.value = getCurrentTime?.() ?? 0;
+  ipc.invoke("getDuration").then((res) => {
+    duration.value = res ?? 0;
+  });
+  ipc.invoke("getCurrentTime").then((res) => {
+    currentTime.value = res ?? 0;
+  });
 };
 
 init();

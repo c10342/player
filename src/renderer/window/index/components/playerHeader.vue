@@ -1,6 +1,8 @@
 <template>
   <div class="player-header" @mousedown="onMousedown">
-    <div class="video-name">name</div>
+    <div v-if="videoStore.activeVideo?.name" class="video-name">
+      {{ videoStore.activeVideo?.name }}
+    </div>
     <div class="action-button-container" @mousedown.stop>
       <icon class="action-button-item" name="minimize" :size="15" @click="onMinimize"></icon>
       <icon
@@ -33,10 +35,13 @@ import Icon from "./icon/index.vue";
 import { GlobalEventEnum } from "@share/enum";
 import { ref } from "vue";
 import { useDragWin } from "@renderer/services/hooks/useDragWin";
+import { useVideoStore } from "../store/video";
 
 const isMaximize = ref(false);
 
 const { onMousedown } = useDragWin();
+
+const videoStore = useVideoStore();
 
 useGlobalEvent(GlobalEventEnum.Maximize, () => {
   isMaximize.value = true;
