@@ -9,7 +9,10 @@ const whiteList = [".mp4"];
 // (比如 `useUserStore`，`useCartStore`，`useProductStore`)
 // 第一个参数是你的应用中 Store 的唯一 ID。
 export const useVideoStore = defineStore("video", () => {
+  // 视频播放列表
   const videoList = ref<VideoItem[]>([]);
+  // 当前正在播放的视频
+  const activeVideo = ref<VideoItem | null>(null);
   // 根据文件名进行添加
   const addVideo = async (filePath: string[]) => {
     const task = filePath.map((path) => {
@@ -41,5 +44,15 @@ export const useVideoStore = defineStore("video", () => {
       }));
     videoList.value.push(...arr);
   };
-  return { videoList, addVideo, addVideoFromDir };
+  const setActiveVideo = (video: VideoItem | null) => {
+    if (video?.path === activeVideo.value?.path) {
+      return;
+    }
+    if (video) {
+      activeVideo.value = { ...video };
+    } else {
+      activeVideo.value = null;
+    }
+  };
+  return { videoList, addVideo, addVideoFromDir, activeVideo, setActiveVideo };
 });

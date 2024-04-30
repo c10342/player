@@ -2,8 +2,9 @@
   <div class="video-container" @click="togglePlay" @contextmenu="onContentMenu">
     <video
       ref="videoRef"
-      src="http://player.linjiafu.top/test.mp4"
+      :src="videoStore.activeVideo?.path"
       class="video"
+      autoplay
       @play="onPlay"
       @pause="onPause"
       @timeupdate="onTimeUpdate"
@@ -21,7 +22,7 @@ import { exportMethod } from "../hooks/useMethod";
 import { openMenu } from "../utils/menu";
 import { useLocale } from "@renderer/services/hooks/useLocale";
 import { useVideoStore } from "../store/video";
-
+// http://player.linjiafu.top/test.mp4
 const { t } = useLocale();
 
 const videoStore = useVideoStore();

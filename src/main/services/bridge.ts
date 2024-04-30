@@ -7,8 +7,7 @@ import {
   GetPathType,
   SetStoreParams,
   ShowOpenDialogParrams,
-  SetIgnoreMouseEventsParams,
-  GetAllFileRespond
+  SetIgnoreMouseEventsParams
 } from "@share/type";
 import { BrowserWindow, app, dialog, ipcMain, shell, screen } from "electron";
 import os from "os";
@@ -16,9 +15,7 @@ import { store } from "./store";
 import { getLang, setLang } from "../locale";
 import { checkUpdate, installUpdate } from "./update";
 import path from "path";
-import { getAllFile, isDir } from "./fs";
-import fs from "fs";
-
+import { getAllFile } from "./fs";
 /**
  * 初始化主/渲染进程通信
  */
