@@ -9,7 +9,7 @@ interface HandlerItem {
 export class Ipc {
   private actionMap: HandlerItem = {};
   // 处理函数
-  handle(name: string, action: (...args) => any) {
+  handle(name: string, action: (...args: any) => any) {
     if (this.actionMap[name]) {
       logError(`${name}已经存在了`);
       return;

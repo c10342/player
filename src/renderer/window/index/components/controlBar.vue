@@ -68,17 +68,17 @@ const onToggle = () => {
 };
 
 const init = () => {
-  ipc.invoke("getDuration").then((res) => {
+  ipc.invoke<number>("getDuration").then((res) => {
     if (!isUndef(res)) {
       durationLabel.value = formatTime(res);
     }
   });
-  ipc.invoke("getCurrentTime").then((res) => {
+  ipc.invoke<number>("getCurrentTime").then((res) => {
     if (!isUndef(res)) {
       currentTimeLabel.value = formatTime(res);
     }
   });
-  ipc.invoke("getPaused").then((res) => {
+  ipc.invoke<boolean>("getPaused").then((res) => {
     if (!isUndef(res)) {
       playIcon.value = res ? "play" : "pause";
     }

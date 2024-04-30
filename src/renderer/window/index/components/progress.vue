@@ -77,10 +77,10 @@ const onMouseLeave = () => {
 };
 
 const init = () => {
-  ipc.invoke("getDuration").then((res) => {
+  ipc.invoke<number>("getDuration").then((res) => {
     duration.value = res ?? 0;
   });
-  ipc.invoke("getCurrentTime").then((res) => {
+  ipc.invoke<number>("getCurrentTime").then((res) => {
     currentTime.value = res ?? 0;
   });
 };
