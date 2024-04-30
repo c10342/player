@@ -1,44 +1,43 @@
 <template>
-  <div class="function-grid" @contextmenu="onContentMenu"></div>
+  <div class="function-grid" @contextmenu="onContentMenu">
+    <div class="function-list">
+      <div v-for="(item, index) in list" :key="index" class="function-item" @click="item.action">
+        <icon :size="30" :name="item.icon"></icon>
+        <p class="function-name">{{ item.label }}</p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useLocale } from "@renderer/services/hooks/useLocale";
-import { useVideoStore } from "../store/video";
 import { openMenu } from "../utils/menu";
+import Icon from "./icon/index.vue";
+import { selectDir, selectFile } from "../utils/file";
 const { t } = useLocale();
-const videoStore = useVideoStore();
+
+const list = [
+  {
+    icon: "folder",
+    label: t("openDirectory"),
+    action: selectFile
+  },
+  {
+    icon: "file",
+    label: t("openFile"),
+    action: selectDir
+  }
+];
 
 const onContentMenu = () => {
   openMenu([
     {
       label: t("openFile"),
-      action() {
-        window.api
-          .showOpenDialog({
-            modal: true,
-            title: t("selectFile"),
-            properties: ["openFile", "multiSelections"],
-            filters: [{ name: "Videos", extensions: ["mp4"] }]
-          })
-          .then((res) => {
-            videoStore.addVideo(res.filePaths);
-          });
-      }
+      action: selectFile
     },
     {
       label: t("openDirectory"),
-      action() {
-        window.api
-          .showOpenDialog({
-            modal: true,
-            title: t("selectDirectory"),
-            properties: ["openDirectory", "multiSelections"]
-          })
-          .then((res) => {
-            videoStore.addVideoFromDir(res.filePaths);
-          });
-      }
+      action: selectDir
     }
   ]);
 };

@@ -7,7 +7,9 @@
       @mouseleave="onMouseLeave"
     >
       <div v-if="tip" ref="tipRef" class="time-tip" :style="{ left: tipLeft }">{{ tip }}</div>
-      <div class="progress-inner" :style="{ width: percentage }"></div>
+      <div class="progress-inner" :style="{ width: percentage }">
+        <div class="progress-ball"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -51,7 +53,7 @@ const onClick = (event: MouseEvent) => {
   if (!duration.value) {
     return;
   }
-  const target = event.target as HTMLDivElement;
+  const target = event.currentTarget as HTMLDivElement;
   const width = target.offsetWidth;
   const time = (event.offsetX / width) * duration.value;
   ipc.invoke("seek", time);

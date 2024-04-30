@@ -17,4 +17,6 @@ const i18n = createI18n({
   legacy: false
 });
 
+export const getLangText = i18n.global.t;
+
 export default i18n;

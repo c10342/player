@@ -22,6 +22,7 @@ import { exportMethod } from "../hooks/useMethod";
 import { openMenu } from "../utils/menu";
 import { useLocale } from "@renderer/services/hooks/useLocale";
 import { useVideoStore } from "../store/video";
+import { selectDir, selectFile } from "../utils/file";
 // http://player.linjiafu.top/test.mp4
 const { t } = useLocale();
 
@@ -33,32 +34,11 @@ const onContentMenu = () => {
   openMenu([
     {
       label: t("openFile"),
-      action() {
-        window.api
-          .showOpenDialog({
-            modal: true,
-            title: t("selectFile"),
-            properties: ["openFile", "multiSelections"],
-            filters: [{ name: "Videos", extensions: ["mp4"] }]
-          })
-          .then((res) => {
-            videoStore.addVideo(res.filePaths);
-          });
-      }
+      action: selectFile
     },
     {
       label: t("openDirectory"),
-      action() {
-        window.api
-          .showOpenDialog({
-            modal: true,
-            title: t("selectDirectory"),
-            properties: ["openDirectory", "multiSelections"]
-          })
-          .then((res) => {
-            videoStore.addVideoFromDir(res.filePaths);
-          });
-      }
+      action: selectDir
     }
   ]);
 };
