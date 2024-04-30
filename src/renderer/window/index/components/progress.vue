@@ -46,7 +46,7 @@ useEvent(VideoEvent.Loadedmetadata, (event: Event) => {
 
 useEvent(VideoEvent.Timeupdate, (event: Event) => {
   const target = event.target as HTMLVideoElement;
-  currentTime.value = target.currentTime;
+  currentTime.value = target?.currentTime ?? 0;
 });
 
 const onClick = (event: MouseEvent) => {

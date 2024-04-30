@@ -8,7 +8,7 @@
         <span> {{ durationLabel }} </span>
       </div>
       <div class="action-button-container">
-        <icon class="icon-button-item" name="stop" :size="24"></icon>
+        <icon class="icon-button-item" name="stop" :size="24" @click="onStop"></icon>
         <icon class="icon-button-item" name="skip-previous" :size="30"></icon>
         <icon class="icon-button-item" :name="playIcon" :size="34" @click="togglePlay"></icon>
         <icon class="icon-button-item" name="skip-next" :size="30"></icon>
@@ -25,6 +25,9 @@ import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
 import { formatTime } from "../utils/formatTime";
 import Icon from "./icon/index.vue";
+import { useVideoStore } from "../store/video";
+
+const videoStore = useVideoStore();
 
 const { getDuration, getCurrentTime, getPaused, togglePlay } = importMethod();
 
@@ -41,7 +44,7 @@ useEvent(VideoEvent.Loadedmetadata, (event: Event) => {
 
 useEvent(VideoEvent.Timeupdate, (event: Event) => {
   const target = event.target as HTMLVideoElement;
-  currentTimeLabel.value = formatTime(target.currentTime);
+  currentTimeLabel.value = formatTime(target?.currentTime ?? 0);
 });
 
 useEvent(VideoEvent.Play, () => {
@@ -50,6 +53,10 @@ useEvent(VideoEvent.Play, () => {
 useEvent(VideoEvent.Pause, () => {
   playIcon.value = "play";
 });
+
+const onStop = () => {
+  videoStore.setActiveVideo(null);
+};
 
 const init = () => {
   if (getDuration) {

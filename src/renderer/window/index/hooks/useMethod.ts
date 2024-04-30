@@ -34,6 +34,11 @@ export const exportMethod = (object: MethodMap) => {
 };
 
 // 导出方法
-export const importMethod = () => {
-  return { ...methodMap };
+export const importMethod = (): MethodMap => {
+  const obj = new Proxy(methodMap, {
+    get(target, key, receiver) {
+      return Reflect.get(target, key, receiver);
+    }
+  });
+  return obj;
 };

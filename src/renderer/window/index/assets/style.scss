@@ -92,6 +92,13 @@ $primaryColor: #60b224;
     }
   }
 
+  .function-grid{
+    position: relative;
+    flex: 1;
+    width: 0;
+    height: 100%;
+  }
+
   .control-bar {
     display: flex;
     flex-direction: column;
