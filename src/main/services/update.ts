@@ -1,14 +1,7 @@
 import { is } from "@electron-toolkit/utils";
 import { GlobalEventEnum } from "@share/enum";
-import { BrowserWindow } from "electron";
 import { autoUpdater } from "electron-updater";
-
-const broadcastEvent = (eventName: GlobalEventEnum, ...args: any[]) => {
-  const wins = BrowserWindow.getAllWindows();
-  wins.forEach((win) => {
-    win.webContents.send(eventName, ...args);
-  });
-};
+import { broadcastEvent } from "./window";
 
 /**
  * 初始化自动更新

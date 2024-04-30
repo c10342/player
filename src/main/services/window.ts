@@ -107,3 +107,11 @@ export const initSingleApp = (action: (...args: any[]) => any) => {
     app.on("second-instance", action);
   }
 };
+
+// 对所有窗口广播时间
+export const broadcastEvent = (eventName: GlobalEventEnum, ...args: any[]) => {
+  const wins = BrowserWindow.getAllWindows();
+  wins.forEach((win) => {
+    win.webContents.send(eventName, ...args);
+  });
+};
