@@ -8,7 +8,7 @@ import {
   SetStoreParams,
   ShowOpenDialogParrams,
   SetIgnoreMouseEventsParams,
-  GetFileFromDirRespond
+  GetAllFileRespond
 } from "@share/type";
 import { BrowserWindow, app, dialog, ipcMain, shell, screen } from "electron";
 import os from "os";
@@ -16,7 +16,7 @@ import { store } from "./store";
 import { getLang, setLang } from "../locale";
 import { checkUpdate, installUpdate } from "./update";
 import path from "path";
-import { isDir } from "./fs";
+import { getAllFile, isDir } from "./fs";
 import fs from "fs";
 
 /**
@@ -154,22 +154,7 @@ export const initBridge = () => {
     return path.basename(pathStr);
   });
   // 获取目录下的所有文件，包括子孙文件
-  ipcMain.handle(BridgeEnum.GetFileFromDir, (_event, dir: string[]) => {
-    const fileArr: Array<GetFileFromDirRespond> = [];
-    const run = (pathArr: string[]) => {
-      pathArr.forEach((item) => {
-        if (isDir(item)) {
-          run(fs.readdirSync(item).map((name) => path.join(item, name)));
-        } else {
-          fileArr.push({
-            path: item,
-            name: path.basename(item),
-            ext: path.extname(item)
-          });
-        }
-      });
-    };
-    run(dir);
-    return fileArr;
+  ipcMain.handle(BridgeEnum.GetAllFile, (_event, dir: string[]) => {
+    return getAllFile(dir);
   });
 };

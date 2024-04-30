@@ -28,7 +28,7 @@ export const useVideoStore = defineStore("video", () => {
   };
   // 根据文件夹添加
   const addVideoFromDir = async (dir: string[]) => {
-    const res = await window.api.getFileFromDir(dir);
+    const res = await window.api.getAllFile(dir);
     const arr: VideoItem[] = res
       .filter(
         (r) =>

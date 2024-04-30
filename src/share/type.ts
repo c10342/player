@@ -94,7 +94,7 @@ export interface StoreState {
   lang: string;
 }
 
-export interface GetFileFromDirRespond {
+export interface GetAllFileRespond {
   path: string;
   name: string;
   // 后缀
