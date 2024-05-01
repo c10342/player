@@ -17,15 +17,14 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { ipc } from "../hooks/useMethod";
 import ProgressBar from "./progress.vue";
 import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
 import { formatTime } from "../utils/formatTime";
 import Icon from "./icon/index.vue";
 import { useVideoStore } from "../store/video";
-import { isUndef } from "@share/helper";
 import { VideoItem } from "../types/video";
+import { player } from "../player";
 
 const videoStore = useVideoStore();
 
@@ -64,24 +63,18 @@ const onStop = () => {
 };
 
 const onToggle = () => {
-  ipc.invoke("togglePlay");
+  player.togglePlay();
 };
 
 const init = () => {
-  ipc.invoke<number>("getDuration").then((res) => {
-    if (!isUndef(res)) {
-      durationLabel.value = formatTime(res);
-    }
+  player.getDuration().then((res) => {
+    durationLabel.value = formatTime(res);
   });
-  ipc.invoke<number>("getCurrentTime").then((res) => {
-    if (!isUndef(res)) {
-      currentTimeLabel.value = formatTime(res);
-    }
+  player.getCurrentTime().then((res) => {
+    currentTimeLabel.value = formatTime(res);
   });
-  ipc.invoke<boolean>("getPaused").then((res) => {
-    if (!isUndef(res)) {
-      playIcon.value = res ? "play" : "pause";
-    }
+  player.getPaused().then((res) => {
+    playIcon.value = res ? "play" : "pause";
   });
 };
 

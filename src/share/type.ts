@@ -101,3 +101,5 @@ export interface GetAllFileRespond {
   // 后缀
   ext: string;
 }
+
+export type AnyFn = (...args: any) => any;

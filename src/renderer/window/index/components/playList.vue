@@ -30,7 +30,7 @@ import PlayListItem from "./playListItem.vue";
 import Icon from "./icon/index.vue";
 import { ref } from "vue";
 import { useVideoStore } from "../store/video";
-import { ipc } from "../hooks/useMethod";
+import { player } from "../player";
 
 const videoStore = useVideoStore();
 
@@ -82,6 +82,6 @@ const onUnLock = () => {
 };
 
 const onToggle = () => {
-  ipc.invoke("togglePlay");
+  player.togglePlay();
 };
 </script>

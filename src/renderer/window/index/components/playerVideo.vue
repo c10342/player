@@ -14,15 +14,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { VideoEvent } from "../enums/video";
 import { triggerEvent } from "../hooks/useEvent";
 import { throttle } from "lodash";
-import { exportMethod } from "../hooks/useMethod";
 import { openMenu } from "../utils/menu";
 import { useLocale } from "@renderer/services/hooks/useLocale";
 import { useVideoStore } from "../store/video";
 import { selectDir, selectFile } from "../utils/file";
+import { player } from "../player";
 // http://player.linjiafu.top/test.mp4
 const { t } = useLocale();
 
@@ -103,7 +103,8 @@ const getPaused = () => {
   return videoRef.value?.paused ?? true;
 };
 
-exportMethod({
+// 注册事件处理函数
+const handleMap = {
   getDuration,
   play,
   pause,
@@ -113,5 +114,15 @@ exportMethod({
   setSpeed,
   getSpeed,
   getPaused
+};
+
+Object.keys(handleMap).forEach((key) => {
+  player.registerHandle(key as any, handleMap[key]);
+});
+
+onBeforeUnmount(() => {
+  Object.keys(handleMap).forEach((key) => {
+    player.off(key);
+  });
 });
 </script>

@@ -1,29 +1,16 @@
+import { AnyFn } from "@share/type";
 import { onBeforeUnmount } from "vue";
-import { Ipc } from "../utils/ipc";
-
-interface MethodMap {
-  getDuration?: () => number;
-  play?: () => Promise<void>;
-  pause?: () => Promise<void>;
-  togglePlay?: () => Promise<void>;
-  seek?: (time: number) => void;
-  getCurrentTime?: () => number;
-  setSpeed?: (rate: number) => void;
-  getSpeed?: () => number;
-  getPaused?: () => boolean;
-}
-
-export const ipc = new Ipc();
+import { player } from "../player";
 
 // 导入全局方法
-export const exportMethod = (object: MethodMap) => {
+export const exportMethod = (object: Record<string, AnyFn>) => {
   Object.keys(object).forEach((key) => {
-    ipc.handle(key as any, object[key]);
+    player.registerHandle(key as any, object[key]);
   });
 
   onBeforeUnmount(() => {
     Object.keys(object).forEach((key) => {
-      ipc.off(key);
+      player.removeHandle(key);
     });
   });
 };

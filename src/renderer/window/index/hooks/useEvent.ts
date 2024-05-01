@@ -1,16 +1,14 @@
-import { EventBus } from "@renderer/services/utils/eventBus";
 import { onBeforeUnmount } from "vue";
-
-const eventbus = new EventBus();
+import { player } from "../player";
 
 export const useEvent = (name: string, action: (...args: any) => any) => {
-  eventbus.on(name, action);
+  player.on(name, action);
 
   onBeforeUnmount(() => {
-    eventbus.off(name, action);
+    player.off(name, action);
   });
 };
 
 export const triggerEvent = (name: string, ...args: any) => {
-  eventbus.trigger(name, ...args);
+  player.trigger(name, ...args);
 };

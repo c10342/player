@@ -20,7 +20,7 @@ import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
 
 import { formatTime } from "../utils/formatTime";
-import { ipc } from "../hooks/useMethod";
+import { player } from "../player";
 
 const duration = ref(0);
 
@@ -56,7 +56,7 @@ const onClick = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLDivElement;
   const width = target.offsetWidth;
   const time = (event.offsetX / width) * duration.value;
-  ipc.invoke("seek", time);
+  player.seek(time);
 };
 
 const onMouseMove = (event: MouseEvent) => {
@@ -79,11 +79,11 @@ const onMouseLeave = () => {
 };
 
 const init = () => {
-  ipc.invoke<number>("getDuration").then((res) => {
-    duration.value = res ?? 0;
+  player.getDuration().then((res) => {
+    duration.value = res;
   });
-  ipc.invoke<number>("getCurrentTime").then((res) => {
-    currentTime.value = res ?? 0;
+  player.getCurrentTime().then((res) => {
+    currentTime.value = res;
   });
 };
 

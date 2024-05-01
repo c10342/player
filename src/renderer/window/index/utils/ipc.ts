@@ -26,4 +26,8 @@ export class Ipc {
   off(name: string) {
     delete this.actionMap[name];
   }
+
+  clear() {
+    this.actionMap = {};
+  }
 }
