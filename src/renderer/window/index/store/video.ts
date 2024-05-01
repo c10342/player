@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { VideoItem } from "../types/video";
+import { videoExt } from "../utils/video";
 
 // 支持播放的视频文件
-const whiteList = [".mp4"];
+// const whiteList = [".mp4"];
 
 // 你可以任意命名 `defineStore()` 的返回值，但最好使用 store 的名字，同时以 `use` 开头且以 `Store` 结尾。
 // (比如 `useUserStore`，`useCartStore`，`useProductStore`)
@@ -36,7 +37,7 @@ export const useVideoStore = defineStore("video", () => {
     const arr: VideoItem[] = res
       .filter(
         (r) =>
-          whiteList.find((w) => w.toLocaleLowerCase() === r.ext.toLocaleLowerCase()) &&
+          videoExt.find((w) => `.${w}`.toLocaleLowerCase() === r.ext.toLocaleLowerCase()) &&
           !videoList.value.find((i) => i.path === r.path)
       )
       .map((item) => ({

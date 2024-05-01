@@ -7,3 +7,6 @@ export const formatTime = (time: number) => {
   s = s < 10 ? `0${s}` : s;
   return h ? `${h}:${m}:${s}` : `${m}:${s}`;
 };
+
+// 支持的视频文件后缀
+export const videoExt = ["mp4", "wmv"];

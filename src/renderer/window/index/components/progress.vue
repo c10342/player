@@ -19,7 +19,7 @@ import { computed, nextTick, ref } from "vue";
 import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
 
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "../utils/video";
 import { player } from "../player";
 
 const duration = ref(0);

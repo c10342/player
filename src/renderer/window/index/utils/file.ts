@@ -1,5 +1,6 @@
 import { getLangText } from "@renderer/locale";
 import { useVideoStore } from "../store/video";
+import { videoExt } from "./video";
 
 export const selectFile = () => {
   const videoStore = useVideoStore();
@@ -8,7 +9,7 @@ export const selectFile = () => {
       modal: true,
       title: getLangText("selectFile"),
       properties: ["openFile", "multiSelections"],
-      filters: [{ name: "Videos", extensions: ["mp4"] }]
+      filters: [{ name: "Videos", extensions: videoExt }]
     })
     .then((res) => {
       videoStore.addVideo(res.filePaths);

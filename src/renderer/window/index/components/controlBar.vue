@@ -20,7 +20,7 @@ import { ref } from "vue";
 import ProgressBar from "./progress.vue";
 import { VideoEvent } from "../enums/video";
 import { useEvent } from "../hooks/useEvent";
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "../utils/video";
 import Icon from "./icon/index.vue";
 import { useVideoStore } from "../store/video";
 import { VideoItem } from "../types/video";

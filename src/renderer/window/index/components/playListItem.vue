@@ -19,7 +19,7 @@ import { VideoItem } from "../types/video";
 import { useVideoStore } from "../store/video";
 import { useEvent } from "../hooks/useEvent";
 import { VideoEvent } from "../enums/video";
-import { formatTime } from "../utils/formatTime";
+import { formatTime } from "../utils/video";
 import { player } from "../player";
 
 const props = defineProps({
