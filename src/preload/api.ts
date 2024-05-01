@@ -116,6 +116,10 @@ const api = {
   // 获取目录下的所有文件，包括子孙文件
   [BridgeEnum.GetAllFile](dir: string[]): Promise<GetAllFileRespond[]> {
     return ipcRenderer.invoke(BridgeEnum.GetAllFile, dir);
+  },
+  // 判断文件是否存在
+  [BridgeEnum.FileExists](filePath: string): Promise<boolean> {
+    return ipcRenderer.invoke(BridgeEnum.FileExists, filePath);
   }
 };
 

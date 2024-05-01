@@ -45,7 +45,9 @@ export enum BridgeEnum {
   // 从文件路径中获取文件名
   GetFileNameFromPath = "getFileNameFromPath",
   // 获取目录下的所有文件，包括子孙文件
-  GetAllFile = "getAllFile"
+  GetAllFile = "getAllFile",
+  // 文件是否存在
+  FileExists = "fileExists"
 }
 
 // 全局事件广播

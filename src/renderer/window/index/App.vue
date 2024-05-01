@@ -2,8 +2,8 @@
   <div class="app-container">
     <player-header></player-header>
     <div class="middle-container">
-      <player-video v-if="videoStore.activeVideo"></player-video>
-      <function-grid v-else></function-grid>
+      <player-video v-show="videoStore.activeVideo"></player-video>
+      <function-grid v-show="!videoStore.activeVideo"></function-grid>
       <play-list></play-list>
     </div>
     <control-bar></control-bar>

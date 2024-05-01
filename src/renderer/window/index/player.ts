@@ -1,6 +1,7 @@
 import { EventBus } from "@renderer/services/utils/eventBus";
 import { Ipc } from "./utils/ipc";
 import { AnyFn } from "@share/type";
+import { VideoItem } from "./types/video";
 
 // 调度中心
 class Player {
@@ -80,6 +81,10 @@ class Player {
   async getPaused() {
     const res = await this.ipc.invoke<boolean>("getPaused");
     return res ?? true;
+  }
+
+  async setVideo(video: VideoItem | null) {
+    await this.ipc.invoke<void>("setVideo", video);
   }
 }
 

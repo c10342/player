@@ -1,4 +1,5 @@
 $primaryColor: #60b224;
+$dangerColor:red;
 
 .app-container {
   display: flex;
@@ -26,7 +27,6 @@ $primaryColor: #60b224;
 
   .icon {
     display: inline-block;
-    // color: #bababb;
   }
 
 
@@ -59,7 +59,7 @@ $primaryColor: #60b224;
 
       .action-button-close {
         &:hover {
-          color: red;
+          color: $dangerColor;
         }
       }
     }
@@ -291,6 +291,10 @@ $primaryColor: #60b224;
       height: 100%;
       padding: 0 6px;
       font-size: 12px;
+
+      .video-error-message{
+        color: $dangerColor;
+      }
     }
 
     &.active {

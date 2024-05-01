@@ -51,7 +51,7 @@ useEvent(VideoEvent.Pause, () => {
   playIcon.value = "play";
 });
 
-useEvent(VideoEvent.ActiveChange, (video: VideoItem | null) => {
+useEvent(VideoEvent.VideoChange, (video: VideoItem | null) => {
   if (!video) {
     currentTimeLabel.value = "00:00";
     durationLabel.value = "00:00";
@@ -59,7 +59,7 @@ useEvent(VideoEvent.ActiveChange, (video: VideoItem | null) => {
 });
 
 const onStop = () => {
-  videoStore.setActiveVideo(null);
+  player.setVideo(null);
 };
 
 const onToggle = () => {

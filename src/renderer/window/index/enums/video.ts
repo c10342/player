@@ -3,7 +3,7 @@ export enum VideoEvent {
   Pause = "pause",
   Timeupdate = "timeupdate",
   Loadedmetadata = "loadedmetadata",
-  ActiveChange = "activeChange"
+  VideoChange = "videoChange"
 }
 
 export enum MethodName {

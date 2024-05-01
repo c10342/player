@@ -5,7 +5,8 @@
         <icon :size="10" name="triangle" class="video-icon" />
         <div class="video-name">{{ video.name }}</div>
       </div>
-      <div v-if="isActive">{{ durationLabel }}</div>
+      <div v-if="video.errorMessage" class="video-error-message">{{ video.errorMessage }}</div>
+      <div v-else-if="isActive">{{ durationLabel }}</div>
     </div>
     <div v-if="isActive" class="mask-container" :style="{ width: maskWidth }"></div>
   </div>
@@ -19,6 +20,7 @@ import { useVideoStore } from "../store/video";
 import { useEvent } from "../hooks/useEvent";
 import { VideoEvent } from "../enums/video";
 import { formatTime } from "../utils/formatTime";
+import { player } from "../player";
 
 const props = defineProps({
   video: {
@@ -50,7 +52,7 @@ const durationLabel = computed(() => {
 });
 
 const onClick = () => {
-  videoStore.setActiveVideo(props.video);
+  player.setVideo(props.video);
 };
 
 useEvent(VideoEvent.Loadedmetadata, (event: Event) => {

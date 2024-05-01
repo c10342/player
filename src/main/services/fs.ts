@@ -26,3 +26,8 @@ export const getAllFile = (dir: string[]) => {
   run(dir);
   return fileArr;
 };
+
+// 判断文件是否在存在
+export const fileExists = (pathStr: string) => {
+  return fs.existsSync(pathStr);
+};

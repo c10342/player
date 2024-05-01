@@ -2,7 +2,7 @@
   <div class="video-container" @click="togglePlay" @contextmenu="onContentMenu">
     <video
       ref="videoRef"
-      :src="videoStore.activeVideo?.path"
+      :src="currentVideo?.path"
       class="video"
       autoplay
       @play="onPlay"
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref } from "vue";
+import { ref } from "vue";
 import { VideoEvent } from "../enums/video";
 import { triggerEvent } from "../hooks/useEvent";
 import { throttle } from "lodash";
@@ -22,11 +22,14 @@ import { openMenu } from "../utils/menu";
 import { useLocale } from "@renderer/services/hooks/useLocale";
 import { useVideoStore } from "../store/video";
 import { selectDir, selectFile } from "../utils/file";
-import { player } from "../player";
+import { VideoItem } from "../types/video";
+import { exportMethod } from "../hooks/useMethod";
 // http://player.linjiafu.top/test.mp4
 const { t } = useLocale();
 
 const videoStore = useVideoStore();
+
+const currentVideo = ref<VideoItem | null>(null);
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 
@@ -103,8 +106,39 @@ const getPaused = () => {
   return videoRef.value?.paused ?? true;
 };
 
+const setVideo = async (video: VideoItem | null) => {
+  if (video?.path === currentVideo.value?.path) {
+    return;
+  }
+  if (video?.path) {
+    const isExit = await window.api.fileExists(video.path);
+    if (!isExit) {
+      window.api.showMessageBox({
+        modal: true,
+        message: `${video.path}不存在`
+      });
+      videoStore.setVideo({
+        ...video,
+        errorMessage: "文件失效"
+      });
+      return;
+    }
+  }
+  currentVideo.value = video;
+  videoStore.setActiveVideo(video ? { ...video, errorMessage: "" } : null);
+  triggerEvent(VideoEvent.VideoChange, video);
+};
+
+const init = () => {
+  if (videoStore.activeVideo) {
+    currentVideo.value = { ...videoStore.activeVideo };
+  }
+};
+
+init();
+
 // 注册事件处理函数
-const handleMap = {
+exportMethod({
   getDuration,
   play,
   pause,
@@ -113,16 +147,7 @@ const handleMap = {
   getCurrentTime,
   setSpeed,
   getSpeed,
-  getPaused
-};
-
-Object.keys(handleMap).forEach((key) => {
-  player.registerHandle(key as any, handleMap[key]);
-});
-
-onBeforeUnmount(() => {
-  Object.keys(handleMap).forEach((key) => {
-    player.off(key);
-  });
+  getPaused,
+  setVideo
 });
 </script>

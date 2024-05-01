@@ -15,7 +15,7 @@ import { store } from "./store";
 import { getLang, setLang } from "../locale";
 import { checkUpdate, installUpdate } from "./update";
 import path from "path";
-import { getAllFile } from "./fs";
+import { fileExists, getAllFile } from "./fs";
 /**
  * 初始化主/渲染进程通信
  */
@@ -153,5 +153,9 @@ export const initBridge = () => {
   // 获取目录下的所有文件，包括子孙文件
   ipcMain.handle(BridgeEnum.GetAllFile, (_event, dir: string[]) => {
     return getAllFile(dir);
+  });
+  // 判断文件是否存在
+  ipcMain.handle(BridgeEnum.FileExists, (_event, filePath: string) => {
+    return fileExists(filePath);
   });
 };
