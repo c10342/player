@@ -132,6 +132,7 @@ const setVideo = async (video: VideoItem | null) => {
 const init = () => {
   if (videoStore.activeVideo) {
     currentVideo.value = { ...videoStore.activeVideo };
+    triggerEvent(VideoEvent.VideoChange, { ...videoStore.activeVideo });
   }
 };
 
