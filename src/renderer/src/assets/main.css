@@ -1,0 +1,170 @@
+@import './base.css';
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  background-image: url('./wavy-lines.svg');
+  background-size: cover;
+}
+
+code {
+  padding: 3px 5px;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    "SF Mono",
+    Menlo,
+    Consolas,
+    "Liberation Mono",
+    monospace;
+  font-size: 85%;
+  font-weight: 600;
+  background-color: var(--color-background-mute);
+  border-radius: 2px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+
+.logo {
+  width: 128px;
+  height: 128px;
+  margin-bottom: 20px;
+  transition: filter 300ms;
+  will-change: filter;
+  -webkit-user-drag: none;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 1.2em #6988e6aa);
+}
+
+.creator {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--ev-c-text-2);
+}
+
+.text {
+  padding: 16px 0;
+  margin: 0 10px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 32px;
+  color: var(--ev-c-text-1);
+  text-align: center;
+}
+
+.tip {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--ev-c-text-2);
+}
+
+.vue {
+  font-weight: 700;
+  background: linear-gradient(315deg, #42d392 25%, #647eff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ts {
+  font-weight: 700;
+  background: linear-gradient(315deg, #3178c6 45%, #f0dc4e);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-top: 32px;
+  margin: -6px;
+}
+
+.action {
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.action a {
+  display: inline-block;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 38px;
+  color: var(--ev-button-alt-text);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: var(--ev-button-alt-bg);
+  border: 1px solid transparent;
+  border-color: var(--ev-button-alt-border);
+  border-radius: 20px;
+}
+
+.action a:hover {
+  color: var(--ev-button-alt-hover-text);
+  background-color: var(--ev-button-alt-hover-bg);
+  border-color: var(--ev-button-alt-hover-border);
+}
+
+.versions {
+  position: absolute;
+  bottom: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 15px 0;
+  margin: 0 auto;
+  overflow: hidden;
+  font-family: Menlo, 'Lucida Console', monospace;
+  background-color: #202127;
+  backdrop-filter: blur(24px);
+  border-radius: 22px;
+}
+
+.versions li {
+  display: block;
+  float: left;
+  padding: 0 20px;
+  font-size: 14px;
+  line-height: 14px;
+  border-right: 1px solid var(--ev-c-gray-1);
+  opacity: 0.8;
+
+  &:last-child {
+    border: none;
+  }
+}
+
+@media (width <= 720px) {
+  .text {
+    font-size: 20px;
+  }
+}
+
+@media (width <= 620px) {
+  .versions {
+    display: none;
+  }
+}
+
+@media (width <= 350px) {
+  .tip,
+  .actions {
+    display: none;
+  }
+}
