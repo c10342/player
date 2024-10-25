@@ -28,7 +28,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "3.0.1",
     "@electron-toolkit/utils": "3.0.0",
-    "electron-updater": "6.3.9"
+    "@types/lodash": "^4.17.12",
+    "electron-updater": "6.3.9",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@commitlint/cli": "19.5.0",
