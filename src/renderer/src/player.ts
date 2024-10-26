@@ -33,7 +33,9 @@ const videoEvent = {
 // 自定义播放事件
 const customEvent = {
   // 画面渲染
-  render: "render"
+  render: "render",
+  // 视频切换
+  switchVideo: "switchVideo"
 };
 
 // 播放器事件
@@ -161,6 +163,7 @@ class Player {
   // 播放视频
   async src(url: string) {
     this.videoElement.src = url;
+    this.emit(playerEvent.switchVideo, url);
   }
   // 播放
   async play() {
@@ -176,6 +179,10 @@ class Player {
       return this.play();
     }
     return this.pause();
+  }
+  // 跳转到指定播放位置
+  async seekTo(time: number) {
+    this.videoElement.currentTime = time;
   }
 }
 

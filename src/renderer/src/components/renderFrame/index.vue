@@ -1,16 +1,14 @@
 <template>
-  <div class="render-frame-container">
-    <canvas ref="canvasRef" class="canvas-container" @click="onClick"></canvas>
+  <div class="render-frame-container" @click="onClick">
+    <canvas ref="canvasRef" class="canvas-container"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
 import player, { playerEvent } from "@renderer/player";
-import { useDomResize, usePlayer } from "@renderer/services/hooks";
+import { useDomResize, usePlayerEvent } from "@renderer/services/hooks";
 import { debounce } from "lodash";
 import { onMounted, ref } from "vue";
-
-const { addEvent } = usePlayer();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 
@@ -24,14 +22,14 @@ const initFrame = () => {
   }
   canvas.width = canvas.scrollWidth;
   canvas.height = canvas.scrollHeight;
-  renderVideo(player.videoEl);
+  renderVideo();
 };
 
 // 大小发生变化
 useDomResize(() => canvasRef.value, debounce(initFrame, 200));
 
 // 渲染视频
-const renderVideo = (videoEl: HTMLVideoElement) => {
+const renderVideo = () => {
   const canvas = canvasRef.value;
   if (!ctx || !canvas) {
     return;
@@ -58,17 +56,14 @@ const renderVideo = (videoEl: HTMLVideoElement) => {
     x = (canvas.width - renderWidth) / 2;
   }
 
-  ctx.drawImage(videoEl, x, y, renderWidth, renderHeight);
+  ctx.drawImage(player.videoEl, x, y, renderWidth, renderHeight);
 };
 
 // 监听渲染事件
-addEvent(playerEvent.render, renderVideo);
+usePlayerEvent(playerEvent.render, renderVideo);
 
 // 加载视频数据，渲染第一帧
-addEvent(playerEvent.loadeddata, (event: Event) => {
-  const target = event.target as HTMLVideoElement;
-  renderVideo(target);
-});
+usePlayerEvent(playerEvent.loadeddata, renderVideo);
 
 const onClick = () => {
   player.toggle();
@@ -92,6 +87,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   background-color: #000;
+  padding: 20px 0;
   .canvas-container {
     width: 100%;
     height: 100%;
