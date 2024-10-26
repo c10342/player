@@ -1,5 +1,7 @@
 <template>
-  <canvas ref="canvasRef" style="width: 100%; height: 100%" @click="onClick"></canvas>
+  <div class="render-frame-container">
+    <canvas ref="canvasRef" class="canvas-container" @click="onClick"></canvas>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -14,24 +16,27 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 let ctx: CanvasRenderingContext2D | null | undefined = null;
 
-useDomResize(
-  () => canvasRef.value,
-  debounce(() => {
-    const canvas = canvasRef.value;
-    if (!canvas) {
-      return;
-    }
-    canvas.width = canvas.scrollWidth;
-    canvas.height = canvas.scrollHeight;
-    renderVideo(player.videoEl);
-  }, 200)
-);
+// 初始化画面帧
+const initFrame = () => {
+  const canvas = canvasRef.value;
+  if (!canvas) {
+    return;
+  }
+  canvas.width = canvas.scrollWidth;
+  canvas.height = canvas.scrollHeight;
+  renderVideo(player.videoEl);
+};
 
+// 大小发生变化
+useDomResize(() => canvasRef.value, debounce(initFrame, 200));
+
+// 渲染视频
 const renderVideo = (videoEl: HTMLVideoElement) => {
   const canvas = canvasRef.value;
   if (!ctx || !canvas) {
     return;
   }
+  // 清空画布
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // 根据视频的宽高比，计算绘制信息
   const videoWidth = player.videoWidth;
@@ -52,12 +57,14 @@ const renderVideo = (videoEl: HTMLVideoElement) => {
     renderWidth = canvas.height * rate;
     x = (canvas.width - renderWidth) / 2;
   }
+
   ctx.drawImage(videoEl, x, y, renderWidth, renderHeight);
 };
 
 // 监听渲染事件
 addEvent(playerEvent.render, renderVideo);
 
+// 加载视频数据，渲染第一帧
 addEvent(playerEvent.loadeddata, (event: Event) => {
   const target = event.target as HTMLVideoElement;
   renderVideo(target);
@@ -75,10 +82,19 @@ onMounted(() => {
       // 关闭图像平滑处理
       ctx.imageSmoothingEnabled = false;
     }
+    initFrame();
   }
 });
 </script>
 
 <style lang="scss" scoped>
-// todo
+.render-frame-container {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  .canvas-container {
+    width: 100%;
+    height: 100%;
+  }
+}
 </style>
