@@ -1,5 +1,5 @@
 import { isNumber } from "lodash";
-import { Mitt } from "./services/utils";
+import { Mitt, sleep } from "./services/utils";
 import { FunType } from "./types";
 
 // video标签事件
@@ -45,11 +45,28 @@ export const playerEvent = {
   ...customEvent
 };
 
+// 表示音频/视频元素的就绪状态
+// 0 = HAVE_NOTHING - 没有关于音频/视频是否就绪的信息
+// 1 = HAVE_METADATA - 关于音频/视频就绪的元数据
+// 2 = HAVE_CURRENT_DATA - 关于当前播放位置的数据是可用的，但没有足够的数据来播放下一帧/毫秒
+// 3 = HAVE_FUTURE_DATA - 当前及至少下一帧的数据是可用的
+// 4 = HAVE_ENOUGH_DATA - 可用数据足以开始播放
+export enum VideoReadyStateEnum {
+  Nothing = 0,
+  Metadata = 1,
+  CurrentData = 2,
+  FutureData = 3,
+  EnoughData = 4
+}
+
 class Player {
   // video标签元素
   private videoElement: HTMLVideoElement;
   //   发布/订阅
   private emitter = new Mitt();
+
+  // 当前正在播放的地址
+  currentUrl = "";
 
   constructor() {
     this.videoElement = document.createElement("video");
@@ -91,42 +108,52 @@ class Player {
 
   //   视频总时长
   get duration() {
-    return this.videoElement.duration;
+    return this.videoElement.duration || 0;
   }
 
   //   当前播放进度
   get currentTime() {
-    return this.videoElement.currentTime;
+    return this.videoElement.currentTime || 0;
   }
 
   //   视频状态：暂停
   get isPaused() {
-    return this.videoElement.paused;
+    return this.videoElement.paused ?? true;
   }
 
   //   视频状态：播放
-  get isPlaying() {
-    return !this.videoElement.paused;
+  get isPlay() {
+    return !this.isPaused;
   }
 
   // 视频宽
   get videoWidth() {
-    return this.videoElement.videoWidth;
+    return this.videoElement.videoWidth || 0;
   }
   // 视频高
   get videoHeight() {
-    return this.videoElement.videoHeight;
+    return this.videoElement.videoHeight || 0;
   }
-
+  // video标签
   get videoEl() {
     return this.videoElement;
+  }
+
+  // 视频状态
+  get readyState() {
+    return this.videoElement.readyState || 0;
+  }
+
+  // 视频是否已经准备好了
+  get isReady() {
+    return this.readyState !== VideoReadyStateEnum.Nothing;
   }
 
   async init() {
     let handle: number | null = null;
     // 使用requestAnimationFrame定时器实现canvas绘制video每一帧
     const videoRender = () => {
-      if (this.isPlaying) {
+      if (this.isPlay) {
         handle = window.requestAnimationFrame(videoRender);
         this.emit(playerEvent.render, this.videoElement);
       }
@@ -162,6 +189,10 @@ class Player {
 
   // 播放视频
   async src(url: string) {
+    // 先暂停在切换视频
+    await this.pause();
+    await sleep();
+    this.currentUrl = url;
     this.videoElement.src = url;
     this.emit(playerEvent.switchVideo, url);
   }

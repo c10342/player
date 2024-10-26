@@ -14,3 +14,9 @@ export const secondToTime = (second: number) => {
   const sec = Math.floor(second - hour * 3600 - min * 60);
   return [hour, add0(min), add0(sec)].join(":");
 };
+
+export const sleep = (time = 200) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};

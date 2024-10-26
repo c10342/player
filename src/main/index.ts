@@ -5,11 +5,9 @@ import icon from "../../resources/icon.png?asset";
 import { initJsBridge } from "./jsBridge";
 
 function createWindow(): void {
-  const initWidth = 800;
-  const initHeight = 500;
   const mainWindow = new BrowserWindow({
-    width: initWidth,
-    height: initHeight,
+    width: 1000,
+    height: 700,
     show: false,
     autoHideMenuBar: false,
     ...(process.platform === "linux" ? { icon } : {}),
@@ -19,8 +17,8 @@ function createWindow(): void {
       webSecurity: false,
       allowRunningInsecureContent: false
     },
-    minHeight: initHeight,
-    minWidth: initWidth
+    minHeight: 500,
+    minWidth: 800
   });
 
   mainWindow.on("ready-to-show", () => {

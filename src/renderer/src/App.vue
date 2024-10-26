@@ -6,11 +6,11 @@
 </template>
 
 <script setup lang="ts">
-import player from "./player";
+// import player from "./player";
 
 // player.src("http://player.linjiafu.top/test.mp4");
-player.src("E:\\迅雷下载\\变形金刚：起源.mp4");
-player.play();
+// player.src("E:\\迅雷下载\\变形金刚：起源.mp4");
+// player.play();
 </script>
 
 <style lang="scss">

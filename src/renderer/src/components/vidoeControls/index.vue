@@ -1,6 +1,11 @@
 <template>
   <div class="vidoe-controls-container">
     <VideoProgress></VideoProgress>
+    <div>
+      <button @click="onClick1">视频1</button>
+      <button @click="onClick2">视频2</button>
+      <button @click="onClick3">暂停</button>
+    </div>
     <div class="button-container">
       <IconFont
         :class="previous ? 'cp' : 'cp-disabled'"
@@ -32,11 +37,25 @@ import { ref } from "vue";
 import { usePlayerEvent } from "@renderer/services/hooks";
 
 // 是否正在播放
-const isPlay = ref(player.isPlaying);
+const isPlay = ref(player.isPlay);
 // 是否可以点击上一个按钮
 const previous = ref(false);
 // 是否可以点击下一个按钮
 const next = ref(true);
+
+const onClick1 = () => {
+  player.src("http://player.linjiafu.top/test.mp4").then(() => {
+    player.play();
+  });
+};
+const onClick2 = () => {
+  player.src("E:\\迅雷下载\\变形金刚：起源.mp4").then(() => {
+    player.play();
+  });
+};
+const onClick3 = () => {
+  player.src("");
+};
 
 usePlayerEvent(playerEvent.pause, () => {
   isPlay.value = false;
