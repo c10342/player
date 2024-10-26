@@ -1,37 +1,49 @@
-import { isString } from "lodash";
-import { isUnDef, logError, Mitt } from "./services/utils";
+import { isNumber } from "lodash";
+import { Mitt } from "./services/utils";
 import { FunType } from "./types";
 
-class Player {
-  // 播放器事件
-  static events = {
-    // video标签事件
-    abort: "abort",
-    canplay: "canplay",
-    canplaythrough: "canplaythrough",
-    durationchange: "durationchange",
-    emptied: "emptied",
-    ended: "ended",
-    error: "error",
-    loadeddata: "loadeddata",
-    loadedmetadata: "loadedmetadata",
-    loadstart: "loadstart",
-    pause: "pause",
-    play: "play",
-    playing: "playing",
-    progress: "progress",
-    ratechange: "ratechange",
-    seeked: "seeked",
-    seeking: "seeking",
-    stalled: "stalled",
-    suspend: "suspend",
-    timeupdate: "timeupdate",
-    volumechange: "volumechange",
-    waiting: "waiting",
-    enterpictureinpicture: "enterpictureinpicture",
-    leavepictureinpicture: "leavepictureinpicture"
-  };
+// video标签事件
+const videoEvent = {
+  abort: "abort",
+  canplay: "canplay",
+  canplaythrough: "canplaythrough",
+  durationchange: "durationchange",
+  emptied: "emptied",
+  ended: "ended",
+  error: "error",
+  loadeddata: "loadeddata",
+  loadedmetadata: "loadedmetadata",
+  loadstart: "loadstart",
+  pause: "pause",
+  play: "play",
+  playing: "playing",
+  progress: "progress",
+  ratechange: "ratechange",
+  seeked: "seeked",
+  seeking: "seeking",
+  stalled: "stalled",
+  suspend: "suspend",
+  timeupdate: "timeupdate",
+  volumechange: "volumechange",
+  waiting: "waiting",
+  enterpictureinpicture: "enterpictureinpicture",
+  leavepictureinpicture: "leavepictureinpicture"
+};
 
+// 自定义播放事件
+const customEvent = {
+  // 画面渲染
+  render: "render"
+};
+
+// 播放器事件
+export const playerEvent = {
+  // video标签事件
+  ...videoEvent,
+  ...customEvent
+};
+
+class Player {
   // video标签元素
   private videoElement: HTMLVideoElement;
   //   发布/订阅
@@ -40,6 +52,7 @@ class Player {
   constructor() {
     this.videoElement = document.createElement("video");
     this.addVideoStyle();
+    this.addVideoAttr();
     this.addVideoEvent();
   }
 
@@ -47,10 +60,7 @@ class Player {
   private addVideoStyle() {
     const style: Partial<CSSStyleDeclaration> = {
       width: "100%",
-      height: "100%",
-      position: "absolute",
-      top: "0px",
-      left: "0px"
+      height: "100%"
     };
     Object.keys(style).forEach((key) => {
       this.videoElement.style[key] = style[key];
@@ -59,10 +69,21 @@ class Player {
 
   //   监听播放器事件
   private addVideoEvent() {
-    Object.values(Player.events).forEach((name) => {
+    Object.values(videoEvent).forEach((name) => {
       this.videoElement.addEventListener(name, (...args: any) => {
-        this.emitter.emit(name, ...args);
+        this.emit(name, ...args);
       });
+    });
+  }
+
+  // 添加video标签属性
+  private addVideoAttr() {
+    const attrs = {
+      preload: "auto",
+      crossorigin: "anonymous"
+    };
+    Object.keys(attrs).forEach((key) => {
+      this.videoElement.setAttribute(key, attrs[key]);
     });
   }
 
@@ -86,6 +107,36 @@ class Player {
     return !this.videoElement.paused;
   }
 
+  // 视频宽
+  get videoWidth() {
+    return this.videoElement.videoWidth;
+  }
+  // 视频高
+  get videoHeight() {
+    return this.videoElement.videoHeight;
+  }
+
+  get videoEl() {
+    return this.videoElement;
+  }
+
+  async init() {
+    let handle: number | null = null;
+    // 使用requestAnimationFrame定时器实现canvas绘制video每一帧
+    const videoRender = () => {
+      if (this.isPlaying) {
+        handle = window.requestAnimationFrame(videoRender);
+        this.emit(playerEvent.render, this.videoElement);
+      }
+    };
+    this.on(playerEvent.play, videoRender);
+    this.on(playerEvent.pause, () => {
+      if (isNumber(handle)) {
+        window.cancelAnimationFrame(handle);
+      }
+    });
+  }
+
   // 监听事件
   on(name: string, action: FunType) {
     this.emitter.on(name, action);
@@ -107,19 +158,6 @@ class Player {
     return this;
   }
 
-  // 初始化
-  async init(options: { el: string | HTMLElement }) {
-    let container = options.el as HTMLElement | null;
-    if (isString(options.el)) {
-      container = document.querySelector(options.el);
-    }
-    if (isUnDef(container)) {
-      logError("el is not defind");
-      return;
-    }
-    // 添加进容器，显示视频
-    container.appendChild(this.videoElement);
-  }
   // 播放视频
   async src(url: string) {
     this.videoElement.src = url;

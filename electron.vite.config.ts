@@ -16,6 +16,13 @@ export default defineConfig({
         "@renderer": resolve("src/renderer/src")
       }
     },
-    plugins: [vue(), vueJsx()]
+    plugins: [vue(), vueJsx()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler"
+        }
+      }
+    }
   }
 });

@@ -1,12 +1,10 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import player from "./player";
 import "./assets/styles/index.scss";
+import player from "./player";
 
 const init = async () => {
-  await player.init({
-    el: document.body
-  });
+  await player.init();
   createApp(App).mount("#app");
 };
 
