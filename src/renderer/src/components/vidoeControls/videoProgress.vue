@@ -75,8 +75,8 @@ usePlayerEvent(
   }
   .progress-content {
     flex: 1;
-    height: 6px;
-    border-radius: 3px;
+    height: 4px;
+    border-radius: 2px;
     background-color: red;
     margin: 0 20px;
     cursor: pointer;
@@ -85,7 +85,7 @@ usePlayerEvent(
     width: 0;
     position: relative;
     height: 100%;
-    border-radius: 3px;
+    border-radius: 2px;
     background-color: green;
     transition: width 0.4s;
   }

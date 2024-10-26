@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/styles/index.scss";
+import "./assets/iconFont/iconfont.css";
 import player, { playerEvent } from "./player";
 
 // 处理跟窗口相关的事件

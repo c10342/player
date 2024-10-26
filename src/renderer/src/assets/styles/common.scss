@@ -1,0 +1,52 @@
+
+@for $i from 1 through 50 {
+    .mt-#{$i} {
+      margin-top: $i + px;
+    }
+    .mb-#{$i} {
+      margin-bottom: $i + px;
+    }
+    .ml-#{$i} {
+      margin-left: $i + px;
+    }
+    .mr-#{$i} {
+      margin-right: $i + px;
+    }
+  
+    .margin-#{$i} {
+      margin: $i + px;
+    }
+  
+    .pt-#{$i} {
+      padding-top: $i + px;
+    }
+    .pb-#{$i} {
+      padding-bottom: $i + px;
+    }
+    .pl-#{$i} {
+      padding-left: $i + px;
+    }
+    .pr-#{$i} {
+      padding-right: $i + px;
+    }
+  
+    .padding-#{$i} {
+      padding: $i + px;
+    }
+  }
+  
+  // 字体大小
+  @for $i from 12 through 30 {
+    .fs-#{$i} {
+      font-size: $i + px !important;
+    }
+  }
+  
+
+.cp{
+    cursor: pointer;
+}
+
+.cp-disabled{
+    cursor: not-allowed;
+}
