@@ -18,7 +18,7 @@
         :size="50"
         color="#fff"
         :name="isPlay ? 'pause' : 'play'"
-        @click="player.toggle()"
+        @click="onStatusCliick"
       ></IconFont>
       <IconFont
         :class="next ? 'cp' : 'cp-disabled'"
@@ -55,6 +55,10 @@ const onClick2 = () => {
 };
 const onClick3 = () => {
   player.src("");
+};
+
+const onStatusCliick = () => {
+  player.toggle();
 };
 
 usePlayerEvent(playerEvent.pause, () => {
