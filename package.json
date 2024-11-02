@@ -29,8 +29,10 @@
     "@electron-toolkit/preload": "3.0.1",
     "@electron-toolkit/utils": "3.0.0",
     "@types/lodash": "^4.17.12",
+    "ant-design-vue": "^4.2.5",
     "electron-updater": "6.3.9",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "uiohook-napi": "^1.5.4"
   },
   "devDependencies": {
     "@commitlint/cli": "19.5.0",

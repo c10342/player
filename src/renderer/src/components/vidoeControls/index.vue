@@ -1,31 +1,28 @@
 <template>
   <div class="vidoe-controls-container">
     <VideoProgress></VideoProgress>
-    <div>
-      <button @click="onClick1">视频1</button>
-      <button @click="onClick2">视频2</button>
-      <button @click="onClick3">暂停</button>
-    </div>
     <div class="button-container">
-      <IconFont
-        :class="previous ? 'cp' : 'cp-disabled'"
-        :size="40"
-        :color="previous ? '#fff' : '#aaa'"
-        name="skip-previous"
-      ></IconFont>
-      <IconFont
-        class="status-button"
-        :size="50"
-        color="#fff"
-        :name="isPlay ? 'pause' : 'play'"
-        @click="onStatusCliick"
-      ></IconFont>
-      <IconFont
-        :class="next ? 'cp' : 'cp-disabled'"
-        :size="40"
-        :color="next ? '#fff' : '#aaa'"
-        name="skip-next"
-      ></IconFont>
+      <div class="center-button-group">
+        <IconFont
+          :class="previous ? 'cp' : 'cp-disabled'"
+          :size="40"
+          :color="previous ? '#fff' : '#aaa'"
+          name="skip-previous"
+        ></IconFont>
+        <IconFont
+          class="status-button"
+          :size="50"
+          color="#fff"
+          :name="isPlay ? 'pause' : 'play'"
+          @click="onStatusCliick"
+        ></IconFont>
+        <IconFont
+          :class="next ? 'cp' : 'cp-disabled'"
+          :size="40"
+          :color="next ? '#fff' : '#aaa'"
+          name="skip-next"
+        ></IconFont>
+      </div>
     </div>
   </div>
 </template>
@@ -42,20 +39,6 @@ const isPlay = ref(player.isPlay);
 const previous = ref(false);
 // 是否可以点击下一个按钮
 const next = ref(true);
-
-const onClick1 = () => {
-  player.src("http://player.linjiafu.top/test.mp4").then(() => {
-    player.play();
-  });
-};
-const onClick2 = () => {
-  player.src("E:\\迅雷下载\\变形金刚：起源.mp4").then(() => {
-    player.play();
-  });
-};
-const onClick3 = () => {
-  player.src("");
-};
 
 const onStatusCliick = () => {
   player.toggle();
@@ -84,11 +67,14 @@ usePlayerEvent(playerEvent.play, () => {
   flex-direction: column;
   width: 100%;
   .button-container {
-    display: flex;
     flex: 1;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    .center-button-group {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
   .status-button {
     cursor: pointer;

@@ -1,7 +1,9 @@
 // JsBridge方法调用
 export enum BridgeEnum {
   // 根据url获取文件名称
-  GetFileName = "getFileName"
+  GetFileName = "getFileName",
+  // 获取鼠标位置
+  GetMousePosition = "getMousePosition"
 }
 
 // // 全局事件广播

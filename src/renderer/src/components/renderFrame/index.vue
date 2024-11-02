@@ -1,5 +1,5 @@
 <template>
-  <div class="render-frame-container" @click="onClick">
+  <div class="render-frame-container" @click="onClick" @contextmenu="onContextMenu">
     <canvas ref="canvasRef" class="canvas-container"></canvas>
   </div>
 </template>
@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import player, { playerEvent } from "@renderer/player";
 import { useDomResize, usePlayerEvent } from "@renderer/services/hooks";
+import { showContextMenu } from "@renderer/services/jsComponent";
 import { debounce } from "lodash";
 import { onMounted, ref } from "vue";
 
@@ -64,6 +65,30 @@ usePlayerEvent(playerEvent.render, renderVideo);
 
 // 加载视频数据，渲染第一帧
 usePlayerEvent(playerEvent.loadeddata, renderVideo);
+
+const onContextMenu = (event: MouseEvent) => {
+  showContextMenu({
+    x: event.clientX,
+    y: event.clientY,
+    items: [
+      {
+        key: "1",
+        label: "1st menu item",
+        title: "1st menu item"
+      },
+      {
+        key: "2",
+        label: "2nd menu item",
+        title: "2nd menu item"
+      },
+      {
+        key: "3",
+        label: "3rd menu item",
+        title: "3rd menu item"
+      }
+    ]
+  });
+};
 
 const onClick = () => {
   player.toggle();

@@ -4,6 +4,7 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import Components from "unplugin-vue-components/vite";
 import AutoImport from "unplugin-auto-import/vite";
+import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 
 export default defineConfig({
   main: {
@@ -34,6 +35,11 @@ export default defineConfig({
       vueJsx(),
       AutoImport({}),
       Components({
+        resolvers: [
+          AntDesignVueResolver({
+            importStyle: false // css in js
+          })
+        ],
         // extensions: ["vue", "tsx"],
         // exclude: "src/components/*.vue"
         // 自动注册src/components 一级目录以及二级目录

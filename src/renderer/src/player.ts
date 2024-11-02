@@ -215,6 +215,10 @@ class Player {
   async seekTo(time: number) {
     this.videoElement.currentTime = time;
   }
+  // 静音
+  async muted() {
+    this.videoElement.muted = true;
+  }
 }
 
 const player = new Player();

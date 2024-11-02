@@ -98,7 +98,7 @@ usePlayerEvent(
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background-color: red;
+    background-color: hsla(0, 0%, 100%, 0.2);
     margin: 0 20px;
     cursor: pointer;
     position: relative;
@@ -113,7 +113,7 @@ usePlayerEvent(
     position: relative;
     height: 100%;
     border-radius: 3px;
-    background-color: green;
+    background-color: #fb6640;
     transition: width 0.4s;
   }
   .progress-ball {
@@ -123,7 +123,7 @@ usePlayerEvent(
     transform: translateY(-50%);
     width: 14px;
     height: 14px;
-    background-color: yellow;
+    background-color: #fb6640;
     border-radius: 50%;
   }
   .hover-tip {
