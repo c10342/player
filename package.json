@@ -32,6 +32,7 @@
     "ant-design-vue": "^4.2.5",
     "electron-updater": "6.3.9",
     "lodash": "^4.17.21",
+    "mousetrap": "^1.6.5",
     "uiohook-napi": "^1.5.4"
   },
   "devDependencies": {

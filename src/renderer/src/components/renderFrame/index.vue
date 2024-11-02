@@ -6,9 +6,10 @@
 
 <script setup lang="ts">
 import player, { playerEvent } from "@renderer/player";
+import { openFile } from "@renderer/services/common";
+import { GlobalHotKeyEnum } from "@renderer/services/enums";
 import { useDomResize, usePlayerEvent } from "@renderer/services/hooks";
 import { showContextMenu } from "@renderer/services/jsComponent";
-import { logError } from "@renderer/services/utils";
 import { debounce } from "lodash";
 import { onMounted, ref } from "vue";
 
@@ -73,32 +74,17 @@ const onContextMenu = (event: MouseEvent) => {
     y: event.clientY,
     items: [
       {
-        title: "打开文件",
-        onClick() {
-          window.api
-            .showOpenDialog({
-              modal: true,
-              filters: [{ name: "视频", extensions: ["mp4"] }],
-              properties: ["openFile"]
-            })
-            .then(async (res) => {
-              const filePath = res.filePaths?.[0];
-              if (filePath) {
-                await player.src(filePath);
-                await player.play();
-              }
-            })
-            .catch(logError);
-        }
+        title: `打开文件 (${GlobalHotKeyEnum.OpenFile})`,
+        onClick: openFile
       },
       {
-        title: "播放",
+        title: `播放 (${GlobalHotKeyEnum.PlayVideo})`,
         onClick() {
           player.play();
         }
       },
       {
-        title: "暂停",
+        title: `暂停 (${GlobalHotKeyEnum.PauseVideo})`,
         onClick() {
           player.pause();
         }
