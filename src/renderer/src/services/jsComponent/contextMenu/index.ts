@@ -1,9 +1,13 @@
 import { createApp } from "vue";
 import Menu from "./menu.vue";
 import "./style.scss";
-import { MenuProps } from "ant-design-vue";
 
-export const showContextMenu = (options: { items: MenuProps["items"]; x: number; y: number }) => {
+export interface MenuItem {
+  onClick?: () => any;
+  title: string;
+}
+
+export const showContextMenu = (options: { items: MenuItem[]; x: number; y: number }) => {
   const div = document.createElement("div");
   div.classList.add("context-menu-container");
   div.style.top = `${options.y}px`;

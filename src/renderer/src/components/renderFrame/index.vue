@@ -8,6 +8,7 @@
 import player, { playerEvent } from "@renderer/player";
 import { useDomResize, usePlayerEvent } from "@renderer/services/hooks";
 import { showContextMenu } from "@renderer/services/jsComponent";
+import { logError } from "@renderer/services/utils";
 import { debounce } from "lodash";
 import { onMounted, ref } from "vue";
 
@@ -72,19 +73,35 @@ const onContextMenu = (event: MouseEvent) => {
     y: event.clientY,
     items: [
       {
-        key: "1",
-        label: "1st menu item",
-        title: "1st menu item"
+        title: "打开文件",
+        onClick() {
+          window.api
+            .showOpenDialog({
+              modal: true,
+              filters: [{ name: "视频", extensions: ["mp4"] }],
+              properties: ["openFile"]
+            })
+            .then(async (res) => {
+              const filePath = res.filePaths?.[0];
+              if (filePath) {
+                await player.src(filePath);
+                await player.play();
+              }
+            })
+            .catch(logError);
+        }
       },
       {
-        key: "2",
-        label: "2nd menu item",
-        title: "2nd menu item"
+        title: "播放",
+        onClick() {
+          player.play();
+        }
       },
       {
-        key: "3",
-        label: "3rd menu item",
-        title: "3rd menu item"
+        title: "暂停",
+        onClick() {
+          player.pause();
+        }
       }
     ]
   });

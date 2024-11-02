@@ -3,7 +3,9 @@ export enum BridgeEnum {
   // 根据url获取文件名称
   GetFileName = "getFileName",
   // 获取鼠标位置
-  GetMousePosition = "getMousePosition"
+  GetMousePosition = "getMousePosition",
+  // 打开文件弹框
+  ShowOpenDialog = "showOpenDialog"
 }
 
 // // 全局事件广播
