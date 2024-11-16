@@ -59,7 +59,7 @@ const renderVideo = () => {
     x = (canvas.width - renderWidth) / 2;
   }
 
-  ctx.drawImage(player.videoEl, x, y, renderWidth, renderHeight);
+  ctx.drawImage(player.videoElement, x, y, renderWidth, renderHeight);
 };
 
 // 监听渲染事件

@@ -65,7 +65,6 @@ usePlayerEvent(playerEvent.play, () => {
   padding: 10px 20px;
   display: flex;
   flex-direction: column;
-  width: 100%;
   .button-container {
     flex: 1;
     position: relative;

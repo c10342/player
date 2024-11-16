@@ -61,7 +61,7 @@ export enum VideoReadyStateEnum {
 
 class Player {
   // video标签元素
-  private videoElement: HTMLVideoElement;
+  videoElement: HTMLVideoElement;
   //   发布/订阅
   private emitter = new Mitt();
 
@@ -133,10 +133,6 @@ class Player {
   // 视频高
   get videoHeight() {
     return this.videoElement.videoHeight || 0;
-  }
-  // video标签
-  get videoEl() {
-    return this.videoElement;
   }
 
   // 视频状态

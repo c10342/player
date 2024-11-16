@@ -5,9 +5,14 @@ import icon from "../../resources/icon.png?asset";
 import { initBridge } from "./bridge";
 
 function createWindow(): void {
+  const rate = 9 / 16;
+  const width = 1000;
+  const height = width * rate;
+  const minWidth = 800;
+  const minHeight = minWidth * rate;
   const mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width,
+    height,
     show: false,
     autoHideMenuBar: false,
     ...(process.platform === "linux" ? { icon } : {}),
@@ -17,8 +22,9 @@ function createWindow(): void {
       webSecurity: false,
       allowRunningInsecureContent: false
     },
-    minHeight: 500,
-    minWidth: 800
+    minHeight,
+    minWidth,
+    backgroundColor: "#000"
   });
 
   mainWindow.on("ready-to-show", () => {
