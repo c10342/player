@@ -35,7 +35,15 @@ const customEvent = {
   // 画面渲染
   render: "render",
   // 视频切换
-  switchVideo: "switchVideo"
+  switch: "switch",
+  // 添加视频
+  add: "add",
+  // 移除视频
+  remove: "remove",
+  // 下一个视频
+  next: "next",
+  // 上一个视频
+  prev: "prev"
 };
 
 // 播放器事件
@@ -59,14 +67,23 @@ export enum VideoReadyStateEnum {
   EnoughData = 4
 }
 
+export interface PlayListItem {
+  // 播放路径
+  url: string;
+  // 文件名
+  name: string;
+}
+
 class Player {
   // video标签元素
   videoElement: HTMLVideoElement;
   //   发布/订阅
   private emitter = new Mitt();
 
-  // 当前正在播放的地址
-  currentUrl = "";
+  playList: PlayListItem[] = [];
+
+  // 当前播放信息
+  currentVideo: PlayListItem | null = null;
 
   constructor() {
     this.videoElement = document.createElement("video");
@@ -183,14 +200,79 @@ class Player {
     return this;
   }
 
+  // 查找视频信息
+  async findVideo(url: string) {
+    if (!url) {
+      return null;
+    }
+    return this.playList.find((item) => item.url === url) ?? null;
+  }
+
+  // 查找视频索引
+  async findVideoIndex(url?: string | null) {
+    if (!url) {
+      return -1;
+    }
+    return this.playList.findIndex((item) => item.url === url);
+  }
+
   // 播放视频
   async src(url: string) {
     // 先暂停在切换视频
     await this.pause();
     await sleep();
-    this.currentUrl = url;
+    await this.add(url);
+    this.currentVideo = await this.findVideo(url);
     this.videoElement.src = url;
-    this.emit(playerEvent.switchVideo, url);
+    this.emit(playerEvent.switch, this.currentVideo);
+  }
+  // 添加视频到视频列表
+  async add(url: string) {
+    if (!url) {
+      return;
+    }
+    const index = await this.findVideoIndex(url);
+    if (index > -1) {
+      return;
+    }
+    const name = await window.api.getFileName(url);
+    const item: PlayListItem = {
+      url,
+      name
+    };
+    this.playList.push(item);
+    this.emit(playerEvent.add, item);
+  }
+  // 从视频列表移除视频
+  async remove(url: string) {
+    const index = await this.findVideoIndex(url);
+    if (index > -1) {
+      const item = this.playList[index];
+      this.playList.splice(index, 1);
+      this.emit(playerEvent.remove, item);
+    }
+  }
+  // 下一个视频
+  async next() {
+    const index = await this.findVideoIndex(this.currentVideo?.url);
+    if (index > -1 && index < this.playList.length - 1) {
+      const item = this.playList[index + 1];
+      if (item) {
+        this.src(item.url);
+        this.emit(playerEvent.next, item);
+      }
+    }
+  }
+  // 上一个视频
+  async prev() {
+    const index = await this.findVideoIndex(this.currentVideo?.url);
+    if (index > 0 && index < this.playList.length) {
+      const item = this.playList[index - 1];
+      if (item) {
+        this.src(item.url);
+        this.emit(playerEvent.prev, item);
+      }
+    }
   }
   // 播放
   async play() {

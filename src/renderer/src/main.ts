@@ -2,16 +2,16 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/styles/index.scss";
 import "./assets/iconFont/iconfont.css";
-import player, { playerEvent } from "./player";
+import player, { playerEvent, PlayListItem } from "./player";
 import Mousetrap from "mousetrap";
 import { GlobalHotKeyEnum } from "./services/enums";
 import { openFile } from "./services/common";
 
 // 处理跟窗口相关的事件
 const winHandler = () => {
-  player.on(playerEvent.switchVideo, (url: string) => {
+  player.on(playerEvent.switch, (params: PlayListItem) => {
     let title = "播放器";
-    window.api.getFileName(url).then((data) => {
+    window.api.getFileName(params.url).then((data) => {
       if (data) {
         title = data;
       }

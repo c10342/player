@@ -4,23 +4,25 @@
     <div class="button-container">
       <div class="center-button-group">
         <IconFont
-          :class="previous ? 'cp' : 'cp-disabled'"
+          :class="!disabledPrev ? 'cp' : 'cp-disabled'"
           :size="40"
-          :color="previous ? '#fff' : '#aaa'"
+          :color="!disabledPrev ? '#fff' : '#aaa'"
           name="skip-previous"
+          @click="onPrev"
         ></IconFont>
         <IconFont
           class="status-button"
           :size="50"
           color="#fff"
           :name="isPlay ? 'pause' : 'play'"
-          @click="onStatusCliick"
+          @click="onToggle"
         ></IconFont>
         <IconFont
-          :class="next ? 'cp' : 'cp-disabled'"
+          :class="!disabledNext ? 'cp' : 'cp-disabled'"
           :size="40"
-          :color="next ? '#fff' : '#aaa'"
+          :color="!disabledNext ? '#fff' : '#aaa'"
           name="skip-next"
+          @click="onNext"
         ></IconFont>
       </div>
     </div>
@@ -36,13 +38,41 @@ import { usePlayerEvent } from "@renderer/services/hooks";
 // 是否正在播放
 const isPlay = ref(player.isPlay);
 // 是否可以点击上一个按钮
-const previous = ref(false);
+const disabledPrev = ref(false);
 // 是否可以点击下一个按钮
-const next = ref(true);
+const disabledNext = ref(false);
 
-const onStatusCliick = () => {
+const onToggle = () => {
   player.toggle();
 };
+
+const onPrev = async () => {
+  if (!disabledPrev.value) {
+    await player.prev();
+    await player.play();
+  }
+};
+
+const onNext = async () => {
+  if (!disabledNext.value) {
+    await player.next();
+    await player.play();
+  }
+};
+
+// 初始化上一个/下一个按钮状态
+const initButtonStatus = async () => {
+  const index = await player.findVideoIndex(player.currentVideo?.url);
+  if (index > -1) {
+    disabledNext.value = index === player.playList.length - 1;
+    disabledPrev.value = index === 0;
+  } else {
+    disabledNext.value = false;
+    disabledPrev.value = false;
+  }
+};
+
+initButtonStatus();
 
 usePlayerEvent(playerEvent.pause, () => {
   isPlay.value = false;
@@ -51,6 +81,12 @@ usePlayerEvent(playerEvent.pause, () => {
 usePlayerEvent(playerEvent.play, () => {
   isPlay.value = true;
 });
+
+usePlayerEvent(playerEvent.add, initButtonStatus);
+
+usePlayerEvent(playerEvent.remove, initButtonStatus);
+
+usePlayerEvent(playerEvent.switch, initButtonStatus);
 </script>
 
 <style lang="scss" scoped>
