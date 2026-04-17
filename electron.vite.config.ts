@@ -15,6 +15,13 @@ export default defineConfig({
         "@renderer": resolve("src/renderer/src")
       }
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ["legacy-js-api"]
+        }
+      }
+    },
     plugins: [vue()]
   }
 });

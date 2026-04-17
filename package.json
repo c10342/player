@@ -27,6 +27,8 @@
   "dependencies": {
     "@electron-toolkit/preload": "3.0.0",
     "@electron-toolkit/utils": "3.0.0",
+    "@vicons/ionicons5": "^0.13.0",
+    "@vicons/utils": "^0.1.4",
     "electron-updater": "6.1.7"
   },
   "devDependencies": {
@@ -48,6 +50,8 @@
     "eslint": "8.57.0",
     "eslint-plugin-vue": "9.26.0",
     "husky": "9.1.6",
+    "lint-staged": "15.2.10",
+    "prettier": "3.3.2",
     "sass": "1.80.4",
     "stylelint": "16.10.0",
     "stylelint-config-recess-order": "5.1.1",
@@ -55,8 +59,6 @@
     "stylelint-config-standard": "36.0.1",
     "stylelint-order": "6.0.4",
     "stylelint-scss": "6.8.1",
-    "lint-staged": "15.2.10",
-    "prettier": "3.3.2",
     "typescript": "5.5.2",
     "vite": "5.3.1",
     "vue": "3.4.30",

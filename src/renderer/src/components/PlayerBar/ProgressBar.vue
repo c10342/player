@@ -1,6 +1,5 @@
 <template>
   <div class="progress-bar">
-    <span class="progress-bar__time progress-bar__time--current">{{ formattedCurrent }}</span>
     <div
       ref="trackRef"
       class="progress-bar__track"
@@ -22,7 +21,6 @@
         {{ formattedHover }}
       </div>
     </div>
-    <span class="progress-bar__time progress-bar__time--total">{{ formattedDuration }}</span>
   </div>
 </template>
 
@@ -55,8 +53,6 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-const formattedCurrent = computed(() => formatTime(props.currentTime));
-const formattedDuration = computed(() => formatTime(props.duration));
 const formattedHover = computed(() => formatTime(hoverTime.value));
 
 function getTimeFromEvent(e: MouseEvent): number {
@@ -89,28 +85,8 @@ function onTrackMouseDown(e: MouseEvent) {
 
 <style scoped lang="scss">
 .progress-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   width: 100%;
-  padding: 0 4px;
-
-  &__time {
-    flex-shrink: 0;
-    min-width: 38px;
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.45);
-
-    &--current {
-      text-align: right;
-    }
-
-    &--total {
-      text-align: left;
-    }
-  }
+  padding: 8px 20px 4px;
 
   &__track {
     position: relative;

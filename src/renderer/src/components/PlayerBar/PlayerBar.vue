@@ -1,8 +1,12 @@
 <template>
   <div class="player-bar">
+    <ProgressBar :current-time="state.currentTime" :duration="state.duration" @seek="onSeek" />
+
     <div class="player-bar__inner">
-      <div class="player-bar__section player-bar__section--track">
-        <TrackInfo title="Midnight Serenade" artist="Amber Orchestra" :playing="state.playing" />
+      <div class="player-bar__section player-bar__section--left">
+        <span class="player-bar__time">{{ formattedCurrent }}</span>
+        <span class="player-bar__time-sep">/</span>
+        <span class="player-bar__time">{{ formattedDuration }}</span>
       </div>
 
       <div class="player-bar__section player-bar__section--center">
@@ -13,7 +17,6 @@
           @stop="onStop"
           @next="onNext"
         />
-        <ProgressBar :current-time="state.currentTime" :duration="state.duration" @seek="onSeek" />
       </div>
 
       <div class="player-bar__section player-bar__section--extra">
@@ -47,8 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
-import TrackInfo from "./TrackInfo.vue";
+import { reactive, computed } from "vue";
 import PlayerControls from "./PlayerControls.vue";
 import ProgressBar from "./ProgressBar.vue";
 import VolumeControl from "./VolumeControl.vue";
@@ -61,6 +63,15 @@ const state = reactive({
   isMuted: false,
   fullscreen: false
 });
+
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+const formattedCurrent = computed(() => formatTime(state.currentTime));
+const formattedDuration = computed(() => formatTime(state.duration));
 
 function onToggle() {
   state.playing = !state.playing;
@@ -126,17 +137,15 @@ function onFullscreen() {
     display: flex;
     align-items: center;
 
-    &--track {
+    &--left {
       flex: 1;
-      justify-content: flex-start;
-      min-width: 0;
+      align-items: center;
+      gap: 4px;
     }
 
     &--center {
-      flex: 2;
-      flex-direction: column;
-      gap: 6px;
-      max-width: 600px;
+      flex-shrink: 0;
+      justify-content: center;
     }
 
     &--extra {
@@ -144,6 +153,18 @@ function onFullscreen() {
       justify-content: flex-end;
       gap: 4px;
     }
+  }
+
+  &__time {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &__time-sep {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.25);
   }
 
   &__fullscreen-btn {
