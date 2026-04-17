@@ -27,6 +27,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "3.0.0",
     "@electron-toolkit/utils": "3.0.0",
+    "@vicons/fa": "^0.13.0",
     "@vicons/ionicons5": "^0.13.0",
     "@vicons/utils": "^0.1.4",
     "electron-updater": "6.1.7"

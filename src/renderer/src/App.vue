@@ -1,5 +1,7 @@
 <template>
   <div class="player-app">
+    <TitleBar title="Electron Player" />
+
     <div class="player-app__bg">
       <div class="player-app__bg-orb player-app__bg-orb--1"></div>
       <div class="player-app__bg-orb player-app__bg-orb--2"></div>
@@ -30,6 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import TitleBar from "./components/TitleBar/TitleBar.vue";
 import PlayerBar from "./components/PlayerBar/PlayerBar.vue";
 
 const isPlaying = ref(false);
@@ -91,7 +94,7 @@ const isPlaying = ref(false);
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 80px);
+    height: calc(100% - 36px - 80px);
     padding: 40px;
   }
 

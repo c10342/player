@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from "electron";
+import { app, shell, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -9,6 +9,8 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    frame: false,
+    titleBarStyle: "hidden",
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -21,6 +23,26 @@ function createWindow(): void {
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+  });
+
+  ipcMain.on("window:minimize", () => mainWindow.minimize());
+  ipcMain.on("window:maximize", () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+  ipcMain.on("window:close", () => mainWindow.close());
+  ipcMain.on("window:isMaximized", (event) => {
+    event.returnValue = mainWindow.isMaximized();
+  });
+
+  mainWindow.on("maximize", () => {
+    mainWindow.webContents.send("window:maximizeChange", true);
+  });
+  mainWindow.on("unmaximize", () => {
+    mainWindow.webContents.send("window:maximizeChange", false);
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
