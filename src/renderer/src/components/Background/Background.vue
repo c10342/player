@@ -3,6 +3,7 @@
     <div class="background__orb background__orb--1"></div>
     <div class="background__orb background__orb--2"></div>
     <div class="background__orb background__orb--3"></div>
+    <div class="background__grain"></div>
   </div>
 </template>
 
@@ -16,65 +17,105 @@
   &__orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.35;
+    mix-blend-mode: screen;
 
     &--1 {
-      top: -20%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, var(--orb-1) 0%, transparent 70%);
-      animation: float1 12s ease-in-out infinite;
+      top: -25%;
+      left: -15%;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgb(232 168 73 / 20%) 0%,
+        rgb(200 140 60 / 10%) 40%,
+        rgb(160 100 30 / 4%) 65%,
+        transparent 80%
+      );
+      filter: blur(100px);
+      animation: drift-a 30s ease-in-out infinite;
     }
 
     &--2 {
-      right: -15%;
-      bottom: -10%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, #6b3fa0 0%, transparent 70%);
-      animation: float2 15s ease-in-out infinite;
+      right: -20%;
+      bottom: -25%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgb(140 110 180 / 15%) 0%,
+        rgb(110 80 150 / 6%) 40%,
+        rgb(80 50 120 / 2%) 65%,
+        transparent 80%
+      );
+      filter: blur(110px);
+      animation: drift-b 35s ease-in-out infinite;
     }
 
     &--3 {
-      top: 40%;
-      left: 50%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, var(--orb-3) 0%, transparent 70%);
-      animation: float3 10s ease-in-out infinite;
+      top: 25%;
+      left: 40%;
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgb(100 160 130 / 12%) 0%,
+        rgb(70 120 100 / 5%) 40%,
+        transparent 70%
+      );
+      filter: blur(90px);
+      animation: drift-c 25s ease-in-out infinite;
     }
   }
+
+  &__grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px;
+  }
 }
 
-@keyframes float1 {
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(15px, 10px);
+  }
+  50% {
+    transform: translate(8px, 22px);
+  }
+  75% {
+    transform: translate(-8px, 12px);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-12px, -18px);
+  }
+  50% {
+    transform: translate(-20px, -8px);
+  }
+  75% {
+    transform: translate(-6px, -22px);
+  }
+}
+
+@keyframes drift-c {
   0%,
   100% {
     transform: translate(0, 0);
   }
   50% {
-    transform: translate(40px, 30px);
-  }
-}
-
-@keyframes float2 {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-30px, -40px);
-  }
-}
-
-@keyframes float3 {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(20px, -20px);
+    transform: translate(10px, -12px);
   }
 }
 </style>
