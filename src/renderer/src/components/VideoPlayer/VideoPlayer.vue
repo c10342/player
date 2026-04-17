@@ -1,20 +1,11 @@
 <template>
   <div class="video-player">
     <div class="video-player__content">
-      <div class="video-player__hero">
-        <div class="video-player__vinyl" :class="{ 'video-player__vinyl--spinning': isPlaying }">
-          <div class="video-player__vinyl-groove video-player__vinyl-groove--1"></div>
-          <div class="video-player__vinyl-groove video-player__vinyl-groove--2"></div>
-          <div class="video-player__vinyl-groove video-player__vinyl-groove--3"></div>
-          <div class="video-player__vinyl-label">
-            <span class="video-player__vinyl-dot"></span>
-          </div>
-        </div>
-        <div class="video-player__hero-meta">
-          <h1 class="video-player__hero-title">Midnight Serenade</h1>
-          <p class="video-player__hero-artist">Amber Orchestra</p>
-          <p class="video-player__hero-album">Nocturne Collection</p>
-        </div>
+      <div class="video-player__empty">
+        <button class="video-player__add-btn" @click="emit('add')">
+          <Icon size="32"><AddOutline /></Icon>
+          <span class="video-player__add-btn-text">添加视频</span>
+        </button>
       </div>
     </div>
 
@@ -30,6 +21,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { Icon } from "@vicons/utils";
+import { AddOutline } from "@vicons/ionicons5";
 import PlayList from "../PlayList/PlayList.vue";
 import type { Track } from "../PlayList/PlayList.vue";
 
@@ -41,6 +34,7 @@ defineProps<{
 
 const emit = defineEmits<{
   select: [index: number];
+  add: [];
 }>();
 
 const playListCollapsed = ref(false);
@@ -60,6 +54,39 @@ const playListCollapsed = ref(false);
     align-items: center;
     justify-content: center;
     padding: 40px;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__add-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 48px;
+    background: transparent;
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.8);
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+      border-color: rgba(255, 255, 255, 1);
+      background: rgba(255, 255, 255, 0.06);
+    }
+  }
+
+  &__add-btn-text {
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
 
   &__hero {
