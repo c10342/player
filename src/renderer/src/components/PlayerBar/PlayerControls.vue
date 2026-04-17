@@ -1,9 +1,7 @@
 <template>
   <div class="player-controls">
     <button class="player-controls__btn" title="上一首" @click="emit('prev')">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-      </svg>
+      <Icon size="20"><PlaySkipBack /></Icon>
     </button>
 
     <button
@@ -11,29 +9,26 @@
       :title="playing ? '暂停' : '播放'"
       @click="emit('toggle')"
     >
-      <svg v-if="!playing" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-        <path d="M8 5v14l11-7z" />
-      </svg>
-      <svg v-else viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-      </svg>
+      <Icon size="24">
+        <span v-if="!playing" class="player-controls__play-icon"><Play /></span>
+        <Pause v-else />
+      </Icon>
     </button>
 
     <button class="player-controls__btn" title="停止" @click="emit('stop')">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-        <path d="M6 6h12v12H6z" />
-      </svg>
+      <Icon size="20"><Stop /></Icon>
     </button>
 
     <button class="player-controls__btn" title="下一首" @click="emit('next')">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-      </svg>
+      <Icon size="20"><PlaySkipForward /></Icon>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@vicons/utils";
+import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward } from "@vicons/ionicons5";
+
 defineProps<{
   playing: boolean;
 }>();
@@ -95,10 +90,15 @@ const emit = defineEmits<{
         transform: scale(0.92);
       }
 
-      svg {
+      :deep(svg) {
         filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
       }
     }
+  }
+
+  &__play-icon {
+    display: flex;
+    margin-left: 2px;
   }
 }
 </style>
