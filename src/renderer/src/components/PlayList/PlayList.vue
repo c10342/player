@@ -11,7 +11,7 @@
       </Icon>
     </button>
 
-    <div v-if="!collapsed" class="play-list__panel">
+    <div class="play-list__panel">
       <div class="play-list__header">
         <h2 class="play-list__title">播放列表</h2>
         <span class="play-list__count">{{ tracks.length }} 首</span>
@@ -69,25 +69,33 @@ const emit = defineEmits<{
 
 <style lang="scss">
 .play-list {
+  position: relative;
   display: flex;
   height: 100%;
   flex-shrink: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 250px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &--collapsed {
+    width: 0;
+
     .play-list__toggle {
       border-radius: 4px 0 0 4px;
     }
   }
 
   &__toggle {
+    position: absolute;
+    top: 50%;
+    left: -24px;
+    transform: translateY(-50%);
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 24px;
     height: 48px;
     flex-shrink: 0;
-    align-self: center;
     color: rgba(255, 255, 255, 0.35);
     background: rgba(14, 14, 16, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.04);
@@ -107,7 +115,7 @@ const emit = defineEmits<{
   &__panel {
     display: flex;
     flex-direction: column;
-    width: 280px;
+    width: 304px;
     height: 100%;
     background: rgba(14, 14, 16, 0.6);
     backdrop-filter: blur(20px);
