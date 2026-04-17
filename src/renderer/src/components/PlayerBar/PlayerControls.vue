@@ -54,7 +54,7 @@ const emit = defineEmits<{
     justify-content: center;
     width: 36px;
     height: 36px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     border-radius: 50%;
@@ -65,8 +65,8 @@ const emit = defineEmits<{
       transform 0.15s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.95);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
 
     &:active {
@@ -76,14 +76,14 @@ const emit = defineEmits<{
     &--play {
       width: 48px;
       height: 48px;
-      color: #1a1a1a;
-      background: linear-gradient(135deg, #e8a849, #f0c27f);
-      box-shadow: 0 2px 12px rgba(232, 168, 73, 0.35);
+      color: var(--dark);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      box-shadow: 0 2px 12px var(--accent-glow);
 
       &:hover {
-        color: #1a1a1a;
-        background: linear-gradient(135deg, #f0b85c, #f5d09a);
-        box-shadow: 0 4px 20px rgba(232, 168, 73, 0.5);
+        color: var(--dark);
+        background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+        box-shadow: 0 4px 20px var(--accent-glow);
       }
 
       &:active {
@@ -91,7 +91,7 @@ const emit = defineEmits<{
       }
 
       svg {
-        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+        filter: drop-shadow(0 1px 1px rgb(0 0 0 / 15%));
       }
     }
   }

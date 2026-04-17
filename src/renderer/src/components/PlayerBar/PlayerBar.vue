@@ -113,9 +113,9 @@ function onFullscreen() {
   bottom: 0;
   left: 0;
   z-index: 100;
-  background: linear-gradient(180deg, rgba(12, 12, 14, 0.85) 0%, rgba(12, 12, 14, 0.97) 100%);
+  background: linear-gradient(180deg, var(--surface-bar) 0%, rgba(12, 12, 14, 0.97) 100%);
   backdrop-filter: blur(30px) saturate(1.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
 
   &__inner {
     display: flex;
@@ -149,12 +149,12 @@ function onFullscreen() {
     font-size: 12px;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
   }
 
   &__time-sep {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.25);
+    color: var(--text-muted);
   }
 
   &__fullscreen-btn {
@@ -163,7 +163,7 @@ function onFullscreen() {
     justify-content: center;
     width: 32px;
     height: 32px;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     border-radius: 50%;
@@ -173,8 +173,8 @@ function onFullscreen() {
       background 0.2s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
   }
 }

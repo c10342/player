@@ -7,28 +7,14 @@
             cx="24"
             cy="24"
             r="23"
-            fill="#1a1a1a"
-            stroke="rgba(255,255,255,0.08)"
+            :fill="'var(--dark)'"
+            :stroke="'var(--border)'"
             stroke-width="1"
           />
-          <circle
-            cx="24"
-            cy="24"
-            r="16"
-            fill="none"
-            stroke="rgba(255,255,255,0.06)"
-            stroke-width="0.5"
-          />
-          <circle
-            cx="24"
-            cy="24"
-            r="10"
-            fill="none"
-            stroke="rgba(255,255,255,0.04)"
-            stroke-width="0.5"
-          />
-          <circle cx="24" cy="24" r="4" fill="#e8a849" />
-          <circle cx="24" cy="12" r="1.5" fill="rgba(255,255,255,0.15)" />
+          <circle cx="24" cy="24" r="16" fill="none" :stroke="'var(--border)'" stroke-width="0.5" />
+          <circle cx="24" cy="24" r="10" fill="none" :stroke="'var(--border)'" stroke-width="0.5" />
+          <circle cx="24" cy="24" r="4" :fill="'var(--accent)'" />
+          <circle cx="24" cy="12" r="1.5" :fill="'var(--text-muted)'" />
         </svg>
       </div>
     </div>
@@ -60,7 +46,7 @@ defineProps<{
     height: 48px;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 40%);
 
     &--spinning {
       animation: spin 4s linear infinite;
@@ -73,7 +59,7 @@ defineProps<{
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #111;
+    background: var(--dark);
   }
 
   &__meta {
@@ -86,7 +72,7 @@ defineProps<{
   &__title {
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -94,7 +80,7 @@ defineProps<{
 
   &__artist {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -49,7 +49,7 @@ function onTrackSelect(index: number) {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #0a0a0c;
+  background: var(--bg);
   overflow: hidden;
 }
 </style>

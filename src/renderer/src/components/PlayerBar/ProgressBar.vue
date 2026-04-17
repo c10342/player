@@ -104,7 +104,7 @@ function onTrackMouseDown(e: MouseEvent) {
       transform: translateY(-50%);
       width: 100%;
       height: 3px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--border);
       border-radius: 2px;
     }
   }
@@ -115,7 +115,7 @@ function onTrackMouseDown(e: MouseEvent) {
     top: 50%;
     transform: translateY(-50%);
     height: 3px;
-    background: linear-gradient(90deg, #e8a849, #f0c27f);
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
     border-radius: 2px;
     transition: height 0.15s ease;
     pointer-events: none;
@@ -133,9 +133,9 @@ function onTrackMouseDown(e: MouseEvent) {
     transform: translateY(-50%) scale(0);
     width: 12px;
     height: 12px;
-    background: #f0c27f;
+    background: var(--accent-hover);
     border-radius: 50%;
-    box-shadow: 0 0 8px rgba(240, 194, 127, 0.5);
+    box-shadow: 0 0 8px var(--accent-glow);
     transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: none;
 
@@ -150,8 +150,8 @@ function onTrackMouseDown(e: MouseEvent) {
     transform: translateX(-50%);
     padding: 3px 6px;
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(30, 30, 30, 0.9);
+    color: var(--text-primary);
+    background: var(--dark);
     border-radius: 4px;
     pointer-events: none;
     white-space: nowrap;

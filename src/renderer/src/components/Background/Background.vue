@@ -24,7 +24,7 @@
       left: -10%;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, #e8a849 0%, transparent 70%);
+      background: radial-gradient(circle, var(--orb-1) 0%, transparent 70%);
       animation: float1 12s ease-in-out infinite;
     }
 
@@ -42,7 +42,7 @@
       left: 50%;
       width: 300px;
       height: 300px;
-      background: radial-gradient(circle, #2a6b4f 0%, transparent 70%);
+      background: radial-gradient(circle, var(--orb-3) 0%, transparent 70%);
       animation: float3 10s ease-in-out infinite;
     }
   }

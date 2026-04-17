@@ -106,9 +106,9 @@ const emit = defineEmits<{
     width: 24px;
     height: 48px;
     flex-shrink: 0;
-    color: rgba(255, 255, 255, 0.35);
-    background: rgba(14, 14, 16, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-right: none;
     border-radius: 4px 0 0 4px;
     cursor: pointer;
@@ -117,8 +117,8 @@ const emit = defineEmits<{
       background 0.15s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
   }
 
@@ -127,9 +127,9 @@ const emit = defineEmits<{
     flex-direction: column;
     width: 304px;
     height: 100%;
-    background: rgba(14, 14, 16, 0.6);
+    background: var(--surface);
     backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 1px solid var(--border);
     overflow: hidden;
   }
 
@@ -139,7 +139,7 @@ const emit = defineEmits<{
     justify-content: space-between;
     flex-shrink: 0;
     padding: 16px 20px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border);
   }
 
   &__header-actions {
@@ -154,7 +154,7 @@ const emit = defineEmits<{
     justify-content: center;
     width: 28px;
     height: 28px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     border-radius: 6px;
@@ -164,21 +164,21 @@ const emit = defineEmits<{
       background 0.15s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.85);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
   }
 
   &__title {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-primary);
     letter-spacing: 0.3px;
   }
 
   &__count {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary);
   }
 
   &__body {
@@ -195,7 +195,7 @@ const emit = defineEmits<{
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--border);
       border-radius: 2px;
     }
   }
@@ -211,7 +211,7 @@ const emit = defineEmits<{
       color 0.15s ease;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--fill-hover);
 
       .play-list__item-remove {
         opacity: 1;
@@ -219,18 +219,18 @@ const emit = defineEmits<{
     }
 
     &--active {
-      background: rgba(232, 168, 73, 0.08);
+      background: var(--accent-soft);
 
       .play-list__item-title {
-        color: #e8a849;
+        color: var(--accent);
       }
 
       .play-list__item-artist {
-        color: rgba(232, 168, 73, 0.5);
+        color: var(--accent-glow);
       }
 
       .play-list__item-num {
-        color: #e8a849;
+        color: var(--accent);
       }
     }
   }
@@ -244,7 +244,7 @@ const emit = defineEmits<{
   &__item-num {
     font-size: 11px;
     font-variant-numeric: tabular-nums;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
   }
 
   &__item-playing {
@@ -257,7 +257,7 @@ const emit = defineEmits<{
 
   &__bar {
     width: 3px;
-    background: #e8a849;
+    background: var(--accent);
     border-radius: 1px;
     animation: bar-bounce 0.8s ease-in-out infinite;
 
@@ -287,7 +287,7 @@ const emit = defineEmits<{
 
   &__item-title {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -296,7 +296,7 @@ const emit = defineEmits<{
 
   &__item-artist {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -307,7 +307,7 @@ const emit = defineEmits<{
     flex-shrink: 0;
     font-size: 11px;
     font-variant-numeric: tabular-nums;
-    color: rgba(255, 255, 255, 0.25);
+    color: var(--text-muted);
   }
 
   &__item-remove {
@@ -317,7 +317,7 @@ const emit = defineEmits<{
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: rgba(255, 255, 255, 0.25);
+    color: var(--text-muted);
     background: transparent;
     border: none;
     border-radius: 4px;
@@ -329,8 +329,8 @@ const emit = defineEmits<{
       background 0.15s ease;
 
     &:hover {
-      color: rgba(255, 100, 100, 0.9);
-      background: rgba(255, 100, 100, 0.1);
+      color: rgb(255 100 100 / 90%);
+      background: rgb(255 100 100 / 10%);
     }
   }
 }

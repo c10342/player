@@ -55,8 +55,8 @@ function onClose() {
   align-items: center;
   justify-content: space-between;
   height: 36px;
-  background: rgba(12, 12, 14, 0.95);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--surface-bar);
+  border-bottom: 1px solid var(--border);
   user-select: none;
   -webkit-app-region: drag;
 
@@ -70,7 +70,7 @@ function onClose() {
 
   &__title {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
     letter-spacing: 0.3px;
     overflow: hidden;
     white-space: nowrap;
@@ -90,7 +90,7 @@ function onClose() {
     justify-content: center;
     width: 46px;
     height: 100%;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     cursor: pointer;
@@ -99,13 +99,13 @@ function onClose() {
       background 0.15s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
 
     &--close:hover {
       color: #fff;
-      background: #e81123;
+      background: var(--danger);
     }
   }
 }

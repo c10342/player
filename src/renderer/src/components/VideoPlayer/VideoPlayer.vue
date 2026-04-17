@@ -69,18 +69,18 @@ const playListCollapsed = ref(false);
     gap: 12px;
     padding: 32px 48px;
     background: transparent;
-    border: 2px dashed rgba(255, 255, 255, 0.8);
+    border: 2px dashed var(--text-primary);
     border-radius: 16px;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-primary);
     transition:
       border-color 0.2s ease,
       background 0.2s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 1);
-      border-color: rgba(255, 255, 255, 1);
-      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border-color: #fff;
+      background: var(--fill-hover);
     }
   }
 
@@ -100,12 +100,12 @@ const playListCollapsed = ref(false);
     position: relative;
     width: 240px;
     height: 240px;
-    background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0d0d0d 100%);
+    background: radial-gradient(circle at 50% 50%, var(--dark) 0%, var(--bg) 100%);
     border-radius: 50%;
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.03),
-      0 8px 40px rgba(0, 0, 0, 0.6),
-      inset 0 0 60px rgba(0, 0, 0, 0.5);
+      0 0 0 2px var(--border),
+      0 8px 40px rgb(0 0 0 / 60%),
+      inset 0 0 60px rgb(0 0 0 / 50%);
 
     &--spinning {
       animation: vinyl-spin 3s linear infinite;
@@ -118,7 +118,7 @@ const playListCollapsed = ref(false);
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 0.5px solid rgba(255, 255, 255, 0.04);
+    border: 0.5px solid var(--border);
 
     &--1 {
       width: 180px;
@@ -143,18 +143,18 @@ const playListCollapsed = ref(false);
     transform: translate(-50%, -50%);
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #e8a849, #c4873a);
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 20px rgba(232, 168, 73, 0.2);
+    box-shadow: 0 0 20px var(--accent-glow);
   }
 
   &__vinyl-dot {
     width: 8px;
     height: 8px;
-    background: #0a0a0c;
+    background: var(--bg);
     border-radius: 50%;
   }
 
@@ -165,7 +165,7 @@ const playListCollapsed = ref(false);
   &__hero-title {
     font-size: 28px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
     letter-spacing: -0.5px;
     line-height: 1.2;
   }
@@ -173,14 +173,14 @@ const playListCollapsed = ref(false);
   &__hero-artist {
     margin-top: 6px;
     font-size: 15px;
-    color: #e8a849;
+    color: var(--accent);
     letter-spacing: 0.3px;
   }
 
   &__hero-album {
     margin-top: 4px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary);
     letter-spacing: 1px;
     text-transform: uppercase;
   }

@@ -76,7 +76,7 @@ function onMouseDown(e: MouseEvent) {
     justify-content: center;
     width: 32px;
     height: 32px;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-secondary);
     background: transparent;
     border: none;
     border-radius: 50%;
@@ -86,8 +86,8 @@ function onMouseDown(e: MouseEvent) {
       background 0.2s ease;
 
     &:hover {
-      color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      background: var(--fill-hover);
     }
   }
 
@@ -121,7 +121,7 @@ function onMouseDown(e: MouseEvent) {
       transform: translateY(-50%);
       width: 100%;
       height: 3px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--border);
       border-radius: 2px;
     }
   }
@@ -132,7 +132,7 @@ function onMouseDown(e: MouseEvent) {
     top: 50%;
     transform: translateY(-50%);
     height: 3px;
-    background: linear-gradient(90deg, #e8a849, #f0c27f);
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
     border-radius: 2px;
     transition: height 0.15s ease;
     pointer-events: none;
@@ -149,9 +149,9 @@ function onMouseDown(e: MouseEvent) {
     transform: translateY(-50%);
     width: 10px;
     height: 10px;
-    background: #f0c27f;
+    background: var(--accent-hover);
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(240, 194, 127, 0.4);
+    box-shadow: 0 0 6px var(--accent-glow);
     opacity: 0;
     transition: opacity 0.15s ease;
     pointer-events: none;
