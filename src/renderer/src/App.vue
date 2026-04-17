@@ -8,22 +8,32 @@
       <div class="player-app__bg-orb player-app__bg-orb--3"></div>
     </div>
 
-    <div class="player-app__content">
-      <div class="player-app__hero">
-        <div class="player-app__vinyl" :class="{ 'player-app__vinyl--spinning': isPlaying }">
-          <div class="player-app__vinyl-groove player-app__vinyl-groove--1"></div>
-          <div class="player-app__vinyl-groove player-app__vinyl-groove--2"></div>
-          <div class="player-app__vinyl-groove player-app__vinyl-groove--3"></div>
-          <div class="player-app__vinyl-label">
-            <span class="player-app__vinyl-dot"></span>
+    <div class="player-app__body">
+      <div class="player-app__content">
+        <div class="player-app__hero">
+          <div class="player-app__vinyl" :class="{ 'player-app__vinyl--spinning': isPlaying }">
+            <div class="player-app__vinyl-groove player-app__vinyl-groove--1"></div>
+            <div class="player-app__vinyl-groove player-app__vinyl-groove--2"></div>
+            <div class="player-app__vinyl-groove player-app__vinyl-groove--3"></div>
+            <div class="player-app__vinyl-label">
+              <span class="player-app__vinyl-dot"></span>
+            </div>
+          </div>
+          <div class="player-app__hero-meta">
+            <h1 class="player-app__hero-title">Midnight Serenade</h1>
+            <p class="player-app__hero-artist">Amber Orchestra</p>
+            <p class="player-app__hero-album">Nocturne Collection</p>
           </div>
         </div>
-        <div class="player-app__hero-meta">
-          <h1 class="player-app__hero-title">Midnight Serenade</h1>
-          <p class="player-app__hero-artist">Amber Orchestra</p>
-          <p class="player-app__hero-album">Nocturne Collection</p>
-        </div>
       </div>
+
+      <PlayList
+        :tracks="playList"
+        :active-index="activeTrackIndex"
+        :collapsed="playListCollapsed"
+        @select="onTrackSelect"
+        @toggle="playListCollapsed = !playListCollapsed"
+      />
     </div>
 
     <PlayerBar />
@@ -34,8 +44,29 @@
 import { ref } from "vue";
 import TitleBar from "./components/TitleBar/TitleBar.vue";
 import PlayerBar from "./components/PlayerBar/PlayerBar.vue";
+import PlayList from "./components/PlayList/PlayList.vue";
+import type { Track } from "./components/PlayList/PlayList.vue";
 
 const isPlaying = ref(false);
+const activeTrackIndex = ref(0);
+const playListCollapsed = ref(false);
+
+const playList = ref<Track[]>([
+  { id: "1", title: "Midnight Serenade", artist: "Amber Orchestra", duration: "4:05" },
+  { id: "2", title: "Golden Hour", artist: "Amber Orchestra", duration: "3:42" },
+  { id: "3", title: "Velvet Dreams", artist: "Luna Waves", duration: "5:18" },
+  { id: "4", title: "Starlight Path", artist: "Luna Waves", duration: "4:33" },
+  { id: "5", title: "Autumn Whisper", artist: "Echo Chamber", duration: "3:56" },
+  { id: "6", title: "Ocean Breeze", artist: "Echo Chamber", duration: "6:02" },
+  { id: "7", title: "Crystal Rain", artist: "Solaris", duration: "4:47" },
+  { id: "8", title: "Silent Forest", artist: "Solaris", duration: "5:30" },
+  { id: "9", title: "Dawn Chorus", artist: "Amber Orchestra", duration: "3:21" },
+  { id: "10", title: "Twilight Haze", artist: "Noctis", duration: "4:15" }
+]);
+
+function onTrackSelect(index: number) {
+  activeTrackIndex.value = index;
+}
 </script>
 
 <style scoped lang="scss">
@@ -87,14 +118,19 @@ const isPlaying = ref(false);
     }
   }
 
-  &__content {
+  &__body {
     position: relative;
     z-index: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: calc(100% - 36px - 80px);
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 40px;
   }
 
