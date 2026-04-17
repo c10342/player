@@ -63,7 +63,7 @@ function onMouseDown(e: MouseEvent) {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .volume-control {
   position: relative;
   display: flex;

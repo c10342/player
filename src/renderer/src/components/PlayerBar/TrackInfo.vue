@@ -47,7 +47,7 @@ defineProps<{
 }>();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .track-info {
   display: flex;
   align-items: center;

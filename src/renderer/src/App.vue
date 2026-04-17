@@ -69,7 +69,7 @@ function onTrackSelect(index: number) {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .player-app {
   position: relative;
   width: 100%;

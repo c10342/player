@@ -41,7 +41,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .player-controls {
   display: flex;
   align-items: center;
@@ -90,7 +90,7 @@ const emit = defineEmits<{
         transform: scale(0.92);
       }
 
-      :deep(svg) {
+      svg {
         filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
       }
     }

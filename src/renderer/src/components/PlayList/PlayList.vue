@@ -67,7 +67,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .play-list {
   display: flex;
   height: 100%;

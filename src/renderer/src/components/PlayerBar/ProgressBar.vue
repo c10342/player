@@ -83,7 +83,7 @@ function onTrackMouseDown(e: MouseEvent) {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .progress-bar {
   width: 100%;
   padding: 8px 20px 4px;

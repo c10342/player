@@ -49,7 +49,7 @@ function onClose() {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .title-bar {
   display: flex;
   align-items: center;

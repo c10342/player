@@ -106,7 +106,7 @@ function onFullscreen() {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .player-bar {
   position: fixed;
   right: 0;
