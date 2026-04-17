@@ -14,7 +14,12 @@
     <div class="play-list__panel">
       <div class="play-list__header">
         <h2 class="play-list__title">播放列表</h2>
-        <span class="play-list__count">{{ tracks.length }} 首</span>
+        <div class="play-list__header-actions">
+          <button class="play-list__add-btn" title="添加视频" @click="emit('add')">
+            <Icon size="16"><AddOutline /></Icon>
+          </button>
+          <span class="play-list__count">{{ tracks.length }} 首</span>
+        </div>
       </div>
 
       <div class="play-list__body">
@@ -38,6 +43,9 @@
             <span class="play-list__item-artist">{{ track.artist }}</span>
           </div>
           <span class="play-list__item-duration">{{ track.duration }}</span>
+          <button class="play-list__item-remove" title="移除" @click.stop="emit('remove', index)">
+            <Icon size="14"><CloseOutline /></Icon>
+          </button>
         </div>
       </div>
     </div>
@@ -46,7 +54,7 @@
 
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
-import { ChevronForward, ChevronBack } from "@vicons/ionicons5";
+import { ChevronForward, ChevronBack, AddOutline, CloseOutline } from "@vicons/ionicons5";
 
 export interface Track {
   id: string;
@@ -64,6 +72,8 @@ defineProps<{
 const emit = defineEmits<{
   select: [index: number];
   toggle: [];
+  add: [];
+  remove: [index: number];
 }>();
 </script>
 
@@ -132,6 +142,33 @@ const emit = defineEmits<{
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
 
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.06);
+    }
+  }
+
   &__title {
     font-size: 14px;
     font-weight: 600;
@@ -167,7 +204,7 @@ const emit = defineEmits<{
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 20px;
+    padding: 10px;
     cursor: pointer;
     transition:
       background 0.15s ease,
@@ -175,6 +212,10 @@ const emit = defineEmits<{
 
     &:hover {
       background: rgba(255, 255, 255, 0.03);
+
+      .play-list__item-remove {
+        opacity: 1;
+      }
     }
 
     &--active {
@@ -267,6 +308,30 @@ const emit = defineEmits<{
     font-size: 11px;
     font-variant-numeric: tabular-nums;
     color: rgba(255, 255, 255, 0.25);
+  }
+
+  &__item-remove {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: rgba(255, 255, 255, 0.25);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 0.15s ease,
+      color 0.15s ease,
+      background 0.15s ease;
+
+    &:hover {
+      color: rgba(255, 100, 100, 0.9);
+      background: rgba(255, 100, 100, 0.1);
+    }
   }
 }
 
