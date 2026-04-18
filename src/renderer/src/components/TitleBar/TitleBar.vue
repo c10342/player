@@ -25,16 +25,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { Remove, SquareOutline, Close } from "@vicons/ionicons5";
 import { WindowRestoreRegular } from "@vicons/fa";
 import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
+import { usePlayerStore } from "@renderer/stores";
 
-defineProps<{
-  title: string;
-}>();
+const playerStore = usePlayerStore();
+
+const title = computed(() => {
+  return playerStore.currentVideo?.name || "Electron Player";
+});
 
 const isMaximized = ref(false);
 

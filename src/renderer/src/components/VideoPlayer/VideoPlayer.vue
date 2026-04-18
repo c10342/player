@@ -21,8 +21,9 @@ import PlayList from "../PlayList/PlayList.vue";
 import { addVideoFile } from "@renderer/utils";
 import { usePlayerStore } from "@renderer/stores";
 import { onMounted } from "vue";
-import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
+import { useDomResize, usePlayerEvent } from "@renderer/hooks";
 import player from "@renderer/player";
+import { debounce } from "lodash";
 
 let cv: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -110,6 +111,7 @@ usePlayerEvent("frame", (frame: any, w: number, h: number) => {
   pendingFrame = frame;
   videoW = w;
   videoH = h;
+
   if (!renderScheduled) {
     renderScheduled = true;
     requestAnimationFrame(renderFrame);
@@ -119,7 +121,8 @@ usePlayerEvent("frame", (frame: any, w: number, h: number) => {
 usePlayerEvent("ended", clearFrame);
 usePlayerEvent("stopped", clearFrame);
 
-useWindowEvent("resize", resizeCanvas);
+// useWindowEvent("resize", resizeCanvas);
+useDomResize("#cv", debounce(resizeCanvas, 50));
 
 onMounted(() => {
   cv = document.getElementById("cv") as HTMLCanvasElement;

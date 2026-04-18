@@ -1,6 +1,6 @@
 <template>
   <div class="player-app">
-    <TitleBar title="Electron Player" />
+    <TitleBar />
 
     <Background />
 
