@@ -4,8 +4,9 @@
       ref="trackRef"
       class="progress-bar__track"
       @mousedown="onTrackMouseDown"
-      @mouseenter="isHovering = true"
-      @mouseleave="isHovering = false"
+      @mouseenter="onMouseenter"
+      @mouseleave="onMouseleave"
+      @mousemove="onMouseMove"
     >
       <div class="progress-bar__fill" :style="{ width: progressPercent + '%' }">
         <div
@@ -25,16 +26,15 @@
 </template>
 
 <script setup lang="ts">
+import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
+import player from "@renderer/player";
+import { formatTime } from "@renderer/utils";
+import { throttle } from "lodash";
 import { ref, computed } from "vue";
 
-const props = defineProps<{
-  currentTime: number;
-  duration: number;
-}>();
+const currentTime = ref(0);
 
-const emit = defineEmits<{
-  seek: [time: number];
-}>();
+const duration = ref(0);
 
 const trackRef = ref<HTMLElement | null>(null);
 const isDragging = ref(false);
@@ -43,15 +43,9 @@ const hoverPosition = ref(0);
 const hoverTime = ref(0);
 
 const progressPercent = computed(() => {
-  if (!props.duration) return 0;
-  return (props.currentTime / props.duration) * 100;
+  if (!duration.value) return 0;
+  return (currentTime.value / duration.value) * 100;
 });
-
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
 
 const formattedHover = computed(() => formatTime(hoverTime.value));
 
@@ -59,28 +53,57 @@ function getTimeFromEvent(e: MouseEvent): number {
   if (!trackRef.value) return 0;
   const rect = trackRef.value.getBoundingClientRect();
   const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-  return ratio * props.duration;
+  return ratio * duration.value;
 }
+
+const onSeek = (time: number) => {
+  player.seekTo(time);
+};
 
 function onTrackMouseDown(e: MouseEvent) {
   isDragging.value = true;
   const time = getTimeFromEvent(e);
-  emit("seek", time);
-
-  const onMouseMove = (ev: MouseEvent) => {
-    const t = getTimeFromEvent(ev);
-    emit("seek", t);
-  };
-
-  const onMouseUp = () => {
-    isDragging.value = false;
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
-  };
-
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onMouseUp);
+  onSeek(time);
 }
+
+const onTimeChange = throttle((time: number) => {
+  if (isDragging.value) return;
+  currentTime.value = time;
+}, 1000);
+
+function onMouseenter() {
+  isHovering.value = true;
+}
+
+function onMouseMove(e: MouseEvent) {
+  const time = getTimeFromEvent(e);
+
+  hoverTime.value = time;
+  if (!duration.value || !trackRef.value) {
+    hoverPosition.value = 0;
+  } else {
+    hoverPosition.value = (time / duration.value) * trackRef.value.clientWidth;
+  }
+}
+
+function onMouseleave() {
+  isHovering.value = false;
+}
+
+usePlayerEvent("timechanged", onTimeChange);
+
+usePlayerEvent("lengthchanged", (time) => {
+  duration.value = time;
+});
+
+useWindowEvent("mousemove", (ev: MouseEvent) => {
+  if (!isDragging.value) return;
+  const t = getTimeFromEvent(ev);
+  onSeek(t);
+});
+useWindowEvent("mouseup", () => {
+  isDragging.value = false;
+});
 </script>
 
 <style lang="scss">

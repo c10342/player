@@ -35,7 +35,7 @@ export const usePlayerStore = defineStore("player", () => {
       return;
     }
     activeId.value = newId;
-    player.play(newId);
+    player.load(newId);
   };
   return {
     playerList,

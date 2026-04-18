@@ -353,7 +353,7 @@ class VlcPlayer {
     }
   }
 
-  play(filePath: string): void {
+  load(filePath: string): void {
     if (!this._started) {
       this._started = true;
 
@@ -377,12 +377,18 @@ class VlcPlayer {
       this._attachVlcEvents();
       this._libvlc_media_player_play(this._mp);
       this._libvlc_media_release(media);
-
-      if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
-      this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
-      return;
+    } else {
+      const media = this._libvlc_media_new_path(this._inst, filePath);
+      this._libvlc_media_player_set_media(this._mp, media);
+      this._libvlc_media_release(media);
+      this._libvlc_media_player_play(this._mp);
     }
-    if (!this._playing && this._mp) {
+    if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
+    this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
+  }
+
+  play(): void {
+    if (this._started && !this._playing && this._mp) {
       this._libvlc_media_player_pause(this._mp);
     }
   }
@@ -390,6 +396,14 @@ class VlcPlayer {
   pause(): void {
     if (this._started && this._playing && this._mp) {
       this._libvlc_media_player_pause(this._mp);
+    }
+  }
+
+  toggle(): void {
+    if (this._playing) {
+      this.pause();
+    } else {
+      this.play();
     }
   }
 
@@ -443,13 +457,19 @@ class VlcPlayer {
     });
   }
 
-  setPosition(position: number): void {
-    if (this._mp) {
-      this._libvlc_media_player_set_position(this._mp, position);
-    }
-  }
+  // setPosition(position: number): void {
+  //   if (this._mp) {
+  //     this._libvlc_media_player_set_position(this._mp, position);
+  //   }
+  // }
 
-  setTime(time: number): void {
+  // setTime(time: number): void {
+  //   if (this._mp) {
+  //     this._libvlc_media_player_set_time(this._mp, time);
+  //   }
+  // }
+
+  seekTo(time: number): void {
     if (this._mp) {
       this._libvlc_media_player_set_time(this._mp, time);
     }

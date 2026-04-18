@@ -1,6 +1,6 @@
 <template>
   <div class="player-bar">
-    <ProgressBar :current-time="state.currentTime" :duration="state.duration" @seek="onSeek" />
+    <ProgressBar />
 
     <div class="player-bar__inner">
       <div class="player-bar__section player-bar__section--left">
@@ -10,13 +10,7 @@
       </div>
 
       <div class="player-bar__section player-bar__section--center">
-        <PlayerControls
-          :playing="state.playing"
-          @prev="onPrev"
-          @toggle="onToggle"
-          @stop="onStop"
-          @next="onNext"
-        />
+        <PlayerControls />
       </div>
 
       <div class="player-bar__section player-bar__section--extra">
@@ -38,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from "vue";
+import { reactive, computed, ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { Expand, Contract } from "@vicons/ionicons5";
 import PlayerControls from "./PlayerControls.vue";
@@ -47,45 +41,17 @@ import VolumeControl from "./VolumeControl.vue";
 import { usePlayerEvent } from "@renderer/hooks";
 import { throttle } from "lodash";
 import { formatTime } from "@renderer/utils";
-import player from "@renderer/player";
 
+const currentTime = ref(0);
+const duration = ref(0);
 const state = reactive({
-  playing: false,
-  currentTime: 0,
-  duration: 0,
   volume: 0.7,
   isMuted: false,
   fullscreen: false
 });
 
-const formattedCurrent = computed(() => formatTime(state.currentTime));
-const formattedDuration = computed(() => formatTime(state.duration));
-
-function onToggle() {
-  state.playing = !state.playing;
-  if (state.playing) {
-    // player.play();
-  } else {
-    player.pause();
-  }
-}
-
-function onStop() {
-  state.playing = false;
-  state.currentTime = 0;
-}
-
-function onPrev() {
-  state.currentTime = 0;
-}
-
-function onNext() {
-  state.currentTime = 0;
-}
-
-function onSeek(time: number) {
-  player.setPosition(time);
-}
+const formattedCurrent = computed(() => formatTime(currentTime.value));
+const formattedDuration = computed(() => formatTime(duration.value));
 
 function onChangeVolume(vol: number) {
   state.volume = vol;
@@ -109,27 +75,13 @@ function onFullscreen() {
 }
 
 const onTimeChange = throttle((time: number) => {
-  state.currentTime = time;
+  currentTime.value = time;
 }, 500);
 
 usePlayerEvent("timechanged", onTimeChange);
 
 usePlayerEvent("lengthchanged", (time) => {
-  state.duration = time;
-});
-
-usePlayerEvent("playing", () => {
-  state.playing = true;
-});
-
-usePlayerEvent("paused", () => {
-  state.playing = false;
-});
-usePlayerEvent("stopped", () => {
-  state.playing = false;
-});
-usePlayerEvent("ended", () => {
-  state.playing = false;
+  duration.value = time;
 });
 </script>
 

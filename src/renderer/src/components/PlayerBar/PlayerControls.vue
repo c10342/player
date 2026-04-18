@@ -1,13 +1,13 @@
 <template>
   <div class="player-controls">
-    <button class="player-controls__btn" title="上一首" @click="emit('prev')">
+    <button class="player-controls__btn" title="上一首" @click="onPrev">
       <Icon size="20"><PlaySkipBack /></Icon>
     </button>
 
     <button
       class="player-controls__btn player-controls__btn--play"
       :title="playing ? '暂停' : '播放'"
-      @click="emit('toggle')"
+      @click="onToggle"
     >
       <Icon size="24">
         <span v-if="!playing" class="player-controls__play-icon"><Play /></span>
@@ -15,11 +15,11 @@
       </Icon>
     </button>
 
-    <button class="player-controls__btn" title="停止" @click="emit('stop')">
+    <button class="player-controls__btn" title="停止" @click="onStop">
       <Icon size="20"><Stop /></Icon>
     </button>
 
-    <button class="player-controls__btn" title="下一首" @click="emit('next')">
+    <button class="player-controls__btn" title="下一首" @click="onNext">
       <Icon size="20"><PlaySkipForward /></Icon>
     </button>
   </div>
@@ -28,17 +28,41 @@
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
 import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward } from "@vicons/ionicons5";
+import player from "@renderer/player";
+import { ref } from "vue";
+import { usePlayerEvent } from "@renderer/hooks";
 
-defineProps<{
-  playing: boolean;
-}>();
+const playing = ref(false);
 
-const emit = defineEmits<{
-  prev: [];
-  toggle: [];
-  stop: [];
-  next: [];
-}>();
+const onToggle = () => {
+  player.toggle();
+};
+
+const onStop = () => {
+  // player.stop();
+};
+
+const onNext = () => {
+  // player.next();
+};
+
+const onPrev = () => {
+  // player.prev();
+};
+
+usePlayerEvent("playing", () => {
+  playing.value = true;
+});
+
+usePlayerEvent("paused", () => {
+  playing.value = false;
+});
+usePlayerEvent("stopped", () => {
+  playing.value = false;
+});
+usePlayerEvent("ended", () => {
+  playing.value = false;
+});
 </script>
 
 <style lang="scss">
