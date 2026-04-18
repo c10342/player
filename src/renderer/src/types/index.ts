@@ -8,4 +8,6 @@ export interface PlayerListItem {
   type: string;
   // 视频大小
   size: number;
+  // 错误信息
+  error: string;
 }

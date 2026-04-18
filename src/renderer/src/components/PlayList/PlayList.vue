@@ -23,31 +23,12 @@
       </div>
 
       <div class="play-list__body">
-        <div
-          v-for="(track, index) in playerStore.playerList"
-          :key="track.path"
-          class="play-list__item"
-          :class="{ 'play-list__item--active': track.path === playerStore.activeId }"
-          :title="track.name"
-          @dblclick="onSelectVideo(track)"
-        >
-          <div class="play-list__item-index">
-            <span v-if="track.path === playerStore.activeId" class="play-list__item-playing">
-              <span class="play-list__bar"></span>
-              <span class="play-list__bar"></span>
-              <span class="play-list__bar"></span>
-            </span>
-            <span v-else class="play-list__item-num">{{ String(index + 1).padStart(2, "0") }}</span>
-          </div>
-          <div class="play-list__item-info">
-            <span class="play-list__item-title">{{ track.name }}</span>
-            <span class="play-list__item-artist">{{ formatFileSize(track.size) }}</span>
-          </div>
-          <!-- <span class="play-list__item-duration">{{ track.duration }}</span> -->
-          <button class="play-list__item-remove" title="移除" @click.stop="onRemoveVideo(track)">
-            <Icon size="14"><CloseOutline /></Icon>
-          </button>
-        </div>
+        <PlayListItem
+          v-for="(item, index) in playerStore.playerList"
+          :key="item.path"
+          :item="item"
+          :index="index"
+        />
       </div>
     </div>
   </div>
@@ -55,22 +36,15 @@
 
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
-import { ChevronForward, ChevronBack, AddOutline, CloseOutline } from "@vicons/ionicons5";
+import { ChevronForward, ChevronBack, AddOutline } from "@vicons/ionicons5";
 import { ref } from "vue";
 import { usePlayerStore } from "@renderer/stores";
-import { PlayerListItem } from "@renderer/types";
-import { addVideoFile, formatFileSize } from "@renderer/utils";
+import { addVideoFile } from "@renderer/utils";
+import PlayListItem from "./PlayListItem.vue";
 
 const playerStore = usePlayerStore();
 
 const playListCollapsed = ref(false);
-
-const onSelectVideo = (item: PlayerListItem) => {
-  playerStore.changeCurrentVideo(item);
-};
-const onRemoveVideo = (item: PlayerListItem) => {
-  playerStore.removeVideo(item);
-};
 
 const onAddVideo = () => {
   addVideoFile();
@@ -198,151 +172,6 @@ const onAddVideo = () => {
       background: var(--border);
       border-radius: 2px;
     }
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px;
-    cursor: pointer;
-    transition:
-      background 0.15s ease,
-      color 0.15s ease;
-
-    &:hover {
-      background: var(--fill-hover);
-
-      .play-list__item-remove {
-        opacity: 1;
-      }
-    }
-
-    &--active {
-      background: var(--accent-soft);
-
-      .play-list__item-title {
-        color: var(--accent);
-      }
-
-      .play-list__item-artist {
-        color: var(--accent-glow);
-      }
-
-      .play-list__item-num {
-        color: var(--accent);
-      }
-    }
-  }
-
-  &__item-index {
-    flex-shrink: 0;
-    width: 24px;
-    text-align: center;
-  }
-
-  &__item-num {
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-muted);
-  }
-
-  &__item-playing {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 2px;
-    height: 14px;
-  }
-
-  &__bar {
-    width: 3px;
-    background: var(--accent);
-    border-radius: 1px;
-    animation: bar-bounce 0.8s ease-in-out infinite;
-
-    &:nth-child(1) {
-      height: 6px;
-      animation-delay: 0s;
-    }
-
-    &:nth-child(2) {
-      height: 10px;
-      animation-delay: 0.15s;
-    }
-
-    &:nth-child(3) {
-      height: 4px;
-      animation-delay: 0.3s;
-    }
-  }
-
-  &__item-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-
-  &__item-title {
-    font-size: 13px;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: color 0.15s ease;
-  }
-
-  &__item-artist {
-    font-size: 11px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: color 0.15s ease;
-    margin-top: 4px;
-  }
-
-  &__item-duration {
-    flex-shrink: 0;
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-muted);
-  }
-
-  &__item-remove {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    color: var(--text-muted);
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    opacity: 0;
-    transition:
-      opacity 0.15s ease,
-      color 0.15s ease,
-      background 0.15s ease;
-
-    &:hover {
-      color: rgb(255 100 100 / 90%);
-      background: rgb(255 100 100 / 10%);
-    }
-  }
-}
-
-@keyframes bar-bounce {
-  0%,
-  100% {
-    transform: scaleY(1);
-  }
-  50% {
-    transform: scaleY(0.4);
   }
 }
 </style>

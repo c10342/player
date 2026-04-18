@@ -41,10 +41,16 @@ export const addVideoFile = async () => {
         path: filePath,
         name: path.basename(filePath),
         type: path.extname(filePath),
-        size: fs.statSync(filePath).size
+        size: fs.statSync(filePath).size,
+        error: ""
       });
     });
   }
 
   return result;
+};
+
+// 检查文件是否存在
+export const isFileExist = (filePath: string) => {
+  return fs.existsSync(filePath);
 };
