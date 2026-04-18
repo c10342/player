@@ -69,6 +69,14 @@ useIpcOn(GlobalEventEnum.MaximizeWindow, () => {
 useIpcOn(GlobalEventEnum.RestoreWindow, () => {
   isMaximized.value = false;
 });
+
+const init = () => {
+  window.electronAPI.isMaximized().then((res) => {
+    isMaximized.value = res;
+  });
+};
+
+init();
 </script>
 
 <style lang="scss">

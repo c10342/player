@@ -24,6 +24,9 @@ const api = {
   [BridgeEnum.CloseWindow]() {
     ipcRenderer.send(BridgeEnum.CloseWindow);
   },
+  [BridgeEnum.IsMaximized](): Promise<boolean> {
+    return ipcRenderer.invoke(BridgeEnum.IsMaximized);
+  },
   [BridgeEnum.OpenDialog](params: OpenDialogParams): Promise<Electron.OpenDialogReturnValue> {
     return ipcRenderer.invoke(BridgeEnum.OpenDialog, params);
   }

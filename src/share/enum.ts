@@ -9,7 +9,9 @@ export enum BridgeEnum {
   // 关闭窗口
   CloseWindow = "closeWindow",
   // 打开文件弹框
-  OpenDialog = "openDialog"
+  OpenDialog = "openDialog",
+  // 窗口是否最大化
+  IsMaximized = "isMaximized"
 }
 
 // 全局事件广播

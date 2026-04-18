@@ -15,6 +15,10 @@ export const initBridge = () => {
   ipcMain.on(BridgeEnum.RestoreWindow, (event) => {
     BrowserWindow.fromWebContents(event.sender)?.unmaximize();
   });
+  // 窗口是否最大化
+  ipcMain.handle(BridgeEnum.IsMaximized, (event) => {
+    return BrowserWindow.fromWebContents(event.sender)?.isMaximized() ?? false;
+  });
   // 关闭窗口
   ipcMain.on(BridgeEnum.CloseWindow, (event) => {
     BrowserWindow.fromWebContents(event.sender)?.close();
