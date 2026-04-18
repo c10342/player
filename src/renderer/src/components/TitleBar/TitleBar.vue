@@ -10,7 +10,7 @@
       <button
         class="title-bar__btn title-bar__btn--maximize"
         :title="isMaximized ? '还原' : '最大化'"
-        @click="onMaximize"
+        @click="toggleMaximize"
       >
         <Icon size="16">
           <WindowRestoreRegular v-if="isMaximized" />
@@ -29,24 +29,46 @@ import { ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { Remove, SquareOutline, Close } from "@vicons/ionicons5";
 import { WindowRestoreRegular } from "@vicons/fa";
+import { useIpcOn } from "@renderer/hooks";
+import { GlobalEventEnum } from "@share/enum";
 
 defineProps<{
   title: string;
 }>();
 
-const isMaximized = ref(true);
+const isMaximized = ref(false);
+
+const toggleMaximize = () => {
+  if (isMaximized.value) {
+    onRestore();
+  } else {
+    onMaximize();
+  }
+};
 
 function onMinimize() {
-  // todo
+  window.electronAPI.minimizeWindow();
 }
 
 function onMaximize() {
-  // todo
+  window.electronAPI.maximizeWindow();
+}
+
+function onRestore() {
+  window.electronAPI.restoreWindow();
 }
 
 function onClose() {
-  // todo
+  window.electronAPI.closeWindow();
 }
+
+useIpcOn(GlobalEventEnum.MaximizeWindow, () => {
+  isMaximized.value = true;
+});
+
+useIpcOn(GlobalEventEnum.RestoreWindow, () => {
+  isMaximized.value = false;
+});
 </script>
 
 <style lang="scss">

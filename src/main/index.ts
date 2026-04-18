@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+import { initBridge } from "./bridge";
+import { GlobalEventEnum } from "@share/enum";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -25,24 +27,14 @@ function createWindow(): void {
     mainWindow.show();
   });
 
-  ipcMain.on("window:minimize", () => mainWindow.minimize());
-  ipcMain.on("window:maximize", () => {
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
-    }
-  });
-  ipcMain.on("window:close", () => mainWindow.close());
-  ipcMain.on("window:isMaximized", (event) => {
-    event.returnValue = mainWindow.isMaximized();
-  });
-
   mainWindow.on("maximize", () => {
-    mainWindow.webContents.send("window:maximizeChange", true);
+    mainWindow.webContents.send(GlobalEventEnum.MaximizeWindow);
   });
   mainWindow.on("unmaximize", () => {
-    mainWindow.webContents.send("window:maximizeChange", false);
+    mainWindow.webContents.send(GlobalEventEnum.RestoreWindow);
+  });
+  mainWindow.on("minimize", () => {
+    mainWindow.webContents.send(GlobalEventEnum.MinimizeWindow);
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -63,7 +55,7 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
-
+  initBridge();
   createWindow();
 
   app.on("activate", function () {
