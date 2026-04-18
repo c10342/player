@@ -93,6 +93,13 @@ function renderFrame() {
   const drawH = h * scale;
   ctx.drawImage(offscreenCanvas, (dw - drawW) / 2, (dh - drawH) / 2, drawW, drawH);
 }
+
+function clearFrame() {
+  // ctx.clearRect(0, 0, canvasRect.width, canvasRect.height);
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvasRect.width, canvasRect.height);
+}
+
 usePlayerEvent("frame", (frame: any, w: number, h: number) => {
   pendingFrame = frame;
   videoW = w;
@@ -102,6 +109,9 @@ usePlayerEvent("frame", (frame: any, w: number, h: number) => {
     requestAnimationFrame(renderFrame);
   }
 });
+
+usePlayerEvent("ended", clearFrame);
+usePlayerEvent("stopped", clearFrame);
 
 useWindowEvent("resize", resizeCanvas);
 

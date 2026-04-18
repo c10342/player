@@ -231,6 +231,7 @@ class VlcPlayer {
 
     this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
     this._libvlc_video_set_callbacks(this._mp, this._lockCb, this._unlockCb, this._displayCb, null);
+    this._attachVlcEvents();
   }
 
   private _registerCallbacks(): void {
@@ -369,10 +370,10 @@ class VlcPlayer {
     }
   }
 
-  load(filePath: string): void {
+  async load(filePath: string) {
+    await this.stop();
     const media = this._libvlc_media_new_path(this._inst, filePath);
     this._libvlc_media_player_set_media(this._mp, media);
-    this._attachVlcEvents();
     this._libvlc_media_player_play(this._mp);
     this._libvlc_media_release(media);
 

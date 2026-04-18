@@ -31,15 +31,18 @@ import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward } from "@vicons/ionico
 import player from "@renderer/player";
 import { ref } from "vue";
 import { usePlayerEvent } from "@renderer/hooks";
+import { usePlayerStore } from "@renderer/stores";
 
 const playing = ref(false);
+
+const playerStore = usePlayerStore();
 
 const onToggle = () => {
   player.toggle();
 };
 
 const onStop = () => {
-  player.stop();
+  playerStore.removeCurrentVideo();
 };
 
 const onNext = () => {
