@@ -1,5 +1,6 @@
 import player from "@renderer/player";
 import { PlayerListItem } from "@renderer/types";
+import { isFileExist } from "@renderer/utils";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -58,6 +59,13 @@ export const usePlayerStore = defineStore("player", () => {
     const listItem = playerList.value.find((i) => i.path === item.path);
     const newId = listItem?.path || "";
     if (newId === activeId.value) {
+      return;
+    }
+    if (!isFileExist(item.path)) {
+      updateVideoInfo({
+        ...item,
+        error: "文件不存在"
+      });
       return;
     }
     activeId.value = newId;

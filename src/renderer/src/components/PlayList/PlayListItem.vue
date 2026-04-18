@@ -31,7 +31,7 @@
 import { Icon } from "@vicons/utils";
 import { CloseOutline, AlertCircleOutline } from "@vicons/ionicons5";
 import { PlayerListItem } from "@renderer/types";
-import { formatFileSize, isFileExist } from "@renderer/utils";
+import { formatFileSize } from "@renderer/utils";
 import { computed } from "vue";
 import { usePlayerStore } from "@renderer/stores";
 
@@ -46,14 +46,6 @@ const isActive = computed(() => props.item.path === playerStore.activeId);
 const hasError = computed(() => !!props.item.error);
 
 const onSelectVideo = () => {
-  // 检查文件是否存在
-  if (!isFileExist(props.item.path)) {
-    playerStore.updateVideoInfo({
-      ...props.item,
-      error: "文件不存在"
-    });
-    return;
-  }
   playerStore.changeCurrentVideo(props.item);
 };
 const onRemoveVideo = () => {
