@@ -1,4 +1,6 @@
-import koffi, { type IKoffiLib, type IKoffiRegisteredCallback, type KoffiFunction } from "koffi";
+import type { IKoffiLib, IKoffiRegisteredCallback, KoffiFunction } from "koffi";
+
+const koffi = require("koffi") as typeof import("koffi");
 const path = require("path");
 
 const LockCb = koffi.proto("void* LockCb(void*, void**)");
@@ -40,7 +42,7 @@ export type VlcEventType =
   | "videosize"
   | "destroyed";
 
-export type VlcEventListener = (...args: unknown[]) => void;
+export type VlcEventListener = (...args: any[]) => void;
 
 class VlcPlayer {
   private _events: Partial<Record<VlcEventType, VlcEventListener[]>> = {};
@@ -138,7 +140,8 @@ class VlcPlayer {
   }
 
   private _loadLibVLC(): void {
-    this._libvlc = koffi.load(path.join(__dirname, "../../../../resources/vlc/libvlc.dll"));
+    // __dirname -> E:\project\electron-player\node_modules\electron\dist\resources\electron.asar\renderer
+    this._libvlc = koffi.load(path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll"));
 
     this._libvlc_new = this._libvlc.func("libvlc_new", "void*", ["int", "void*"]);
     this._libvlc_media_player_new = this._libvlc.func("libvlc_media_player_new", "void*", [

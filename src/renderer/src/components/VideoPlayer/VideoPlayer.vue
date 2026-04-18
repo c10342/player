@@ -1,7 +1,7 @@
 <template>
   <div class="video-player">
     <div class="video-player__content">
-      <div class="video-player__empty">
+      <div v-if="!playerStore.activeId" class="video-player__empty">
         <button class="video-player__add-btn" @click="onAddClick">
           <Icon size="32"><AddOutline /></Icon>
           <span class="video-player__add-btn-text">添加视频</span>
@@ -19,10 +19,97 @@ import { Icon } from "@vicons/utils";
 import { AddOutline } from "@vicons/ionicons5";
 import PlayList from "../PlayList/PlayList.vue";
 import { addVideoFile } from "@renderer/utils";
+import { usePlayerStore } from "@renderer/stores";
+import { onMounted } from "vue";
+import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
+
+let cv: HTMLCanvasElement;
+let ctx: CanvasRenderingContext2D;
+const playerStore = usePlayerStore();
 
 const onAddClick = () => {
   addVideoFile();
 };
+
+let pendingFrame: any = null;
+let renderScheduled = false;
+let videoW = 0;
+let videoH = 0;
+
+let offscreenCanvas: HTMLCanvasElement | null = null;
+
+let offscreenCtx: CanvasRenderingContext2D | null = null;
+const canvasRect = { width: 0, height: 0 };
+
+function resizeCanvas() {
+  const rect = cv.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return;
+  canvasRect.width = rect.width;
+  canvasRect.height = rect.height;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.floor(rect.width * dpr);
+  cv.height = Math.floor(rect.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function renderFrame() {
+  renderScheduled = false;
+  if (!pendingFrame) return;
+
+  const frame = pendingFrame;
+  const w = videoW;
+  const h = videoH;
+  pendingFrame = null;
+
+  if (w <= 0 || h <= 0) return;
+
+  if (!offscreenCanvas || w !== offscreenCanvas.width || h !== offscreenCanvas.height) {
+    offscreenCanvas = document.createElement("canvas");
+    offscreenCanvas.width = w;
+    offscreenCanvas.height = h;
+    offscreenCtx = offscreenCanvas.getContext("2d");
+  }
+
+  const pixelCount = w * h;
+  const buf32 = new Uint32Array(frame.buffer, frame.byteOffset, pixelCount);
+  for (let i = 0; i < pixelCount; i++) {
+    const p = buf32[i];
+    buf32[i] = (p & 0xff00ff00) | ((p >> 16) & 0xff) | ((p & 0xff) << 16);
+  }
+
+  const imgData = offscreenCtx!.createImageData(w, h);
+  imgData.data.set(new Uint8ClampedArray(frame.buffer, frame.byteOffset, pixelCount * 4));
+  offscreenCtx!.putImageData(imgData, 0, 0);
+
+  const dw = canvasRect.width;
+  const dh = canvasRect.height;
+  if (dw <= 0 || dh <= 0) return;
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, dw, dh);
+
+  const scale = Math.min(dw / w, dh / h);
+  const drawW = w * scale;
+  const drawH = h * scale;
+  ctx.drawImage(offscreenCanvas, (dw - drawW) / 2, (dh - drawH) / 2, drawW, drawH);
+}
+usePlayerEvent("frame", (frame: any, w: number, h: number) => {
+  pendingFrame = frame;
+  videoW = w;
+  videoH = h;
+  if (!renderScheduled) {
+    renderScheduled = true;
+    requestAnimationFrame(renderFrame);
+  }
+});
+
+useWindowEvent("resize", resizeCanvas);
+
+onMounted(() => {
+  cv = document.getElementById("cv") as HTMLCanvasElement;
+  ctx = cv.getContext("2d") as CanvasRenderingContext2D;
+  resizeCanvas();
+});
 </script>
 
 <style lang="scss">
@@ -33,7 +120,7 @@ const onAddClick = () => {
   width: 100%;
   height: calc(100% - 36px - 80px);
 
-  &.__canvas {
+  &__canvas {
     height: 100%;
     width: 100%;
     display: block;
@@ -44,7 +131,7 @@ const onAddClick = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    // padding: 40px;
     position: relative;
   }
 

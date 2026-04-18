@@ -44,27 +44,30 @@ import { Expand, Contract } from "@vicons/ionicons5";
 import PlayerControls from "./PlayerControls.vue";
 import ProgressBar from "./ProgressBar.vue";
 import VolumeControl from "./VolumeControl.vue";
+import { usePlayerEvent } from "@renderer/hooks";
+import { throttle } from "lodash";
+import { formatTime } from "@renderer/utils";
+import player from "@renderer/player";
 
 const state = reactive({
   playing: false,
-  currentTime: 72,
-  duration: 245,
+  currentTime: 0,
+  duration: 0,
   volume: 0.7,
   isMuted: false,
   fullscreen: false
 });
-
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
 
 const formattedCurrent = computed(() => formatTime(state.currentTime));
 const formattedDuration = computed(() => formatTime(state.duration));
 
 function onToggle() {
   state.playing = !state.playing;
+  if (state.playing) {
+    // player.play();
+  } else {
+    player.pause();
+  }
 }
 
 function onStop() {
@@ -81,7 +84,7 @@ function onNext() {
 }
 
 function onSeek(time: number) {
-  state.currentTime = time;
+  player.setPosition(time);
 }
 
 function onChangeVolume(vol: number) {
@@ -104,6 +107,30 @@ function onFullscreen() {
     state.fullscreen = false;
   }
 }
+
+const onTimeChange = throttle((time: number) => {
+  state.currentTime = time;
+}, 500);
+
+usePlayerEvent("timechanged", onTimeChange);
+
+usePlayerEvent("lengthchanged", (time) => {
+  state.duration = time;
+});
+
+usePlayerEvent("playing", () => {
+  state.playing = true;
+});
+
+usePlayerEvent("paused", () => {
+  state.playing = false;
+});
+usePlayerEvent("stopped", () => {
+  state.playing = false;
+});
+usePlayerEvent("ended", () => {
+  state.playing = false;
+});
 </script>
 
 <style lang="scss">

@@ -14,3 +14,10 @@ export const usePlayerEvent = (event: VlcEventType, listener: VlcEventListener) 
     player.off(event, listener);
   });
 };
+
+export const useWindowEvent = (event: keyof WindowEventMap, listener: (...args: any[]) => any) => {
+  window.addEventListener(event, listener);
+  onBeforeUnmount(() => {
+    window.removeEventListener(event, listener);
+  });
+};

@@ -27,6 +27,14 @@ export default defineConfig({
         "@share": resolve("src/share")
       }
     },
+    optimizeDeps: {
+      exclude: ["koffi"]
+    },
+    build: {
+      rollupOptions: {
+        external: ["koffi"]
+      }
+    },
     css: {
       preprocessorOptions: {
         scss: {
