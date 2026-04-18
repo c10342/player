@@ -46,14 +46,15 @@ export type VlcEventListener = (...args: any[]) => void;
 
 class VlcPlayer {
   private _events: Partial<Record<VlcEventType, VlcEventListener[]>> = {};
-  private _playing = false;
-  private _totalLength = 0;
   private _videoW = 0;
   private _videoH = 0;
   private _frameBuffer: Buffer;
   private _pendingFrame: Buffer | null = null;
+  // vlc实例指针
   private _inst: unknown = null;
+  // vlc媒体播放器指针
   private _mp: unknown = null;
+  // vlc库指针
   private _libvlc: IKoffiLib | null = null;
   private _sizeCheckTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -61,26 +62,94 @@ class VlcPlayer {
   private _unlockCb!: IKoffiRegisteredCallback;
   private _displayCb!: IKoffiRegisteredCallback;
   private _vlcEventCb!: IKoffiRegisteredCallback;
-
+  // libvlc_instance_t* libvlc_new(int argc, const char* const* argv)
+  // 创建 LibVLC 实例，传入命令行参数（如 --no-xlib、--verbose=2），返回实例指针，失败返回 NULL
   private _libvlc_new!: KoffiFunction;
+  // libvlc_media_player_t* libvlc_media_player_new(libvlc_instance_t* inst);
+  // 创建一个空的 VLC 媒体播放器实例，不绑定任何视频
   private _libvlc_media_player_new!: KoffiFunction;
+  // libvlc_media_t* libvlc_media_new_path(libvlc_instance_t* inst, const char* path)
+  // 从本地文件路径创建媒体。
   private _libvlc_media_new_path!: KoffiFunction;
+  // void libvlc_media_player_set_media(libvlc_media_player_t* mp, libvlc_media_t* media)
+  // 为播放器绑定 / 切换媒体。
   private _libvlc_media_player_set_media!: KoffiFunction;
+  // int libvlc_media_player_play(libvlc_media_player_t* mp)
+  // 开始播放，成功返回 0，失败非 0。
   private _libvlc_media_player_play!: KoffiFunction;
+  // void libvlc_media_player_pause(libvlc_media_player_t* mp)
+  // 暂停播放。
   private _libvlc_media_player_pause!: KoffiFunction;
+  // void libvlc_media_release(libvlc_media_t* media)
+  // 释放媒体对象。
   private _libvlc_media_release!: KoffiFunction;
+  // void libvlc_video_set_callbacks(
+  //     libvlc_media_player_t *mp,
+  //     libvlc_video_lock_cb lock,
+  //     libvlc_video_unlock_cb unlock,
+  //     libvlc_video_display_cb display,
+  //     void *opaque
+  // );
+  // LibVLC 最核心的视频帧回调 API，作用：把每一秒的视频原始帧（RGB/BGRA/YUV）抛给你自己的函数处理，不使用 VLC 自带渲染，完全自己绘制画面。
+  // 你可以用它做：
+  // 自定义渲染（WebGPU/Canvas/OpenGL）
+  // 视频帧截图、美颜、滤镜处理
+  // 帧数据分析
+  // 不依赖窗口句柄播放视频
+  // lock：VLC 要写帧数据前，调用你给的函数（申请内存）
+  // unlock：VLC 写完一帧，调用你给的函数
+  // display：帧准备好，通知你可以渲染了
+  // opaque：你自己的自定义数据（会传回给你）
   private _libvlc_video_set_callbacks!: KoffiFunction;
+  // void libvlc_video_set_format(
+  //   libvlc_media_player_t *mp,
+  //   const char *chroma,
+  //   unsigned int width,
+  //   unsigned int height,
+  //   unsigned int pitch
+  // );
+  // 告诉 LibVLC 你要什么格式、分辨率、每行字节数的视频帧。
+  // 必须和 libvlc_video_set_callbacks 一起用，缺一不可。
   private _libvlc_video_set_format!: KoffiFunction;
+  // libvlc_time_t libvlc_media_player_get_time(libvlc_media_player_t* mp)
+  // 获取当前播放时间（毫秒）。
   private _libvlc_media_player_get_time!: KoffiFunction;
+  // libvlc_time_t libvlc_media_player_get_length(libvlc_media_player_t* mp)
+  // 获取总时长（毫秒）。
   private _libvlc_media_player_get_length!: KoffiFunction;
+  // void libvlc_media_player_set_time(libvlc_media_player_t* mp, libvlc_time_t time)
+  // 设置播放时间（毫秒）。
   private _libvlc_media_player_set_time!: KoffiFunction;
+  // void libvlc_media_player_set_position(libvlc_media_player_t* mp, float position)
+  // 设置播放位置（0-1）。
   // private _libvlc_media_player_set_position!: KoffiFunction;
+  // void libvlc_media_player_stop(libvlc_media_player_t* mp)
+  // 停止播放。
   private _libvlc_media_player_stop!: KoffiFunction;
+  // void libvlc_media_player_release(libvlc_media_player_t* mp)
+  // 释放播放器。
   private _libvlc_media_player_release!: KoffiFunction;
+  // void libvlc_release(libvlc_instance_t* inst)
+  // 释放 LibVLC 实例。
   private _libvlc_release!: KoffiFunction;
+  //   int libvlc_video_get_size(
+  //     libvlc_media_player_t *p_mi,
+  //     unsigned *pi_width,
+  //     unsigned *pi_height
+  // );
+  // 获取正在播放视频的真实分辨率（宽、高）
+  // 配合 libvlc_video_set_format 动态设置帧格式
+  // 做自适应渲染、窗口大小必须用它
   private _libvlc_video_get_size!: KoffiFunction;
+  // libvlc_media_player_event_manager(libvlc_media_player_t* mp)
+  // 获取事件管理器，用于注册事件回调。
   private _libvlc_media_player_event_manager!: KoffiFunction;
+  // int libvlc_event_attach(libvlc_event_manager_t* em, libvlc_event_type_t event, libvlc_callback_t cb, void* opaque)
+  // 绑定事件回调
   private _libvlc_event_attach!: KoffiFunction;
+  // bool libvlc_media_player_is_playing(libvlc_media_player_t* mp)
+  // 判断是否正在播放。
+  private _libvlc_media_player_is_playing!: KoffiFunction;
 
   constructor() {
     this._frameBuffer = Buffer.alloc(3840 * 2160 * 4);
@@ -115,12 +184,23 @@ class VlcPlayer {
     }
   }
 
+  // 是否正在播放
   get isPlaying(): boolean {
-    return this._playing;
+    if (!this._mp) {
+      return false;
+    }
+    return this._libvlc_media_player_is_playing(this._mp);
   }
 
-  get totalLength(): number {
-    return this._totalLength;
+  // 当前正在播放的视频总时长（毫秒）
+  get duration(): number {
+    if (!this._mp) return -1;
+    return this._libvlc_media_player_get_length(this._mp) as number;
+  }
+  // 当前正在播放的视频时间位置（毫秒）
+  get currentTime(): number {
+    if (!this._mp) return -1;
+    return this._libvlc_media_player_get_time(this._mp) as number;
   }
 
   get videoWidth(): number {
@@ -220,6 +300,11 @@ class VlcPlayer {
       koffi.pointer(VlcEventCb),
       "void*"
     ]);
+    this._libvlc_media_player_is_playing = this._libvlc.func(
+      "libvlc_media_player_is_playing",
+      "bool",
+      ["void*"]
+    );
   }
 
   private _initVlc(): void {
@@ -260,20 +345,17 @@ class VlcPlayer {
         switch (evt.type) {
           case libvlc_MediaPlayerPlaying:
             setImmediate(() => {
-              this._playing = true;
               this._emit("playing");
             });
             break;
           case libvlc_MediaPlayerPaused:
             setImmediate(() => {
-              this._playing = false;
               this._emit("paused");
             });
             break;
           case libvlc_MediaPlayerStopped:
             setImmediate(() => {
               // end和stop效果是一样的
-              this._playing = false;
               this._emit("stopped");
               this._emit("paused");
               this._emit("timechanged", 0);
@@ -283,7 +365,6 @@ class VlcPlayer {
             break;
           case libvlc_MediaPlayerEndReached:
             setImmediate(() => {
-              this._playing = false;
               this._emit("ended");
               this._emit("paused");
               this._emit("timechanged", 0);
@@ -322,7 +403,6 @@ class VlcPlayer {
             const len = data.new_length;
             setImmediate(() => {
               if (len >= 0) {
-                this._totalLength = len;
                 this._emit("lengthchanged", len);
               }
             });
@@ -382,19 +462,19 @@ class VlcPlayer {
   }
 
   play(): void {
-    if (!this._playing && this._mp) {
+    if (!this.isPlaying && this._mp) {
       this._libvlc_media_player_pause(this._mp);
     }
   }
 
   pause(): void {
-    if (this._playing && this._mp) {
+    if (this.isPlaying && this._mp) {
       this._libvlc_media_player_pause(this._mp);
     }
   }
 
   toggle(): void {
-    if (this._playing) {
+    if (this.isPlaying) {
       this.pause();
     } else {
       this.play();
@@ -412,8 +492,6 @@ class VlcPlayer {
           console.error("stop error:", err);
           reject(err);
         } else {
-          this._playing = false;
-          this._totalLength = 0;
           this._pendingFrame = null;
           this._emit("stopped");
           resolve();
@@ -440,8 +518,6 @@ class VlcPlayer {
           reject(e);
           return;
         }
-        this._playing = false;
-        this._totalLength = 0;
         this._pendingFrame = null;
         this._emit("destroyed");
         resolve();
@@ -465,16 +541,6 @@ class VlcPlayer {
     if (this._mp) {
       this._libvlc_media_player_set_time(this._mp, time);
     }
-  }
-
-  getTime(): number {
-    if (!this._mp) return -1;
-    return this._libvlc_media_player_get_time(this._mp) as number;
-  }
-
-  getLength(): number {
-    if (!this._mp) return -1;
-    return this._libvlc_media_player_get_length(this._mp) as number;
   }
 }
 
