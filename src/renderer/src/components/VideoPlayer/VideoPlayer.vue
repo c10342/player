@@ -2,7 +2,7 @@
   <div class="video-player">
     <div class="video-player__content">
       <div class="video-player__empty">
-        <button class="video-player__add-btn" @click="emit('add')">
+        <button class="video-player__add-btn" @click="onAddClick">
           <Icon size="32"><AddOutline /></Icon>
           <span class="video-player__add-btn-text">添加视频</span>
         </button>
@@ -25,6 +25,7 @@ import { Icon } from "@vicons/utils";
 import { AddOutline } from "@vicons/ionicons5";
 import PlayList from "../PlayList/PlayList.vue";
 import type { Track } from "../PlayList/PlayList.vue";
+import { selectVideoFile } from "@renderer/utils";
 
 defineProps<{
   tracks: Track[];
@@ -34,10 +35,13 @@ defineProps<{
 
 const emit = defineEmits<{
   select: [index: number];
-  add: [];
 }>();
 
 const playListCollapsed = ref(false);
+
+const onAddClick = () => {
+  selectVideoFile();
+};
 </script>
 
 <style lang="scss">

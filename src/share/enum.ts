@@ -7,7 +7,9 @@ export enum BridgeEnum {
   // 还原窗口
   RestoreWindow = "restoreWindow",
   // 关闭窗口
-  CloseWindow = "closeWindow"
+  CloseWindow = "closeWindow",
+  // 打开文件弹框
+  OpenDialog = "openDialog"
 }
 
 // 全局事件广播

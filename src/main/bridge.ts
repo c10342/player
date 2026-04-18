@@ -1,5 +1,6 @@
 import { BridgeEnum } from "@share/enum";
-import { BrowserWindow, ipcMain } from "electron";
+import { OpenDialogParams } from "@share/type";
+import { BrowserWindow, dialog, ipcMain } from "electron";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -17,5 +18,13 @@ export const initBridge = () => {
   // 关闭窗口
   ipcMain.on(BridgeEnum.CloseWindow, (event) => {
     BrowserWindow.fromWebContents(event.sender)?.close();
+  });
+  // 打开文件弹框
+  ipcMain.handle(BridgeEnum.OpenDialog, (event, params: OpenDialogParams) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (params.modal && win) {
+      return dialog.showOpenDialog(win, params);
+    }
+    return dialog.showOpenDialog(params);
   });
 };

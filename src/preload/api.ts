@@ -1,4 +1,5 @@
 import { BridgeEnum } from "@share/enum";
+import { OpenDialogParams } from "@share/type";
 import { ipcRenderer } from "electron";
 
 const api = {
@@ -22,6 +23,9 @@ const api = {
   },
   [BridgeEnum.CloseWindow]() {
     ipcRenderer.send(BridgeEnum.CloseWindow);
+  },
+  [BridgeEnum.OpenDialog](params: OpenDialogParams): Promise<Electron.OpenDialogReturnValue> {
+    return ipcRenderer.invoke(BridgeEnum.OpenDialog, params);
   }
 };
 
