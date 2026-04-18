@@ -46,7 +46,6 @@ export type VlcEventListener = (...args: any[]) => void;
 
 class VlcPlayer {
   private _events: Partial<Record<VlcEventType, VlcEventListener[]>> = {};
-  private _started = false;
   private _playing = false;
   private _totalLength = 0;
   private _videoW = 0;
@@ -75,7 +74,7 @@ class VlcPlayer {
   private _libvlc_media_player_get_time!: KoffiFunction;
   private _libvlc_media_player_get_length!: KoffiFunction;
   private _libvlc_media_player_set_time!: KoffiFunction;
-  private _libvlc_media_player_set_position!: KoffiFunction;
+  // private _libvlc_media_player_set_position!: KoffiFunction;
   private _libvlc_media_player_stop!: KoffiFunction;
   private _libvlc_media_player_release!: KoffiFunction;
   private _libvlc_release!: KoffiFunction;
@@ -88,6 +87,7 @@ class VlcPlayer {
 
     this._loadLibVLC();
     this._registerCallbacks();
+    this._initVlc();
   }
 
   on(event: VlcEventType, listener: VlcEventListener): this {
@@ -113,10 +113,6 @@ class VlcPlayer {
         console.error(`VlcPlayer event handler error [${event}]:`, e);
       }
     }
-  }
-
-  get isStarted(): boolean {
-    return this._started;
   }
 
   get isPlaying(): boolean {
@@ -193,11 +189,11 @@ class VlcPlayer {
       "void*",
       "int64"
     ]);
-    this._libvlc_media_player_set_position = this._libvlc.func(
-      "libvlc_media_player_set_position",
-      "void",
-      ["void*", "float"]
-    );
+    // this._libvlc_media_player_set_position = this._libvlc.func(
+    //   "libvlc_media_player_set_position",
+    //   "void",
+    //   ["void*", "float"]
+    // );
     this._libvlc_media_player_stop = this._libvlc.func("libvlc_media_player_stop", "void", [
       "void*"
     ]);
@@ -224,6 +220,17 @@ class VlcPlayer {
       koffi.pointer(VlcEventCb),
       "void*"
     ]);
+  }
+
+  private _initVlc(): void {
+    this._inst = this._libvlc_new(0, null);
+    this._mp = this._libvlc_media_player_new(this._inst);
+
+    this._videoW = 1920;
+    this._videoH = 1080;
+
+    this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
+    this._libvlc_video_set_callbacks(this._mp, this._lockCb, this._unlockCb, this._displayCb, null);
   }
 
   private _registerCallbacks(): void {
@@ -264,14 +271,23 @@ class VlcPlayer {
             break;
           case libvlc_MediaPlayerStopped:
             setImmediate(() => {
+              // end和stop效果是一样的
               this._playing = false;
               this._emit("stopped");
+              this._emit("paused");
+              this._emit("timechanged", 0);
+              this._emit("positionchanged", 0);
+              this._emit("lengthchanged", 0);
             });
             break;
           case libvlc_MediaPlayerEndReached:
             setImmediate(() => {
               this._playing = false;
               this._emit("ended");
+              this._emit("paused");
+              this._emit("timechanged", 0);
+              this._emit("positionchanged", 0);
+              this._emit("lengthchanged", 0);
             });
             break;
           case libvlc_MediaPlayerTimeChanged: {
@@ -354,47 +370,24 @@ class VlcPlayer {
   }
 
   load(filePath: string): void {
-    if (!this._started) {
-      this._started = true;
+    const media = this._libvlc_media_new_path(this._inst, filePath);
+    this._libvlc_media_player_set_media(this._mp, media);
+    this._attachVlcEvents();
+    this._libvlc_media_player_play(this._mp);
+    this._libvlc_media_release(media);
 
-      this._inst = this._libvlc_new(0, null);
-      this._mp = this._libvlc_media_player_new(this._inst);
-
-      this._videoW = 1920;
-      this._videoH = 1080;
-
-      this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
-      this._libvlc_video_set_callbacks(
-        this._mp,
-        this._lockCb,
-        this._unlockCb,
-        this._displayCb,
-        null
-      );
-
-      const media = this._libvlc_media_new_path(this._inst, filePath);
-      this._libvlc_media_player_set_media(this._mp, media);
-      this._attachVlcEvents();
-      this._libvlc_media_player_play(this._mp);
-      this._libvlc_media_release(media);
-    } else {
-      const media = this._libvlc_media_new_path(this._inst, filePath);
-      this._libvlc_media_player_set_media(this._mp, media);
-      this._libvlc_media_release(media);
-      this._libvlc_media_player_play(this._mp);
-    }
     if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
     this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
   }
 
   play(): void {
-    if (this._started && !this._playing && this._mp) {
+    if (!this._playing && this._mp) {
       this._libvlc_media_player_pause(this._mp);
     }
   }
 
   pause(): void {
-    if (this._started && this._playing && this._mp) {
+    if (this._playing && this._mp) {
       this._libvlc_media_player_pause(this._mp);
     }
   }
@@ -409,7 +402,7 @@ class VlcPlayer {
 
   stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this._started || !this._mp) {
+      if (!this._mp) {
         resolve();
         return;
       }
@@ -418,7 +411,6 @@ class VlcPlayer {
           console.error("stop error:", err);
           reject(err);
         } else {
-          this._started = false;
           this._playing = false;
           this._totalLength = 0;
           this._pendingFrame = null;
@@ -431,7 +423,7 @@ class VlcPlayer {
 
   destroy(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this._started || !this._mp) {
+      if (!this._mp) {
         resolve();
         return;
       }
@@ -447,7 +439,6 @@ class VlcPlayer {
           reject(e);
           return;
         }
-        this._started = false;
         this._playing = false;
         this._totalLength = 0;
         this._pendingFrame = null;

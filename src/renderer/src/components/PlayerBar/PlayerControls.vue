@@ -39,7 +39,7 @@ const onToggle = () => {
 };
 
 const onStop = () => {
-  // player.stop();
+  player.stop();
 };
 
 const onNext = () => {
@@ -55,12 +55,6 @@ usePlayerEvent("playing", () => {
 });
 
 usePlayerEvent("paused", () => {
-  playing.value = false;
-});
-usePlayerEvent("stopped", () => {
-  playing.value = false;
-});
-usePlayerEvent("ended", () => {
   playing.value = false;
 });
 </script>

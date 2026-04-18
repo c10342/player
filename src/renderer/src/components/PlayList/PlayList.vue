@@ -206,7 +206,6 @@ const onAddVideo = () => {
     gap: 12px;
     padding: 10px;
     cursor: pointer;
-    user-select: none;
     transition:
       background 0.15s ease,
       color 0.15s ease;

@@ -56,20 +56,21 @@ function getTimeFromEvent(e: MouseEvent): number {
   return ratio * duration.value;
 }
 
-const onSeek = (time: number) => {
+const throttledSeek = throttle((time: number) => {
   player.seekTo(time);
-};
+}, 100);
 
 function onTrackMouseDown(e: MouseEvent) {
   isDragging.value = true;
   const time = getTimeFromEvent(e);
-  onSeek(time);
+  currentTime.value = time;
+  throttledSeek(time);
 }
 
 const onTimeChange = throttle((time: number) => {
   if (isDragging.value) return;
   currentTime.value = time;
-}, 1000);
+}, 200);
 
 function onMouseenter() {
   isHovering.value = true;
@@ -99,7 +100,8 @@ usePlayerEvent("lengthchanged", (time) => {
 useWindowEvent("mousemove", (ev: MouseEvent) => {
   if (!isDragging.value) return;
   const t = getTimeFromEvent(ev);
-  onSeek(t);
+  currentTime.value = t;
+  throttledSeek(t);
 });
 useWindowEvent("mouseup", () => {
   isDragging.value = false;
