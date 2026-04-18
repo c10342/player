@@ -46,11 +46,11 @@ const onStop = () => {
 };
 
 const onNext = () => {
-  // player.next();
+  playerStore.nextVideo();
 };
 
 const onPrev = () => {
-  // player.prev();
+  playerStore.prevVideo();
 };
 
 usePlayerEvent("playing", () => {

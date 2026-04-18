@@ -66,10 +66,10 @@ const playerStore = usePlayerStore();
 const playListCollapsed = ref(false);
 
 const onSelectVideo = (item: PlayerListItem) => {
-  playerStore.selectPlayerList(item);
+  playerStore.changeCurrentVideo(item);
 };
 const onRemoveVideo = (item: PlayerListItem) => {
-  playerStore.removePlayerList(item);
+  playerStore.removeVideo(item);
 };
 
 const onAddVideo = () => {

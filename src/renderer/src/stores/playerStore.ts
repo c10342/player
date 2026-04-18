@@ -35,11 +35,13 @@ export const usePlayerStore = defineStore("player", () => {
   };
 
   const removeCurrentVideo = () => {
-    activeId.value = "";
-    player.stop();
+    if (activeId.value) {
+      activeId.value = "";
+      player.stop();
+    }
   };
-
-  const removePlayerList = (item: PlayerListItem) => {
+  // 移除视频
+  const removeVideo = (item: PlayerListItem) => {
     const index = playerList.value.findIndex((i) => i.path === item.path);
     if (index !== -1) {
       if (playerList.value[index].path === activeId.value) {
@@ -48,7 +50,8 @@ export const usePlayerStore = defineStore("player", () => {
       playerList.value.splice(index, 1);
     }
   };
-  const selectPlayerList = (item: PlayerListItem) => {
+  // 切换当前正在播放的视频
+  const changeCurrentVideo = (item: PlayerListItem) => {
     const listItem = playerList.value.find((i) => i.path === item.path);
     const newId = listItem?.path || "";
     if (newId === activeId.value) {
@@ -57,13 +60,47 @@ export const usePlayerStore = defineStore("player", () => {
     activeId.value = newId;
     player.load(newId);
   };
+  // 下一个视频
+  const nextVideo = () => {
+    if (!activeId.value) {
+      // 没有视频在播放，直接取第一个视频
+      if (playerList.value.length > 0) {
+        changeCurrentVideo(playerList.value[0]);
+      }
+    } else {
+      const index = playerList.value.findIndex((i) => i.path === activeId.value);
+      const nextIndex = (index + 1) % playerList.value.length;
+      // 当只有一个视频，nextindex===index
+      if (index !== -1 && nextIndex !== index) {
+        changeCurrentVideo(playerList.value[nextIndex]);
+      }
+    }
+  };
+  // 上一个视频
+  const prevVideo = () => {
+    if (!activeId.value) {
+      // 没有视频在播放，直接取最后一个视频
+      if (playerList.value.length > 0) {
+        changeCurrentVideo(playerList.value[playerList.value.length - 1]);
+      }
+    } else {
+      const index = playerList.value.findIndex((i) => i.path === activeId.value);
+      const prevIndex = (index - 1 + playerList.value.length) % playerList.value.length;
+      // 当只有一个视频，previndex===index
+      if (index !== -1 && prevIndex !== index) {
+        changeCurrentVideo(playerList.value[prevIndex]);
+      }
+    }
+  };
   return {
     playerList,
     addPlayerList,
-    removePlayerList,
-    selectPlayerList,
+    removeVideo,
+    changeCurrentVideo,
     activeId,
     currentVideo,
-    removeCurrentVideo
+    removeCurrentVideo,
+    nextVideo,
+    prevVideo
   };
 });

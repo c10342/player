@@ -7,7 +7,7 @@
           <span class="video-player__add-btn-text">添加视频</span>
         </button>
       </div>
-      <canvas id="cv" class="video-player__canvas"></canvas>
+      <canvas id="cv" class="video-player__canvas" @click="onClickCanvas"></canvas>
     </div>
 
     <PlayList />
@@ -22,6 +22,7 @@ import { addVideoFile } from "@renderer/utils";
 import { usePlayerStore } from "@renderer/stores";
 import { onMounted } from "vue";
 import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
+import player from "@renderer/player";
 
 let cv: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -85,8 +86,9 @@ function renderFrame() {
   const dh = canvasRect.height;
   if (dw <= 0 || dh <= 0) return;
 
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, dw, dh);
+  // ctx.fillStyle = "#000";
+  // ctx.fillRect(0, 0, dw, dh);
+  ctx.clearRect(0, 0, dw, dh);
 
   const scale = Math.min(dw / w, dh / h);
   const drawW = w * scale;
@@ -95,9 +97,13 @@ function renderFrame() {
 }
 
 function clearFrame() {
-  // ctx.clearRect(0, 0, canvasRect.width, canvasRect.height);
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, canvasRect.width, canvasRect.height);
+  ctx.clearRect(0, 0, canvasRect.width, canvasRect.height);
+  // ctx.fillStyle = "#000";
+  // ctx.fillRect(0, 0, canvasRect.width, canvasRect.height);
+}
+
+function onClickCanvas() {
+  player.toggle();
 }
 
 usePlayerEvent("frame", (frame: any, w: number, h: number) => {
