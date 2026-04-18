@@ -1,12 +1,12 @@
 <template>
-  <div class="play-list" :class="{ 'play-list--collapsed': collapsed }">
+  <div class="play-list" :class="{ 'play-list--collapsed': playListCollapsed }">
     <button
       class="play-list__toggle"
-      :title="collapsed ? '展开播放列表' : '收起播放列表'"
-      @click="emit('toggle')"
+      :title="playListCollapsed ? '展开播放列表' : '收起播放列表'"
+      @click="playListCollapsed = !playListCollapsed"
     >
       <Icon size="16">
-        <ChevronForward v-if="collapsed" />
+        <ChevronForward v-if="playListCollapsed" />
         <ChevronBack v-else />
       </Icon>
     </button>
@@ -15,23 +15,24 @@
       <div class="play-list__header">
         <h2 class="play-list__title">播放列表</h2>
         <div class="play-list__header-actions">
-          <button class="play-list__add-btn" title="添加视频" @click="emit('add')">
+          <button class="play-list__add-btn" title="添加视频" @click="onAddVideo">
             <Icon size="16"><AddOutline /></Icon>
           </button>
-          <span class="play-list__count">{{ tracks.length }} 首</span>
+          <span class="play-list__count">{{ playerStore.playerList.length }} 首</span>
         </div>
       </div>
 
       <div class="play-list__body">
         <div
-          v-for="(track, index) in tracks"
-          :key="track.id"
+          v-for="(track, index) in playerStore.playerList"
+          :key="track.path"
           class="play-list__item"
-          :class="{ 'play-list__item--active': index === activeIndex }"
-          @click="emit('select', index)"
+          :class="{ 'play-list__item--active': track.path === playerStore.activeId }"
+          :title="track.name"
+          @dblclick="onSelectVideo(track)"
         >
           <div class="play-list__item-index">
-            <span v-if="index === activeIndex" class="play-list__item-playing">
+            <span v-if="track.path === playerStore.activeId" class="play-list__item-playing">
               <span class="play-list__bar"></span>
               <span class="play-list__bar"></span>
               <span class="play-list__bar"></span>
@@ -39,11 +40,11 @@
             <span v-else class="play-list__item-num">{{ String(index + 1).padStart(2, "0") }}</span>
           </div>
           <div class="play-list__item-info">
-            <span class="play-list__item-title">{{ track.title }}</span>
-            <span class="play-list__item-artist">{{ track.artist }}</span>
+            <span class="play-list__item-title">{{ track.name }}</span>
+            <span class="play-list__item-artist">{{ formatFileSize(track.size) }}</span>
           </div>
-          <span class="play-list__item-duration">{{ track.duration }}</span>
-          <button class="play-list__item-remove" title="移除" @click.stop="emit('remove', index)">
+          <!-- <span class="play-list__item-duration">{{ track.duration }}</span> -->
+          <button class="play-list__item-remove" title="移除" @click.stop="onRemoveVideo(track)">
             <Icon size="14"><CloseOutline /></Icon>
           </button>
         </div>
@@ -55,26 +56,25 @@
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
 import { ChevronForward, ChevronBack, AddOutline, CloseOutline } from "@vicons/ionicons5";
+import { ref } from "vue";
+import { usePlayerStore } from "@renderer/stores";
+import { PlayerListItem } from "@renderer/types";
+import { addVideoFile, formatFileSize } from "@renderer/utils";
 
-export interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  duration: string;
-}
+const playerStore = usePlayerStore();
 
-defineProps<{
-  tracks: Track[];
-  activeIndex: number;
-  collapsed: boolean;
-}>();
+const playListCollapsed = ref(false);
 
-const emit = defineEmits<{
-  select: [index: number];
-  toggle: [];
-  add: [];
-  remove: [index: number];
-}>();
+const onSelectVideo = (item: PlayerListItem) => {
+  playerStore.selectPlayerList(item);
+};
+const onRemoveVideo = (item: PlayerListItem) => {
+  playerStore.removePlayerList(item);
+};
+
+const onAddVideo = () => {
+  addVideoFile();
+};
 </script>
 
 <style lang="scss">
@@ -301,6 +301,7 @@ const emit = defineEmits<{
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.15s ease;
+    margin-top: 4px;
   }
 
   &__item-duration {

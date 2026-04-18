@@ -9,38 +9,18 @@
       </div>
     </div>
 
-    <PlayList
-      :tracks="tracks"
-      :active-index="activeIndex"
-      :collapsed="playListCollapsed"
-      @select="(index: number) => emit('select', index)"
-      @toggle="playListCollapsed = !playListCollapsed"
-    />
+    <PlayList />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { AddOutline } from "@vicons/ionicons5";
 import PlayList from "../PlayList/PlayList.vue";
-import type { Track } from "../PlayList/PlayList.vue";
-import { selectVideoFile } from "@renderer/utils";
-
-defineProps<{
-  tracks: Track[];
-  activeIndex: number;
-  isPlaying: boolean;
-}>();
-
-const emit = defineEmits<{
-  select: [index: number];
-}>();
-
-const playListCollapsed = ref(false);
+import { addVideoFile } from "@renderer/utils";
 
 const onAddClick = () => {
-  selectVideoFile();
+  addVideoFile();
 };
 </script>
 
