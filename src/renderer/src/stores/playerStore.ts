@@ -1,3 +1,4 @@
+import player from "@renderer/player";
 import { PlayerListItem } from "@renderer/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -29,7 +30,12 @@ export const usePlayerStore = defineStore("player", () => {
   };
   const selectPlayerList = (item: PlayerListItem) => {
     const listItem = playerList.value.find((i) => i.path === item.path);
-    activeId.value = listItem?.path || "";
+    const newId = listItem?.path || "";
+    if (newId === activeId.value) {
+      return;
+    }
+    activeId.value = newId;
+    player.play(newId);
   };
   return {
     playerList,

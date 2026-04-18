@@ -7,6 +7,7 @@
           <span class="video-player__add-btn-text">添加视频</span>
         </button>
       </div>
+      <canvas id="cv" class="video-player__canvas"></canvas>
     </div>
 
     <PlayList />
@@ -32,18 +33,30 @@ const onAddClick = () => {
   width: 100%;
   height: calc(100% - 36px - 80px);
 
+  &.__canvas {
+    height: 100%;
+    width: 100%;
+    display: block;
+  }
+
   &__content {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 40px;
+    position: relative;
   }
 
   &__empty {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
   }
 
   &__add-btn {

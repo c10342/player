@@ -29,7 +29,7 @@ import { ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { Remove, SquareOutline, Close } from "@vicons/ionicons5";
 import { WindowRestoreRegular } from "@vicons/fa";
-import { useIpcOn } from "@renderer/hooks";
+import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
 
 defineProps<{
@@ -62,11 +62,11 @@ function onClose() {
   window.electronAPI.closeWindow();
 }
 
-useIpcOn(GlobalEventEnum.MaximizeWindow, () => {
+useIpcEvent(GlobalEventEnum.MaximizeWindow, () => {
   isMaximized.value = true;
 });
 
-useIpcOn(GlobalEventEnum.RestoreWindow, () => {
+useIpcEvent(GlobalEventEnum.RestoreWindow, () => {
   isMaximized.value = false;
 });
 

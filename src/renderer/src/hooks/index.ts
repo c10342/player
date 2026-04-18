@@ -1,1 +1,1 @@
-export * from "./useIpc";
+export * from "./useEvent";
