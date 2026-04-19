@@ -11,6 +11,11 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+extraResources:
+  - from: resources/vlc
+    to: vlc
+    filter:
+      - "**/*"
 win:
   executableName: electron-player
 nsis:

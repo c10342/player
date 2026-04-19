@@ -1,7 +1,15 @@
 import type { IKoffiLib, IKoffiRegisteredCallback, KoffiFunction } from "koffi";
+import { log } from "@renderer/utils";
 
 const koffi = require("koffi") as typeof import("koffi");
 const path = require("path");
+
+function getVlcDllPath(): string {
+  if (process.env.NODE_ENV === "development" || !process.resourcesPath) {
+    return path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll");
+  }
+  return path.join(process.resourcesPath, "vlc", "libvlc.dll");
+}
 
 const LockCb = koffi.proto("void* LockCb(void*, void**)");
 const UnlockCb = koffi.proto("void UnlockCb(void*, void*, void* const*, uint32)");
@@ -56,7 +64,7 @@ class VlcPlayer {
   private _mp: unknown = null;
   // vlc库指针
   private _libvlc: IKoffiLib | null = null;
-  private _sizeCheckTimer: ReturnType<typeof setInterval> | null = null;
+  // private _sizeCheckTimer: ReturnType<typeof setInterval> | null = null;
 
   private _lockCb!: IKoffiRegisteredCallback;
   private _unlockCb!: IKoffiRegisteredCallback;
@@ -140,7 +148,7 @@ class VlcPlayer {
   // 获取正在播放视频的真实分辨率（宽、高）
   // 配合 libvlc_video_set_format 动态设置帧格式
   // 做自适应渲染、窗口大小必须用它
-  private _libvlc_video_get_size!: KoffiFunction;
+  // private _libvlc_video_get_size!: KoffiFunction;
   // libvlc_media_player_event_manager(libvlc_media_player_t* mp)
   // 获取事件管理器，用于注册事件回调。
   private _libvlc_media_player_event_manager!: KoffiFunction;
@@ -179,7 +187,7 @@ class VlcPlayer {
       try {
         fn(...args);
       } catch (e) {
-        console.error(`VlcPlayer event handler error [${event}]:`, e);
+        log.error(`VlcPlayer event handler error [${event}]:`, e);
       }
     }
   }
@@ -216,8 +224,16 @@ class VlcPlayer {
   }
 
   private _loadLibVLC(): void {
-    // __dirname -> E:\project\electron-player\node_modules\electron\dist\resources\electron.asar\renderer
-    this._libvlc = koffi.load(path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll"));
+    const dllPath = getVlcDllPath();
+    log.info("Loading LibVLC...", dllPath);
+
+    const vlcDir = path.dirname(dllPath);
+    const existingPath = process.env.PATH || "";
+    if (!existingPath.includes(vlcDir)) {
+      process.env.PATH = vlcDir + ";" + existingPath;
+    }
+
+    this._libvlc = koffi.load(dllPath);
 
     this._libvlc_new = this._libvlc.func("libvlc_new", "void*", ["int", "void*"]);
     this._libvlc_media_player_new = this._libvlc.func("libvlc_media_player_new", "void*", [
@@ -282,12 +298,12 @@ class VlcPlayer {
     ]);
     this._libvlc_release = this._libvlc.func("libvlc_release", "void", ["void*"]);
 
-    this._libvlc_video_get_size = this._libvlc.func("libvlc_video_get_size", "int", [
-      "void*",
-      "uint32",
-      koffi.out(koffi.pointer("uint32")),
-      koffi.out(koffi.pointer("uint32"))
-    ]);
+    // this._libvlc_video_get_size = this._libvlc.func("libvlc_video_get_size", "int", [
+    //   "void*",
+    //   "uint32",
+    //   koffi.out(koffi.pointer("uint32")),
+    //   koffi.out(koffi.pointer("uint32"))
+    // ]);
 
     this._libvlc_media_player_event_manager = this._libvlc.func(
       "libvlc_media_player_event_manager",
@@ -333,7 +349,7 @@ class VlcPlayer {
           this._emit("frame", this._pendingFrame, this._videoW, this._videoH);
         }
       } catch (e) {
-        console.error("unlockCb error:", e);
+        log.error("unlockCb error:", e);
       }
     }, koffi.pointer(UnlockCb));
 
@@ -410,7 +426,7 @@ class VlcPlayer {
           }
         }
       } catch (e) {
-        console.error("vlcEventCb error:", e);
+        log.error("vlcEventCb error:", e);
       }
     }, koffi.pointer(VlcEventCb));
   }
@@ -432,23 +448,23 @@ class VlcPlayer {
     }
   }
 
-  private _checkVideoSize(): void {
-    if (!this._mp) return;
-    const px = [0];
-    const py = [0];
-    const ret = this._libvlc_video_get_size(this._mp, 0, px, py) as number;
-    if (ret === 0 && px[0] > 0 && py[0] > 0) {
-      this._videoW = px[0];
-      this._videoH = py[0];
-      console.log(`[VLC] Video size: ${this._videoW}x${this._videoH}`);
-      this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
-      this._emit("videosize", this._videoW, this._videoH);
-      if (this._sizeCheckTimer) {
-        clearInterval(this._sizeCheckTimer);
-        this._sizeCheckTimer = null;
-      }
-    }
-  }
+  // private _checkVideoSize(): void {
+  //   if (!this._mp) return;
+  //   const px = [0];
+  //   const py = [0];
+  //   const ret = this._libvlc_video_get_size(this._mp, 0, px, py) as number;
+  //   if (ret === 0 && px[0] > 0 && py[0] > 0) {
+  //     this._videoW = px[0];
+  //     this._videoH = py[0];
+  //     console.log(`[VLC] Video size: ${this._videoW}x${this._videoH}`);
+  //     this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
+  //     this._emit("videosize", this._videoW, this._videoH);
+  //     if (this._sizeCheckTimer) {
+  //       clearInterval(this._sizeCheckTimer);
+  //       this._sizeCheckTimer = null;
+  //     }
+  //   }
+  // }
 
   async load(filePath: string) {
     await this.stop();
@@ -457,8 +473,8 @@ class VlcPlayer {
     this._libvlc_media_player_play(this._mp);
     this._libvlc_media_release(media);
 
-    if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
-    this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
+    // if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
+    // this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
   }
 
   play(): void {
@@ -489,7 +505,7 @@ class VlcPlayer {
       }
       this._libvlc_media_player_stop.async(this._mp, (err: unknown) => {
         if (err) {
-          console.error("stop error:", err);
+          log.error("stop error:", err);
           reject(err);
         } else {
           this._pendingFrame = null;
@@ -507,14 +523,14 @@ class VlcPlayer {
         return;
       }
       this._libvlc_media_player_stop.async(this._mp, (err: unknown) => {
-        if (err) console.error("destroy stop error:", err);
+        if (err) log.error("destroy stop error:", err);
         try {
           this._libvlc_media_player_release(this._mp);
           this._mp = null;
           this._libvlc_release(this._inst);
           this._inst = null;
         } catch (e) {
-          console.error("destroy release error:", e);
+          log.error("destroy release error:", e);
           reject(e);
           return;
         }

@@ -4,6 +4,8 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
 import { initBridge } from "./bridge";
 import { GlobalEventEnum } from "@share/enum";
+import { initLogger } from "./logger";
+import log from "./logger";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -42,6 +44,10 @@ function createWindow(): void {
     return { action: "deny" };
   });
 
+  mainWindow.webContents.on("render-process-gone", (_event, details) => {
+    log.error("Renderer process gone:", details);
+  });
+
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
@@ -55,6 +61,7 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
+  initLogger();
   initBridge();
   createWindow();
 

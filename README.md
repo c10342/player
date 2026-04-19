@@ -10,10 +10,6 @@
 
 核心文件放在`src\renderer\src\player\index.ts`
 
-目前在开发环境`npm run dev`时，验证是没问题，可运行的。打包构建后的可执行文件还没验证过是否没问题
-
-**该项目目的是为了学习如何使用第三方的`C++`库，仅供参考学习**
-
 ## 效果展示
 
 ![效果展示](./images/player-1.jpg)
@@ -46,3 +42,19 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### 生成应用图标
+
+1、将新 `SVG` 图标放到 `build/icon.svg`
+
+2、运行如下命令
+
+```bash
+$ npm run generate:icon
+```
+
+脚本会自动生成：
+
+- build/icon.png (512×512)
+- build/icon.ico (Windows 多尺寸图标)
+- resources/icon.png (512×512)
