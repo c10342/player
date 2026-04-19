@@ -4,6 +4,13 @@ import { log } from "@renderer/utils";
 const koffi = require("koffi") as typeof import("koffi");
 const path = require("path");
 
+function getVlcDllPath(): string {
+  if (process.env.NODE_ENV === "development" || !process.resourcesPath) {
+    return path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll");
+  }
+  return path.join(process.resourcesPath, "vlc", "libvlc.dll");
+}
+
 const LockCb = koffi.proto("void* LockCb(void*, void**)");
 const UnlockCb = koffi.proto("void UnlockCb(void*, void*, void* const*, uint32)");
 const DisplayCb = koffi.proto("void DisplayCb(void*, void*)");
@@ -217,12 +224,16 @@ class VlcPlayer {
   }
 
   private _loadLibVLC(): void {
-    // __dirname -> E:\project\electron-player\node_modules\electron\dist\resources\electron.asar\renderer
-    log.info(
-      "Loading LibVLC...",
-      path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll")
-    );
-    this._libvlc = koffi.load(path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll"));
+    const dllPath = getVlcDllPath();
+    log.info("Loading LibVLC...", dllPath);
+
+    const vlcDir = path.dirname(dllPath);
+    const existingPath = process.env.PATH || "";
+    if (!existingPath.includes(vlcDir)) {
+      process.env.PATH = vlcDir + ";" + existingPath;
+    }
+
+    this._libvlc = koffi.load(dllPath);
 
     this._libvlc_new = this._libvlc.func("libvlc_new", "void*", ["int", "void*"]);
     this._libvlc_media_player_new = this._libvlc.func("libvlc_media_player_new", "void*", [
