@@ -432,23 +432,23 @@ class VlcPlayer {
     }
   }
 
-  private _checkVideoSize(): void {
-    if (!this._mp) return;
-    const px = [0];
-    const py = [0];
-    const ret = this._libvlc_video_get_size(this._mp, 0, px, py) as number;
-    if (ret === 0 && px[0] > 0 && py[0] > 0) {
-      this._videoW = px[0];
-      this._videoH = py[0];
-      console.log(`[VLC] Video size: ${this._videoW}x${this._videoH}`);
-      this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
-      this._emit("videosize", this._videoW, this._videoH);
-      if (this._sizeCheckTimer) {
-        clearInterval(this._sizeCheckTimer);
-        this._sizeCheckTimer = null;
-      }
-    }
-  }
+  // private _checkVideoSize(): void {
+  //   if (!this._mp) return;
+  //   const px = [0];
+  //   const py = [0];
+  //   const ret = this._libvlc_video_get_size(this._mp, 0, px, py) as number;
+  //   if (ret === 0 && px[0] > 0 && py[0] > 0) {
+  //     this._videoW = px[0];
+  //     this._videoH = py[0];
+  //     console.log(`[VLC] Video size: ${this._videoW}x${this._videoH}`);
+  //     this._libvlc_video_set_format(this._mp, "RV32", this._videoW, this._videoH, this._videoW * 4);
+  //     this._emit("videosize", this._videoW, this._videoH);
+  //     if (this._sizeCheckTimer) {
+  //       clearInterval(this._sizeCheckTimer);
+  //       this._sizeCheckTimer = null;
+  //     }
+  //   }
+  // }
 
   async load(filePath: string) {
     await this.stop();
@@ -457,8 +457,8 @@ class VlcPlayer {
     this._libvlc_media_player_play(this._mp);
     this._libvlc_media_release(media);
 
-    if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
-    this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
+    // if (this._sizeCheckTimer) clearInterval(this._sizeCheckTimer);
+    // this._sizeCheckTimer = setInterval(() => this._checkVideoSize(), 100);
   }
 
   play(): void {
