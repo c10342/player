@@ -56,7 +56,7 @@ class VlcPlayer {
   private _mp: unknown = null;
   // vlc库指针
   private _libvlc: IKoffiLib | null = null;
-  private _sizeCheckTimer: ReturnType<typeof setInterval> | null = null;
+  // private _sizeCheckTimer: ReturnType<typeof setInterval> | null = null;
 
   private _lockCb!: IKoffiRegisteredCallback;
   private _unlockCb!: IKoffiRegisteredCallback;
@@ -140,7 +140,7 @@ class VlcPlayer {
   // 获取正在播放视频的真实分辨率（宽、高）
   // 配合 libvlc_video_set_format 动态设置帧格式
   // 做自适应渲染、窗口大小必须用它
-  private _libvlc_video_get_size!: KoffiFunction;
+  // private _libvlc_video_get_size!: KoffiFunction;
   // libvlc_media_player_event_manager(libvlc_media_player_t* mp)
   // 获取事件管理器，用于注册事件回调。
   private _libvlc_media_player_event_manager!: KoffiFunction;
@@ -282,12 +282,12 @@ class VlcPlayer {
     ]);
     this._libvlc_release = this._libvlc.func("libvlc_release", "void", ["void*"]);
 
-    this._libvlc_video_get_size = this._libvlc.func("libvlc_video_get_size", "int", [
-      "void*",
-      "uint32",
-      koffi.out(koffi.pointer("uint32")),
-      koffi.out(koffi.pointer("uint32"))
-    ]);
+    // this._libvlc_video_get_size = this._libvlc.func("libvlc_video_get_size", "int", [
+    //   "void*",
+    //   "uint32",
+    //   koffi.out(koffi.pointer("uint32")),
+    //   koffi.out(koffi.pointer("uint32"))
+    // ]);
 
     this._libvlc_media_player_event_manager = this._libvlc.func(
       "libvlc_media_player_event_manager",
