@@ -1,5 +1,6 @@
 import { contextBridge } from "electron";
 import api from "./api";
+import "electron-log/preload";
 
 if (process.contextIsolated) {
   try {

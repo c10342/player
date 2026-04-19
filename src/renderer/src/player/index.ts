@@ -1,4 +1,5 @@
 import type { IKoffiLib, IKoffiRegisteredCallback, KoffiFunction } from "koffi";
+import { log } from "@renderer/utils";
 
 const koffi = require("koffi") as typeof import("koffi");
 const path = require("path");
@@ -179,7 +180,7 @@ class VlcPlayer {
       try {
         fn(...args);
       } catch (e) {
-        console.error(`VlcPlayer event handler error [${event}]:`, e);
+        log.error(`VlcPlayer event handler error [${event}]:`, e);
       }
     }
   }
@@ -217,6 +218,10 @@ class VlcPlayer {
 
   private _loadLibVLC(): void {
     // __dirname -> E:\project\electron-player\node_modules\electron\dist\resources\electron.asar\renderer
+    log.info(
+      "Loading LibVLC...",
+      path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll")
+    );
     this._libvlc = koffi.load(path.join(__dirname, "../../../../../../resources/vlc/libvlc.dll"));
 
     this._libvlc_new = this._libvlc.func("libvlc_new", "void*", ["int", "void*"]);
@@ -333,7 +338,7 @@ class VlcPlayer {
           this._emit("frame", this._pendingFrame, this._videoW, this._videoH);
         }
       } catch (e) {
-        console.error("unlockCb error:", e);
+        log.error("unlockCb error:", e);
       }
     }, koffi.pointer(UnlockCb));
 
@@ -410,7 +415,7 @@ class VlcPlayer {
           }
         }
       } catch (e) {
-        console.error("vlcEventCb error:", e);
+        log.error("vlcEventCb error:", e);
       }
     }, koffi.pointer(VlcEventCb));
   }
@@ -489,7 +494,7 @@ class VlcPlayer {
       }
       this._libvlc_media_player_stop.async(this._mp, (err: unknown) => {
         if (err) {
-          console.error("stop error:", err);
+          log.error("stop error:", err);
           reject(err);
         } else {
           this._pendingFrame = null;
@@ -507,14 +512,14 @@ class VlcPlayer {
         return;
       }
       this._libvlc_media_player_stop.async(this._mp, (err: unknown) => {
-        if (err) console.error("destroy stop error:", err);
+        if (err) log.error("destroy stop error:", err);
         try {
           this._libvlc_media_player_release(this._mp);
           this._mp = null;
           this._libvlc_release(this._inst);
           this._inst = null;
         } catch (e) {
-          console.error("destroy release error:", e);
+          log.error("destroy release error:", e);
           reject(e);
           return;
         }
