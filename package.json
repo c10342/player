@@ -22,7 +22,8 @@
     "prepare": "husky",
     "commitlint": "commitlint --config commitlint.config.js -e -V",
     "lint-staged": "lint-staged --config lint-staged.config.js",
-    "commit": "git cz"
+    "commit": "git cz",
+    "generate:icon": "node generate-icons.cjs"
   },
   "dependencies": {
     "@electron-toolkit/preload": "3.0.0",
@@ -59,6 +60,7 @@
     "lint-staged": "15.2.10",
     "prettier": "3.3.2",
     "sass": "1.80.4",
+    "sharp": "^0.34.5",
     "stylelint": "16.10.0",
     "stylelint-config-recess-order": "5.1.1",
     "stylelint-config-recommended-scss": "14.1.0",

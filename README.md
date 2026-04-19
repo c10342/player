@@ -42,3 +42,19 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### 生成应用图标
+
+1、将新 `SVG` 图标放到 `build/icon.svg`
+
+2、运行如下命令
+
+```bash
+$ npm run generate:icon
+```
+
+脚本会自动生成：
+
+- build/icon.png (512×512)
+- build/icon.ico (Windows 多尺寸图标)
+- resources/icon.png (512×512)
