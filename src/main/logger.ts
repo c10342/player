@@ -6,6 +6,11 @@ export const initLogger = () => {
 
   log.transports.file.level = "info";
   log.transports.file.maxSize = 10485760;
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  log.transports.file.fileName = `${y}-${m}-${d}.log`;
   log.transports.console.level = "debug";
   log.transports.ipc.level = "info";
 
