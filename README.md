@@ -10,9 +10,6 @@
 
 核心文件放在`src\renderer\src\player\index.ts`
 
-目前在开发环境`npm run dev`时，验证是没问题，可运行的。打包构建后的可执行文件还没验证过是否没问题
-
-
 ## 效果展示
 
 ![效果展示](./images/player-1.jpg)
