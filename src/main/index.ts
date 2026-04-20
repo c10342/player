@@ -7,6 +7,7 @@ import { GlobalEventEnum } from "@share/enum";
 import { initLogger } from "./logger";
 import log from "./logger";
 import { initI18n } from "./i18n";
+import { initUpdater } from "./updater";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -65,6 +66,7 @@ app.whenReady().then(() => {
   initLogger();
   initI18n();
   initBridge();
+  initUpdater();
   createWindow();
 
   app.on("activate", function () {

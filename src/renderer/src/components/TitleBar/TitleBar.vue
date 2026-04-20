@@ -5,6 +5,9 @@
     </div>
     <div class="title-bar__actions">
       <LanguageSwitcher />
+      <button class="title-bar__btn" :title="t('about.title')" @click="showAbout = true">
+        <Icon size="16"><InformationCircleOutline /></Icon>
+      </button>
       <button
         class="title-bar__btn title-bar__btn--minimize"
         :title="t('titleBar.minimize')"
@@ -30,21 +33,25 @@
         <Icon size="16"><Close /></Icon>
       </button>
     </div>
+    <AboutDialog v-model:visible="showAbout" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { Icon } from "@vicons/utils";
-import { Remove, SquareOutline, Close } from "@vicons/ionicons5";
+import { Remove, SquareOutline, Close, InformationCircleOutline } from "@vicons/ionicons5";
 import { WindowRestoreRegular } from "@vicons/fa";
 import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
 import { usePlayerStore } from "@renderer/stores";
 import { useI18n } from "vue-i18n";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
+import AboutDialog from "../About/AboutDialog.vue";
 
 const { t } = useI18n();
+
+const showAbout = ref(false);
 
 const playerStore = usePlayerStore();
 

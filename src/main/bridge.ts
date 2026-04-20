@@ -1,7 +1,8 @@
 import { BridgeEnum, GlobalEventEnum, LocaleEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
-import { BrowserWindow, dialog, ipcMain } from "electron";
+import { BrowserWindow, dialog, ipcMain, app } from "electron";
 import { setLocale } from "./i18n";
+import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -40,5 +41,17 @@ export const initBridge = () => {
         win.webContents.send(GlobalEventEnum.LocaleChanged, locale);
       }
     }
+  });
+  ipcMain.handle(BridgeEnum.GetAppVersion, () => {
+    return app.getVersion();
+  });
+  ipcMain.on(BridgeEnum.CheckForUpdate, () => {
+    checkForUpdate();
+  });
+  ipcMain.on(BridgeEnum.DownloadUpdate, () => {
+    downloadUpdate();
+  });
+  ipcMain.on(BridgeEnum.InstallUpdate, () => {
+    installUpdate();
   });
 };

@@ -1,31 +1,29 @@
 // JsBridge方法调用
 export enum BridgeEnum {
-  // 最大化窗口
   MaximizeWindow = "maximizeWindow",
-  // 最小化窗口
   MinimizeWindow = "minimizeWindow",
-  // 还原窗口
   RestoreWindow = "restoreWindow",
-  // 关闭窗口
   CloseWindow = "closeWindow",
-  // 打开文件弹框
   OpenDialog = "openDialog",
-  // 窗口是否最大化
   IsMaximized = "isMaximized",
-  // 设置语言
-  SetLocale = "setLocale"
+  SetLocale = "setLocale",
+  GetAppVersion = "getAppVersion",
+  CheckForUpdate = "checkForUpdate",
+  DownloadUpdate = "downloadUpdate",
+  InstallUpdate = "installUpdate"
 }
 
 // 全局事件广播
 export enum GlobalEventEnum {
-  // 窗口最大化
   MaximizeWindow = "window:maximize",
-  // 窗口最小化
   MinimizeWindow = "window:minimize",
-  // 窗口还原
   RestoreWindow = "window:unmaximize",
-  // 语言变更
-  LocaleChanged = "window:localeChanged"
+  LocaleChanged = "window:localeChanged",
+  UpdateAvailable = "update:available",
+  UpdateNotAvailable = "update:not-available",
+  UpdateDownloadProgress = "update:download-progress",
+  UpdateDownloaded = "update:downloaded",
+  UpdateError = "update:error"
 }
 
 // 语言

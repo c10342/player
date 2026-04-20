@@ -32,6 +32,18 @@ const api = {
   },
   [BridgeEnum.SetLocale](locale: string): void {
     ipcRenderer.send(BridgeEnum.SetLocale, locale);
+  },
+  [BridgeEnum.GetAppVersion](): Promise<string> {
+    return ipcRenderer.invoke(BridgeEnum.GetAppVersion);
+  },
+  [BridgeEnum.CheckForUpdate](): void {
+    ipcRenderer.send(BridgeEnum.CheckForUpdate);
+  },
+  [BridgeEnum.DownloadUpdate](): void {
+    ipcRenderer.send(BridgeEnum.DownloadUpdate);
+  },
+  [BridgeEnum.InstallUpdate](): void {
+    ipcRenderer.send(BridgeEnum.InstallUpdate);
   }
 };
 

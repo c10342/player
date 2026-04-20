@@ -33,5 +33,17 @@ export default {
     zhTW: "繁體中文",
     en: "English",
     switchLanguage: "切換語言"
+  },
+  about: {
+    title: "關於",
+    version: "版本",
+    checkForUpdates: "檢查更新",
+    checking: "正在檢查更新...",
+    updateAvailable: "發現新版本 v{version}，是否立即下載？",
+    updateNotAvailable: "當前已是最新版本",
+    downloading: "正在下載更新 {progress}%",
+    downloadComplete: "更新下載完成，點擊安裝並重啟",
+    installAndRestart: "安裝並重啟",
+    updateError: "更新失敗：{message}"
   }
 };
