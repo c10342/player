@@ -23,7 +23,9 @@ export enum GlobalEventEnum {
   // 窗口最小化
   MinimizeWindow = "window:minimize",
   // 窗口还原
-  RestoreWindow = "window:unmaximize"
+  RestoreWindow = "window:unmaximize",
+  // 语言变更
+  LocaleChanged = "window:localeChanged"
 }
 
 // 语言

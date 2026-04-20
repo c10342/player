@@ -37,9 +37,9 @@ let hideTimer: ReturnType<typeof setTimeout> | null = null;
 const currentLang = computed(() => locale.value);
 
 const languages = computed(() => [
-  { value: LocaleEnum.ZhCN, label: t("language.zhCN") },
-  { value: LocaleEnum.ZhTW, label: t("language.zhTW") },
-  { value: LocaleEnum.En, label: t("language.en") }
+  { value: LocaleEnum.ZhCN, label: "简体中文" },
+  { value: LocaleEnum.ZhTW, label: "繁體中文" },
+  { value: LocaleEnum.En, label: "English" }
 ]);
 
 const clearHideTimer = () => {
@@ -62,7 +62,6 @@ const onMouseLeave = () => {
 };
 
 const switchLanguage = (lang: string) => {
-  locale.value = lang;
   window.electronAPI.setLocale(lang);
   showMenu.value = false;
 };

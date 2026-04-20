@@ -1,4 +1,4 @@
-import { BridgeEnum, LocaleEnum } from "@share/enum";
+import { BridgeEnum, GlobalEventEnum, LocaleEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { setLocale } from "./i18n";
@@ -36,6 +36,9 @@ export const initBridge = () => {
   ipcMain.on(BridgeEnum.SetLocale, (_event, locale: string) => {
     if (Object.values(LocaleEnum).includes(locale as LocaleEnum)) {
       setLocale(locale);
+      for (const win of BrowserWindow.getAllWindows()) {
+        win.webContents.send(GlobalEventEnum.LocaleChanged, locale);
+      }
     }
   });
 };

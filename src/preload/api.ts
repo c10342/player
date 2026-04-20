@@ -3,13 +3,13 @@ import { OpenDialogParams } from "@share/type";
 import { ipcRenderer } from "electron";
 
 const api = {
-  ipcOn(name: string, action: (...args: any[]) => any) {
+  ipcOn(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.on(name, action);
   },
-  ipcOff(name: string, action: (...args: any[]) => any) {
+  ipcOff(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.off(name, action);
   },
-  ipcOnce(name: string, action: (...args: any[]) => any) {
+  ipcOnce(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.once(name, action);
   },
   [BridgeEnum.MaximizeWindow]() {

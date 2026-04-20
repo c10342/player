@@ -1,7 +1,10 @@
 import vlcPlayer, { VlcEventType, VlcEventListener } from "@renderer/player";
 import { onBeforeUnmount } from "vue";
 
-export const useIpcEvent = (name: string, action: (...args: any[]) => any) => {
+export const useIpcEvent = (
+  name: string,
+  action: (event: Electron.IpcRendererEvent, ...args: any[]) => any
+) => {
   window.electronAPI.ipcOn(name, action);
   onBeforeUnmount(() => {
     window.electronAPI.ipcOff(name, action);

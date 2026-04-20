@@ -6,6 +6,7 @@ import { initBridge } from "./bridge";
 import { GlobalEventEnum } from "@share/enum";
 import { initLogger } from "./logger";
 import log from "./logger";
+import { initI18n } from "./i18n";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -62,6 +63,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
   initLogger();
+  initI18n();
   initBridge();
   createWindow();
 

@@ -1,41 +1,31 @@
+import i18next from "i18next";
 import { LocaleEnum } from "@share/enum";
 import zhCN from "@share/locales/zh-CN";
 import zhTW from "@share/locales/zh-TW";
 import en from "@share/locales/en";
 
-const messages: Record<string, any> = {
-  [LocaleEnum.ZhCN]: zhCN,
-  [LocaleEnum.ZhTW]: zhTW,
-  [LocaleEnum.En]: en
-};
-
-let currentLocale: string = LocaleEnum.ZhCN;
-
-const getNestedValue = (obj: any, path: string): string => {
-  const keys = path.split(".");
-  let result = obj;
-  for (const key of keys) {
-    if (result && typeof result === "object" && key in result) {
-      result = result[key];
-    } else {
-      return path;
+export const initI18n = () => {
+  i18next.init({
+    lng: LocaleEnum.ZhCN,
+    fallbackLng: LocaleEnum.ZhCN,
+    resources: {
+      [LocaleEnum.ZhCN]: { translation: zhCN },
+      [LocaleEnum.ZhTW]: { translation: zhTW },
+      [LocaleEnum.En]: { translation: en }
     }
-  }
-  return typeof result === "string" ? result : path;
+  });
 };
 
 export const setLocale = (locale: string): void => {
-  if (messages[locale]) {
-    currentLocale = locale;
-  }
+  i18next.changeLanguage(locale);
 };
 
 export const getLocale = (): string => {
-  return currentLocale;
+  return i18next.language;
 };
 
 export const t = (key: string): string => {
-  const msg = messages[currentLocale];
-  if (!msg) return key;
-  return getNestedValue(msg, key);
+  return i18next.t(key);
 };
+
+export default i18next;
