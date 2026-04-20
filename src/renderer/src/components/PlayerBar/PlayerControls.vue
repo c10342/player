@@ -1,12 +1,12 @@
 <template>
   <div class="player-controls">
-    <button class="player-controls__btn" title="上一首" @click="onPrev">
+    <button class="player-controls__btn" :title="t('playerControls.prev')" @click="onPrev">
       <Icon size="20"><PlaySkipBack /></Icon>
     </button>
 
     <button
       class="player-controls__btn player-controls__btn--play"
-      :title="playing ? '暂停' : '播放'"
+      :title="playing ? t('playerControls.pause') : t('playerControls.play')"
       @click="onToggle"
     >
       <Icon size="24">
@@ -15,11 +15,11 @@
       </Icon>
     </button>
 
-    <button class="player-controls__btn" title="停止" @click="onStop">
+    <button class="player-controls__btn" :title="t('playerControls.stop')" @click="onStop">
       <Icon size="20"><Stop /></Icon>
     </button>
 
-    <button class="player-controls__btn" title="下一首" @click="onNext">
+    <button class="player-controls__btn" :title="t('playerControls.next')" @click="onNext">
       <Icon size="20"><PlaySkipForward /></Icon>
     </button>
   </div>
@@ -32,6 +32,9 @@ import vlcPlayer from "@renderer/player";
 import { ref } from "vue";
 import { usePlayerEvent } from "@renderer/hooks";
 import { usePlayerStore } from "@renderer/stores";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const playing = ref(false);
 

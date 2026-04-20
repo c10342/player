@@ -21,7 +21,11 @@
       <span v-if="hasError" class="play-list-item__error-text">{{ item.error }}</span>
       <span v-else class="play-list-item__artist">{{ formatFileSize(item.size) }}</span>
     </div>
-    <button class="play-list-item__remove" title="移除" @click.stop="onRemoveVideo">
+    <button
+      class="play-list-item__remove"
+      :title="t('playList.remove')"
+      @click.stop="onRemoveVideo"
+    >
       <Icon size="14"><CloseOutline /></Icon>
     </button>
   </div>
@@ -34,6 +38,9 @@ import { PlayerListItem } from "@renderer/types";
 import { formatFileSize } from "@renderer/utils";
 import { computed } from "vue";
 import { usePlayerStore } from "@renderer/stores";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   item: PlayerListItem;

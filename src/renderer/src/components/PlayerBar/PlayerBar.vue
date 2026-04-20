@@ -15,7 +15,11 @@
 
       <div class="player-bar__section player-bar__section--extra">
         <VolumeControl />
-        <button class="player-bar__fullscreen-btn" title="全屏" @click="onFullscreen">
+        <button
+          class="player-bar__fullscreen-btn"
+          :title="t('playerBar.fullscreen')"
+          @click="onFullscreen"
+        >
           <Icon size="18">
             <Expand v-if="!fullscreen" />
             <Contract v-else />
@@ -36,6 +40,9 @@ import VolumeControl from "./VolumeControl.vue";
 import { usePlayerEvent } from "@renderer/hooks";
 import { throttle } from "lodash";
 import { formatTime } from "@renderer/utils";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const currentTime = ref(0);
 const duration = ref(0);
