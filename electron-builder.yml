@@ -2,6 +2,7 @@ appId: com.electron.app
 productName: electron-player
 directories:
   buildResources: build
+  output: dist/${version}
 files:
   - '!**/.vscode/*'
   - '!src/*'
@@ -45,6 +46,6 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: http://127.0.0.1:5500/
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
