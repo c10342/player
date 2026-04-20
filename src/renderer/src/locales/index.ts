@@ -1,16 +1,17 @@
 import { createI18n } from "vue-i18n";
+import { LocaleEnum } from "@share/enum";
 import zhCN from "./zh-CN";
 import zhTW from "./zh-TW";
 import en from "./en";
 
 const i18n = createI18n({
   legacy: false,
-  locale: "zh-CN",
-  fallbackLocale: "zh-CN",
+  locale: LocaleEnum.ZhCN,
+  fallbackLocale: LocaleEnum.ZhCN,
   messages: {
-    "zh-CN": zhCN,
-    "zh-TW": zhTW,
-    en
+    [LocaleEnum.ZhCN]: zhCN,
+    [LocaleEnum.ZhTW]: zhTW,
+    [LocaleEnum.En]: en
   }
 });
 

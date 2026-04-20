@@ -27,5 +27,11 @@ export default {
   },
   videoPlayer: {
     addVideo: "添加视频"
+  },
+  language: {
+    zhCN: "简体中文",
+    zhTW: "繁体中文",
+    en: "English",
+    switchLanguage: "切换语言"
   }
 };

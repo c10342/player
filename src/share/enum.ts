@@ -23,3 +23,10 @@ export enum GlobalEventEnum {
   // 窗口还原
   RestoreWindow = "window:unmaximize"
 }
+
+// 语言
+export enum LocaleEnum {
+  ZhCN = "zh-CN",
+  ZhTW = "zh-TW",
+  En = "en"
+}

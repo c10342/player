@@ -4,6 +4,7 @@
       <span class="title-bar__title">{{ title }}</span>
     </div>
     <div class="title-bar__actions">
+      <LanguageSwitcher />
       <button
         class="title-bar__btn title-bar__btn--minimize"
         :title="t('titleBar.minimize')"
@@ -41,6 +42,7 @@ import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
 import { usePlayerStore } from "@renderer/stores";
 import { useI18n } from "vue-i18n";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 
 const { t } = useI18n();
 
