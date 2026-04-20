@@ -14,15 +14,10 @@
       </div>
 
       <div class="player-bar__section player-bar__section--extra">
-        <VolumeControl
-          :volume="state.volume"
-          :is-muted="state.isMuted"
-          @change-volume="onChangeVolume"
-          @toggle-mute="onToggleMute"
-        />
+        <VolumeControl />
         <button class="player-bar__fullscreen-btn" title="全屏" @click="onFullscreen">
           <Icon size="18">
-            <Expand v-if="!state.fullscreen" />
+            <Expand v-if="!fullscreen" />
             <Contract v-else />
           </Icon>
         </button>
@@ -32,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from "vue";
+import { computed, ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { Expand, Contract } from "@vicons/ionicons5";
 import PlayerControls from "./PlayerControls.vue";
@@ -44,33 +39,18 @@ import { formatTime } from "@renderer/utils";
 
 const currentTime = ref(0);
 const duration = ref(0);
-const state = reactive({
-  volume: 0.7,
-  isMuted: false,
-  fullscreen: false
-});
+const fullscreen = ref(false);
 
 const formattedCurrent = computed(() => formatTime(currentTime.value));
 const formattedDuration = computed(() => formatTime(duration.value));
 
-function onChangeVolume(vol: number) {
-  state.volume = vol;
-  if (vol > 0) {
-    state.isMuted = false;
-  }
-}
-
-function onToggleMute() {
-  state.isMuted = !state.isMuted;
-}
-
 function onFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
-    state.fullscreen = true;
+    fullscreen.value = true;
   } else {
     document.exitFullscreen();
-    state.fullscreen = false;
+    fullscreen.value = false;
   }
 }
 

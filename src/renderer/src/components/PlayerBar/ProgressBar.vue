@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
-import player from "@renderer/player";
+import vlcPlayer from "@renderer/player";
 import { formatTime } from "@renderer/utils";
 import { throttle } from "lodash";
 import { ref, computed } from "vue";
@@ -57,7 +57,7 @@ function getTimeFromEvent(e: MouseEvent): number {
 }
 
 const throttledSeek = throttle((time: number) => {
-  player.seekTo(time);
+  vlcPlayer.seekTo(time);
 }, 100);
 
 function onTrackMouseDown(e: MouseEvent) {

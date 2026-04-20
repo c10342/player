@@ -22,7 +22,7 @@ import { addVideoFile } from "@renderer/utils";
 import { usePlayerStore } from "@renderer/stores";
 import { onMounted } from "vue";
 import { useDomResize, usePlayerEvent } from "@renderer/hooks";
-import player from "@renderer/player";
+import vlcPlayer from "@renderer/player";
 import { debounce } from "lodash";
 
 let cv: HTMLCanvasElement;
@@ -104,7 +104,7 @@ function clearFrame() {
 }
 
 function onClickCanvas() {
-  player.toggle();
+  vlcPlayer.toggle();
 }
 
 usePlayerEvent("frame", (frame: any, w: number, h: number) => {

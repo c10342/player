@@ -1,4 +1,4 @@
-import player, { VlcEventType, VlcEventListener } from "@renderer/player";
+import vlcPlayer, { VlcEventType, VlcEventListener } from "@renderer/player";
 import { onBeforeUnmount } from "vue";
 
 export const useIpcEvent = (name: string, action: (...args: any[]) => any) => {
@@ -9,9 +9,9 @@ export const useIpcEvent = (name: string, action: (...args: any[]) => any) => {
 };
 
 export const usePlayerEvent = (event: VlcEventType, listener: VlcEventListener) => {
-  player.on(event, listener);
+  vlcPlayer.on(event, listener);
   onBeforeUnmount(() => {
-    player.off(event, listener);
+    vlcPlayer.off(event, listener);
   });
 };
 

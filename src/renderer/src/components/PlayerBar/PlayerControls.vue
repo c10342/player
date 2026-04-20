@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
 import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward } from "@vicons/ionicons5";
-import player from "@renderer/player";
+import vlcPlayer from "@renderer/player";
 import { ref } from "vue";
 import { usePlayerEvent } from "@renderer/hooks";
 import { usePlayerStore } from "@renderer/stores";
@@ -38,7 +38,7 @@ const playing = ref(false);
 const playerStore = usePlayerStore();
 
 const onToggle = () => {
-  player.toggle();
+  vlcPlayer.toggle();
 };
 
 const onStop = () => {

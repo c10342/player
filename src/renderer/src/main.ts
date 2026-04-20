@@ -3,7 +3,7 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import "./assets/styles/index.scss";
 import { log } from "./utils";
-import player from "./player";
+import vlcPlayer from "./player";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -16,7 +16,7 @@ app.use(pinia);
 app.mount("#app");
 
 window.addEventListener("beforeunload", () => {
-  player.destroy();
+  vlcPlayer.destroy();
 });
 
 window.addEventListener("error", (event) => {
