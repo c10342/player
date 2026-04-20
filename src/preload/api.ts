@@ -29,6 +29,9 @@ const api = {
   },
   [BridgeEnum.OpenDialog](params: OpenDialogParams): Promise<Electron.OpenDialogReturnValue> {
     return ipcRenderer.invoke(BridgeEnum.OpenDialog, params);
+  },
+  [BridgeEnum.SetLocale](locale: string): void {
+    ipcRenderer.send(BridgeEnum.SetLocale, locale);
   }
 };
 

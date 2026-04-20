@@ -63,6 +63,7 @@ const onMouseLeave = () => {
 
 const switchLanguage = (lang: string) => {
   locale.value = lang;
+  window.electronAPI.setLocale(lang);
   showMenu.value = false;
 };
 </script>

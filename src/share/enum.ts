@@ -11,7 +11,9 @@ export enum BridgeEnum {
   // 打开文件弹框
   OpenDialog = "openDialog",
   // 窗口是否最大化
-  IsMaximized = "isMaximized"
+  IsMaximized = "isMaximized",
+  // 设置语言
+  SetLocale = "setLocale"
 }
 
 // 全局事件广播

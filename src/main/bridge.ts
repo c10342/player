@@ -1,6 +1,7 @@
-import { BridgeEnum } from "@share/enum";
+import { BridgeEnum, LocaleEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain } from "electron";
+import { setLocale } from "./i18n";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -30,5 +31,11 @@ export const initBridge = () => {
       return dialog.showOpenDialog(win, params);
     }
     return dialog.showOpenDialog(params);
+  });
+  // 设置语言
+  ipcMain.on(BridgeEnum.SetLocale, (_event, locale: string) => {
+    if (Object.values(LocaleEnum).includes(locale as LocaleEnum)) {
+      setLocale(locale);
+    }
   });
 };
