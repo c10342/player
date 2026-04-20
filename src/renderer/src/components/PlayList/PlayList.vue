@@ -62,7 +62,9 @@ const onAddVideo = () => {
   display: flex;
   height: 100%;
   flex-shrink: 0;
-  width: 250px;
+  // width: 250px;
+  max-width: 250px;
+  width: 30%;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &--collapsed {
