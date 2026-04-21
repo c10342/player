@@ -3,6 +3,7 @@ import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain, app } from "electron";
 import { setLocale } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
+import { setTrayPlaying } from "./tray";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -53,5 +54,29 @@ export const initBridge = () => {
   });
   ipcMain.on(BridgeEnum.InstallUpdate, () => {
     installUpdate();
+  });
+  ipcMain.on(BridgeEnum.SetTrayPlaying, (_event, playing: boolean) => {
+    setTrayPlaying(playing);
+  });
+
+  const trayBridgeEvents = [
+    BridgeEnum.TrayPrev,
+    BridgeEnum.TrayNext,
+    BridgeEnum.TrayTogglePlay,
+    BridgeEnum.TrayStop
+  ];
+  for (const channel of trayBridgeEvents) {
+    ipcMain.on(channel, (event) => {
+      const sender = BrowserWindow.fromWebContents(event.sender);
+      for (const win of BrowserWindow.getAllWindows()) {
+        if (win !== sender) {
+          win.webContents.send(channel);
+        }
+      }
+    });
+  }
+
+  ipcMain.on(BridgeEnum.TrayQuit, () => {
+    app.quit();
   });
 };

@@ -12,6 +12,9 @@ const api = {
   ipcOnce(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.once(name, action);
   },
+  ipcSend(name: string, ...args: any[]) {
+    ipcRenderer.send(name, ...args);
+  },
   [BridgeEnum.MaximizeWindow]() {
     ipcRenderer.send(BridgeEnum.MaximizeWindow);
   },
@@ -44,6 +47,9 @@ const api = {
   },
   [BridgeEnum.InstallUpdate](): void {
     ipcRenderer.send(BridgeEnum.InstallUpdate);
+  },
+  [BridgeEnum.SetTrayPlaying](playing: boolean): void {
+    ipcRenderer.send(BridgeEnum.SetTrayPlaying, playing);
   }
 };
 

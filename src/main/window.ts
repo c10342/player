@@ -7,13 +7,12 @@ import { is } from "@electron-toolkit/utils";
 
 export function createWindow(
   name: string,
-  options?: Electron.BrowserWindowConstructorOptions | undefined
+  options?: Electron.BrowserWindowConstructorOptions | undefined,
+  params?: { disabledReadyToShow?: boolean }
 ) {
   const win = new BrowserWindow({
     width: 900,
     height: 670,
-    minWidth: 700,
-    minHeight: 500,
     show: false,
     autoHideMenuBar: true,
     frame: false,
@@ -22,17 +21,14 @@ export function createWindow(
     ...(options || {}),
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
-      sandbox: false,
-      // 关闭沙箱环境
-      nodeIntegration: true,
-      contextIsolation: false,
       ...(options?.webPreferences || {})
     }
   });
-
-  win.on("ready-to-show", () => {
-    win.show();
-  });
+  if (!params?.disabledReadyToShow && !options?.show) {
+    win.on("ready-to-show", () => {
+      win.show();
+    });
+  }
 
   win.on("maximize", () => {
     win.webContents.send(GlobalEventEnum.MaximizeWindow);
@@ -54,7 +50,6 @@ export function createWindow(
   });
 
   if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    // http://localhost:5173/pages/player/index.html
     win.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}/pages/${name}/index.html`);
   } else {
     win.loadFile(join(__dirname, `../renderer/pages/${name}/index.html`));

@@ -46,5 +46,13 @@ export default {
     installAndRestart: "Install & Restart",
     downloadUpdate: "Download",
     updateError: "Update failed: {message}"
+  },
+  tray: {
+    prev: "Previous",
+    play: "Play",
+    pause: "Pause",
+    stop: "Stop",
+    next: "Next",
+    exit: "Exit"
   }
 };

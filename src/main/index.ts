@@ -6,6 +6,19 @@ import { initLogger } from "./logger";
 import { initI18n } from "./i18n";
 import { initUpdater } from "./updater";
 import { createWindow } from "./window";
+import { createTray } from "./tray";
+
+function createPlayerWindow() {
+  createWindow("player", {
+    minWidth: 700,
+    minHeight: 500,
+    webPreferences: {
+      sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+}
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId("com.electron");
@@ -17,10 +30,11 @@ app.whenReady().then(() => {
   initI18n();
   initBridge();
   initUpdater();
-  createWindow("player");
+  createTray();
+  createPlayerWindow();
 
   app.on("activate", function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow("player");
+    if (BrowserWindow.getAllWindows().length === 0) createPlayerWindow();
   });
 });
 
