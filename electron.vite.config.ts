@@ -2,6 +2,17 @@ import { resolve } from "path";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
+import path from "path";
+import fs from "fs";
+
+const input: Record<string, string> = {};
+
+const pagesDir = path.resolve(__dirname, "src/renderer/pages");
+const pages = fs.readdirSync(pagesDir);
+
+pages.forEach((page) => {
+  input[page] = path.resolve(pagesDir, page, "index.html");
+});
 
 export default defineConfig({
   main: {
@@ -33,9 +44,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         external: ["koffi"],
-        input: {
-          player: resolve("src/renderer/pages/player/index.html")
-        }
+        input: input
       }
     },
     css: {
