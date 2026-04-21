@@ -6,11 +6,15 @@ import { initBridge } from "./bridge";
 import { GlobalEventEnum } from "@share/enum";
 import { initLogger } from "./logger";
 import log from "./logger";
+import { initI18n } from "./i18n";
+import { initUpdater } from "./updater";
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
+    minWidth: 700,
+    minHeight: 500,
     show: false,
     autoHideMenuBar: true,
     frame: false,
@@ -62,7 +66,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
   initLogger();
+  initI18n();
   initBridge();
+  initUpdater();
   createWindow();
 
   app.on("activate", function () {

@@ -1,6 +1,6 @@
 <template>
   <div class="volume-control" @mouseenter="showSlider = true" @mouseleave="showSlider = false">
-    <button class="volume-control__btn" @click="emit('toggleMute')">
+    <button class="volume-control__btn" @click="onToggleMute">
       <Icon size="18">
         <VolumeMute v-if="isMuted || volume === 0" />
         <VolumeLow v-else-if="volume < 0.5" />
@@ -25,16 +25,12 @@
 import { ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { VolumeHigh, VolumeLow, VolumeMute } from "@vicons/ionicons5";
+import vlcPlayer from "@renderer/player";
 
-defineProps<{
-  volume: number;
-  isMuted: boolean;
-}>();
+// 0-1，但是实际是0-100，需要转换一下
+const volume = ref(1);
 
-const emit = defineEmits<{
-  changeVolume: [volume: number];
-  toggleMute: [];
-}>();
+const isMuted = ref(false);
 
 const trackRef = ref<HTMLElement | null>(null);
 const showSlider = ref(false);
@@ -47,10 +43,10 @@ function getVolumeFromEvent(e: MouseEvent): number {
 
 function onMouseDown(e: MouseEvent) {
   const vol = getVolumeFromEvent(e);
-  emit("changeVolume", vol);
+  onVolumeChange(vol);
 
   const onMouseMove = (ev: MouseEvent) => {
-    emit("changeVolume", getVolumeFromEvent(ev));
+    onVolumeChange(getVolumeFromEvent(ev));
   };
 
   const onMouseUp = () => {
@@ -61,6 +57,29 @@ function onMouseDown(e: MouseEvent) {
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onMouseUp);
 }
+
+const onVolumeChange = (data: number) => {
+  vlcPlayer.setVolume(data * 100);
+  volume.value = data;
+};
+
+const onToggleMute = () => {
+  if (isMuted.value) {
+    vlcPlayer.setVolume(volume.value * 100);
+  } else {
+    vlcPlayer.setVolume(0);
+  }
+  isMuted.value = !isMuted.value;
+};
+
+const init = () => {
+  if (vlcPlayer.volume !== -1) {
+    volume.value = vlcPlayer.volume / 100;
+  }
+  isMuted.value = vlcPlayer.volume === 0;
+};
+
+init();
 </script>
 
 <style lang="scss">
@@ -93,7 +112,7 @@ function onMouseDown(e: MouseEvent) {
 
   &__slider-wrap {
     width: 0;
-    overflow: hidden;
+    // overflow: hidden;
     opacity: 0;
     transition:
       width 0.25s cubic-bezier(0.4, 0, 0.2, 1),

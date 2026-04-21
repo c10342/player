@@ -48,6 +48,7 @@ export type VlcEventType =
   | "positionchanged"
   | "lengthchanged"
   | "videosize"
+  | "volumechanged"
   | "destroyed";
 
 export type VlcEventListener = (...args: any[]) => void;
@@ -158,6 +159,12 @@ class VlcPlayer {
   // bool libvlc_media_player_is_playing(libvlc_media_player_t* mp)
   // 判断是否正在播放。
   private _libvlc_media_player_is_playing!: KoffiFunction;
+  // int libvlc_audio_get_volume(libvlc_media_player_t* mp)
+  // 获取当前音量（0-100），失败返回 -1。
+  private _libvlc_audio_get_volume!: KoffiFunction;
+  // int libvlc_audio_set_volume(libvlc_media_player_t* mp, int volume)
+  // 设置音量（0-100），成功返回 0。
+  private _libvlc_audio_set_volume!: KoffiFunction;
 
   constructor() {
     this._frameBuffer = Buffer.alloc(3840 * 2160 * 4);
@@ -217,6 +224,11 @@ class VlcPlayer {
 
   get videoHeight(): number {
     return this._videoH;
+  }
+
+  get volume(): number {
+    if (!this._mp) return -1;
+    return this._libvlc_audio_get_volume(this._mp) as number;
   }
 
   get pendingFrame(): Buffer | null {
@@ -321,6 +333,11 @@ class VlcPlayer {
       "bool",
       ["void*"]
     );
+    this._libvlc_audio_get_volume = this._libvlc.func("libvlc_audio_get_volume", "int", ["void*"]);
+    this._libvlc_audio_set_volume = this._libvlc.func("libvlc_audio_set_volume", "int", [
+      "void*",
+      "int"
+    ]);
   }
 
   private _initVlc(): void {
@@ -553,9 +570,18 @@ class VlcPlayer {
   //   }
   // }
 
+  // 单位毫秒
   seekTo(time: number): void {
     if (this._mp) {
       this._libvlc_media_player_set_time(this._mp, time);
+    }
+  }
+
+  // 设置音量（0-100）
+  setVolume(volume: number): void {
+    if (this._mp) {
+      this._libvlc_audio_set_volume(this._mp, volume);
+      this._emit("volumechanged", volume);
     }
   }
 }

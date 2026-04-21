@@ -4,7 +4,7 @@
       <div v-if="!playerStore.activeId" class="video-player__empty">
         <button class="video-player__add-btn" @click="onAddClick">
           <Icon size="32"><AddOutline /></Icon>
-          <span class="video-player__add-btn-text">添加视频</span>
+          <span class="video-player__add-btn-text">{{ t("videoPlayer.addVideo") }}</span>
         </button>
       </div>
       <canvas id="cv" class="video-player__canvas" @click="onClickCanvas"></canvas>
@@ -22,8 +22,11 @@ import { addVideoFile } from "@renderer/utils";
 import { usePlayerStore } from "@renderer/stores";
 import { onMounted } from "vue";
 import { useDomResize, usePlayerEvent } from "@renderer/hooks";
-import player from "@renderer/player";
+import vlcPlayer from "@renderer/player";
 import { debounce } from "lodash";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 let cv: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -104,7 +107,7 @@ function clearFrame() {
 }
 
 function onClickCanvas() {
-  player.toggle();
+  vlcPlayer.toggle();
 }
 
 usePlayerEvent("frame", (frame: any, w: number, h: number) => {

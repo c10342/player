@@ -1,3 +1,3 @@
 provider: generic
-url: https://example.com/auto-updates
+url: http://127.0.0.1:5500/
 updaterCacheDirName: electron-player-updater

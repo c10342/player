@@ -1,4 +1,4 @@
-import player from "@renderer/player";
+import vlcPlayer from "@renderer/player";
 import { PlayerListItem } from "@renderer/types";
 import { isFileExist } from "@renderer/utils";
 import { defineStore } from "pinia";
@@ -41,7 +41,7 @@ export const usePlayerStore = defineStore("player", () => {
   const removeCurrentVideo = () => {
     if (activeId.value) {
       activeId.value = "";
-      player.stop();
+      vlcPlayer.stop();
     }
   };
   // 移除视频
@@ -69,7 +69,7 @@ export const usePlayerStore = defineStore("player", () => {
       return;
     }
     activeId.value = newId;
-    player.load(newId);
+    vlcPlayer.load(newId);
   };
   // 下一个视频
   const nextVideo = () => {

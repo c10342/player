@@ -3,13 +3,13 @@ import { OpenDialogParams } from "@share/type";
 import { ipcRenderer } from "electron";
 
 const api = {
-  ipcOn(name: string, action: (...args: any[]) => any) {
+  ipcOn(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.on(name, action);
   },
-  ipcOff(name: string, action: (...args: any[]) => any) {
+  ipcOff(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.off(name, action);
   },
-  ipcOnce(name: string, action: (...args: any[]) => any) {
+  ipcOnce(name: string, action: (event: Electron.IpcRendererEvent, ...args: any[]) => any) {
     ipcRenderer.once(name, action);
   },
   [BridgeEnum.MaximizeWindow]() {
@@ -29,6 +29,21 @@ const api = {
   },
   [BridgeEnum.OpenDialog](params: OpenDialogParams): Promise<Electron.OpenDialogReturnValue> {
     return ipcRenderer.invoke(BridgeEnum.OpenDialog, params);
+  },
+  [BridgeEnum.SetLocale](locale: string): void {
+    ipcRenderer.send(BridgeEnum.SetLocale, locale);
+  },
+  [BridgeEnum.GetAppVersion](): Promise<string> {
+    return ipcRenderer.invoke(BridgeEnum.GetAppVersion);
+  },
+  [BridgeEnum.CheckForUpdate](): void {
+    ipcRenderer.send(BridgeEnum.CheckForUpdate);
+  },
+  [BridgeEnum.DownloadUpdate](): void {
+    ipcRenderer.send(BridgeEnum.DownloadUpdate);
+  },
+  [BridgeEnum.InstallUpdate](): void {
+    ipcRenderer.send(BridgeEnum.InstallUpdate);
   }
 };
 

@@ -4,12 +4,20 @@
       <span class="title-bar__title">{{ title }}</span>
     </div>
     <div class="title-bar__actions">
-      <button class="title-bar__btn title-bar__btn--minimize" title="最小化" @click="onMinimize">
+      <LanguageSwitcher />
+      <button class="title-bar__btn" :title="t('about.title')" @click="showAbout = true">
+        <Icon size="16"><InformationCircleOutline /></Icon>
+      </button>
+      <button
+        class="title-bar__btn title-bar__btn--minimize"
+        :title="t('titleBar.minimize')"
+        @click="onMinimize"
+      >
         <Icon size="16"><Remove /></Icon>
       </button>
       <button
         class="title-bar__btn title-bar__btn--maximize"
-        :title="isMaximized ? '还原' : '最大化'"
+        :title="isMaximized ? t('titleBar.restore') : t('titleBar.maximize')"
         @click="toggleMaximize"
       >
         <Icon size="16">
@@ -17,26 +25,38 @@
           <SquareOutline v-else />
         </Icon>
       </button>
-      <button class="title-bar__btn title-bar__btn--close" title="关闭" @click="onClose">
+      <button
+        class="title-bar__btn title-bar__btn--close"
+        :title="t('titleBar.close')"
+        @click="onClose"
+      >
         <Icon size="16"><Close /></Icon>
       </button>
     </div>
+    <AboutDialog v-model:visible="showAbout" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { Icon } from "@vicons/utils";
-import { Remove, SquareOutline, Close } from "@vicons/ionicons5";
+import { Remove, SquareOutline, Close, InformationCircleOutline } from "@vicons/ionicons5";
 import { WindowRestoreRegular } from "@vicons/fa";
 import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
 import { usePlayerStore } from "@renderer/stores";
+import { useI18n } from "vue-i18n";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
+import AboutDialog from "../About/AboutDialog.vue";
+
+const { t } = useI18n();
+
+const showAbout = ref(false);
 
 const playerStore = usePlayerStore();
 
 const title = computed(() => {
-  return playerStore.currentVideo?.name || "Electron Player";
+  return playerStore.currentVideo?.name || t("titleBar.defaultTitle");
 });
 
 const isMaximized = ref(false);

@@ -2,7 +2,7 @@
   <div class="play-list" :class="{ 'play-list--collapsed': playListCollapsed }">
     <button
       class="play-list__toggle"
-      :title="playListCollapsed ? '展开播放列表' : '收起播放列表'"
+      :title="playListCollapsed ? t('playList.expand') : t('playList.collapse')"
       @click="playListCollapsed = !playListCollapsed"
     >
       <Icon size="16">
@@ -13,12 +13,14 @@
 
     <div class="play-list__panel">
       <div class="play-list__header">
-        <h2 class="play-list__title">播放列表</h2>
+        <h2 class="play-list__title">{{ t("playList.title") }}</h2>
         <div class="play-list__header-actions">
-          <button class="play-list__add-btn" title="添加视频" @click="onAddVideo">
+          <button class="play-list__add-btn" :title="t('playList.addVideo')" @click="onAddVideo">
             <Icon size="16"><AddOutline /></Icon>
           </button>
-          <span class="play-list__count">{{ playerStore.playerList.length }} 首</span>
+          <span class="play-list__count"
+            >{{ playerStore.playerList.length }} {{ t("playList.count") }}</span
+          >
         </div>
       </div>
 
@@ -41,6 +43,9 @@ import { ref } from "vue";
 import { usePlayerStore } from "@renderer/stores";
 import { addVideoFile } from "@renderer/utils";
 import PlayListItem from "./PlayListItem.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const playerStore = usePlayerStore();
 
@@ -57,7 +62,9 @@ const onAddVideo = () => {
   display: flex;
   height: 100%;
   flex-shrink: 0;
-  width: 250px;
+  // width: 250px;
+  max-width: 250px;
+  width: 30%;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &--collapsed {
