@@ -17,7 +17,7 @@ function getTrayIcon(): Electron.NativeImage {
 
 function createTrayMenuWindow() {
   menuWin = createWindow(
-    "traymenu",
+    "trayMenu",
     {
       width: 200,
       height: 296,
