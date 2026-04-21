@@ -34,7 +34,7 @@
                   <Icon size="14" class="about-dialog__status-icon"><CloudDownloadOutline /></Icon>
                   <span>{{ t("about.updateAvailable", { version: newVersion }) }}</span>
                   <button class="about-dialog__action-btn" @click="onDownload">
-                    {{ t("about.downloadUpdate") || "Download" }}
+                    {{ t("about.downloadUpdate") }}
                   </button>
                 </div>
                 <div v-else-if="status === 'downloading'" class="about-dialog__status-downloading">
@@ -301,6 +301,9 @@ useIpcEvent(GlobalEventEnum.UpdateError, (_e, err: { message: string }) => {
     padding: 8px 12px;
     background: rgb(255 255 255 / 3%);
     border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__status-idle,
@@ -311,10 +314,12 @@ useIpcEvent(GlobalEventEnum.UpdateError, (_e, err: { message: string }) => {
   &__status-ok,
   &__status-error {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 6px;
     font-size: 12px;
+    line-height: 1;
     color: var(--text-secondary);
   }
 

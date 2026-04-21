@@ -44,6 +44,7 @@ export default {
     downloading: "Downloading update {progress}%",
     downloadComplete: "Update downloaded. Click to install and restart",
     installAndRestart: "Install & Restart",
+    downloadUpdate: "Download",
     updateError: "Update failed: {message}"
   }
 };

@@ -44,6 +44,7 @@ export default {
     downloading: "正在下载更新 {progress}%",
     downloadComplete: "更新下载完成，点击安装并重启",
     installAndRestart: "安装并重启",
+    downloadUpdate: "下载",
     updateError: "更新失败：{message}"
   }
 };

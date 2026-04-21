@@ -7,7 +7,7 @@ export const initUpdater = () => {
   autoUpdater.autoDownload = false;
   autoUpdater.autoRunAppAfterInstall = true;
   autoUpdater.logger = log;
-
+  autoUpdater.forceDevUpdateConfig = true;
   autoUpdater.on("checking-for-update", () => {
     log.info("[Updater] Checking for update...");
   });
