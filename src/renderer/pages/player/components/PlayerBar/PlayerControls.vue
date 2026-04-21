@@ -28,11 +28,11 @@
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
 import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward } from "@vicons/ionicons5";
-import vlcPlayer from "@renderer/player";
 import { ref } from "vue";
-import { usePlayerEvent } from "@renderer/hooks";
-import { usePlayerStore } from "@renderer/stores";
 import { useI18n } from "vue-i18n";
+import { usePlayerStore } from "../../stores";
+import vlcPlayer from "../../player";
+import { usePlayerEvent } from "../../hooks";
 
 const { t } = useI18n();
 

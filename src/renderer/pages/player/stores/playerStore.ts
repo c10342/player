@@ -1,8 +1,8 @@
-import vlcPlayer from "@renderer/player";
-import { PlayerListItem } from "@renderer/types";
-import { isFileExist } from "@renderer/utils";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { PlayerListItem } from "../types";
+import { isFileExist } from "../utils";
+import vlcPlayer from "../player";
 
 export const usePlayerStore = defineStore("player", () => {
   const playerList = ref<PlayerListItem[]>([

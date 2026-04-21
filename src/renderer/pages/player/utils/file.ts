@@ -1,4 +1,4 @@
-import { usePlayerStore } from "@renderer/stores";
+import { usePlayerStore } from "../stores";
 const path = require("path");
 const fs = require("fs");
 

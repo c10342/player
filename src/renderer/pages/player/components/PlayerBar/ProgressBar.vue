@@ -26,11 +26,13 @@
 </template>
 
 <script setup lang="ts">
-import { usePlayerEvent, useWindowEvent } from "@renderer/hooks";
-import vlcPlayer from "@renderer/player";
-import { formatTime } from "@renderer/utils";
+import { useWindowEvent } from "@renderer/hooks";
+
 import { throttle } from "lodash";
 import { ref, computed } from "vue";
+import { formatTime } from "../../utils";
+import vlcPlayer from "../../player";
+import { usePlayerEvent } from "../../hooks";
 
 const currentTime = ref(0);
 

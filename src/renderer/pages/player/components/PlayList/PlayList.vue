@@ -40,8 +40,8 @@
 import { Icon } from "@vicons/utils";
 import { ChevronForward, ChevronBack, AddOutline } from "@vicons/ionicons5";
 import { ref } from "vue";
-import { usePlayerStore } from "@renderer/stores";
-import { addVideoFile } from "@renderer/utils";
+import { usePlayerStore } from "../../stores";
+import { addVideoFile } from "../../utils";
 import PlayListItem from "./PlayListItem.vue";
 import { useI18n } from "vue-i18n";
 

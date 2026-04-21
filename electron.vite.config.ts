@@ -23,7 +23,7 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        "@renderer": resolve("src/renderer/src"),
+        "@renderer": resolve("src/renderer"),
         "@share": resolve("src/share")
       }
     },
@@ -32,7 +32,10 @@ export default defineConfig({
     },
     build: {
       rollupOptions: {
-        external: ["koffi"]
+        external: ["koffi"],
+        input: {
+          player: resolve("src/renderer/pages/player/index.html")
+        }
       }
     },
     css: {

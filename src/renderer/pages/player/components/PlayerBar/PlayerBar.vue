@@ -37,10 +37,10 @@ import { Expand, Contract } from "@vicons/ionicons5";
 import PlayerControls from "./PlayerControls.vue";
 import ProgressBar from "./ProgressBar.vue";
 import VolumeControl from "./VolumeControl.vue";
-import { usePlayerEvent } from "@renderer/hooks";
 import { throttle } from "lodash";
-import { formatTime } from "@renderer/utils";
 import { useI18n } from "vue-i18n";
+import { formatTime } from "../../utils";
+import { usePlayerEvent } from "../../hooks";
 
 const { t } = useI18n();
 

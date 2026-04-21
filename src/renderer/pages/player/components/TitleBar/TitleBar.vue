@@ -44,10 +44,10 @@ import { Remove, SquareOutline, Close, InformationCircleOutline } from "@vicons/
 import { WindowRestoreRegular } from "@vicons/fa";
 import { useIpcEvent } from "@renderer/hooks";
 import { GlobalEventEnum } from "@share/enum";
-import { usePlayerStore } from "@renderer/stores";
 import { useI18n } from "vue-i18n";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 import AboutDialog from "../About/AboutDialog.vue";
+import { usePlayerStore } from "../../stores";
 
 const { t } = useI18n();
 
