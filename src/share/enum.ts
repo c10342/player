@@ -16,7 +16,8 @@ export enum BridgeEnum {
   TrayTogglePlay = "trayTogglePlay",
   TrayStop = "trayStop",
   SetTrayPlaying = "setTrayPlaying",
-  TrayQuit = "trayQuit"
+  TrayQuit = "trayQuit",
+  TrayMenuResize = "trayMenuResize"
 }
 
 // 全局事件广播

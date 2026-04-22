@@ -1,4 +1,4 @@
-import { BrowserWindow, nativeImage, Tray } from "electron";
+import { BrowserWindow, nativeImage, screen, Tray } from "electron";
 import { GlobalEventEnum } from "@share/enum";
 import icon from "../../resources/icon.png?asset";
 import { createWindow } from "./window";
@@ -19,8 +19,8 @@ function createTrayMenuWindow() {
   menuWin = createWindow(
     "trayMenu",
     {
-      width: 200,
-      height: 296,
+      width: 1,
+      height: 1,
       show: false,
       frame: false,
       transparent: true,
@@ -44,29 +44,43 @@ function createTrayMenuWindow() {
   });
 }
 
-export const createTray = (): void => {
+function positionMenu(): void {
+  if (!tray || !menuWin) return;
+  const trayBounds = tray.getBounds();
+  const winBounds = menuWin.getBounds();
+  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  const workArea = display.workArea;
+
+  let x = Math.round(trayBounds.x + trayBounds.width / 2 - winBounds.width / 2);
+  let y = Math.round(trayBounds.y + trayBounds.height + 4);
+
+  if (x + winBounds.width > workArea.x + workArea.width) {
+    x = workArea.x + workArea.width - winBounds.width;
+  }
+  if (x < workArea.x) {
+    x = workArea.x;
+  }
+  if (y + winBounds.height > workArea.y + workArea.height) {
+    y = trayBounds.y - winBounds.height - 4;
+  }
+
+  menuWin.setPosition(x, y, false);
+}
+
+export const createTray = (mainWin?: BrowserWindow | null): void => {
   tray = new Tray(getTrayIcon());
   tray.setToolTip("Electron Player");
   createTrayMenuWindow();
-  tray.on("right-click", (_event, bounds) => {
-    if (!menuWin) {
-      return;
-    }
-    const info = menuWin.getBounds();
-
-    menuWin.setPosition(bounds.x - (info.width - 10), bounds.y - (info.height - 10), false);
+  tray.on("right-click", () => {
+    if (!menuWin) return;
+    positionMenu();
     menuWin.show();
+    menuWin.focus();
   });
 
   tray.on("double-click", () => {
-    for (const win of BrowserWindow.getAllWindows()) {
-      if (win === menuWin) continue;
-      if (win.isMinimized()) {
-        win.restore();
-      }
-      win.show();
-      win.focus();
-    }
+    mainWin?.show();
+    mainWin?.focus();
   });
 };
 
@@ -74,5 +88,12 @@ export const setTrayPlaying = (playing: boolean): void => {
   isPlaying = playing;
   if (menuWin && !menuWin.isDestroyed()) {
     menuWin.webContents.send(GlobalEventEnum.TrayPlayingChanged, playing);
+  }
+};
+
+export const resizeTrayMenu = (width: number, height: number): void => {
+  if (menuWin && !menuWin.isDestroyed()) {
+    menuWin.setContentSize(width, height);
+    positionMenu();
   }
 };

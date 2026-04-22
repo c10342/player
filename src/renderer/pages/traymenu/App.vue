@@ -1,18 +1,9 @@
 <template>
-  <div class="tray-menu" @contextmenu.prevent>
+  <div ref="menuRef" class="tray-menu" @contextmenu.prevent>
     <div class="tray-menu__inner">
       <div class="tray-menu__header">
         <div class="tray-menu__logo">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <defs>
-              <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#e8a849" />
-                <stop offset="100%" stop-color="#f0c27f" />
-              </linearGradient>
-            </defs>
-            <circle cx="12" cy="12" r="11" stroke="url(#logoGrad)" stroke-width="1.5" fill="none" />
-            <polygon points="10,7.5 17,12 10,16.5" fill="url(#logoGrad)" />
-          </svg>
+          <img :src="logoUrl" alt="logo" width="18" height="18" />
         </div>
         <span class="tray-menu__title">Electron Player</span>
       </div>
@@ -20,21 +11,17 @@
       <div class="tray-menu__items">
         <div class="tray-menu__item" @click="handleAction('prev')">
           <div class="tray-menu__item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-            </svg>
+            <Icon size="16"><PlaySkipBack /></Icon>
           </div>
           <span class="tray-menu__item-text">{{ t("tray.prev") }}</span>
           <div class="tray-menu__item-shine"></div>
         </div>
         <div class="tray-menu__item" @click="handleAction('togglePlay')">
           <div class="tray-menu__item-icon tray-menu__item-icon--accent">
-            <svg v-if="!isPlaying" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-            </svg>
+            <Icon size="16">
+              <Play v-if="!isPlaying" />
+              <Pause v-else />
+            </Icon>
           </div>
           <span class="tray-menu__item-text">{{
             isPlaying ? t("tray.pause") : t("tray.play")
@@ -43,18 +30,14 @@
         </div>
         <div class="tray-menu__item" @click="handleAction('stop')">
           <div class="tray-menu__item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="6" y="6" width="12" height="12" rx="1" />
-            </svg>
+            <Icon size="16"><Stop /></Icon>
           </div>
           <span class="tray-menu__item-text">{{ t("tray.stop") }}</span>
           <div class="tray-menu__item-shine"></div>
         </div>
         <div class="tray-menu__item" @click="handleAction('next')">
           <div class="tray-menu__item-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-            </svg>
+            <Icon size="16"><PlaySkipForward /></Icon>
           </div>
           <span class="tray-menu__item-text">{{ t("tray.next") }}</span>
           <div class="tray-menu__item-shine"></div>
@@ -64,19 +47,7 @@
       <div class="tray-menu__items">
         <div class="tray-menu__item tray-menu__item--danger" @click="handleAction('exit')">
           <div class="tray-menu__item-icon">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
+            <Icon size="16"><LogOutOutline /></Icon>
           </div>
           <span class="tray-menu__item-text">{{ t("tray.exit") }}</span>
           <div class="tray-menu__item-shine"></div>
@@ -87,12 +58,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
+import { Icon } from "@vicons/utils";
+import { PlaySkipBack, Play, Pause, Stop, PlaySkipForward, LogOutOutline } from "@vicons/ionicons5";
 import { BridgeEnum, GlobalEventEnum } from "@share/enum";
+import logoUrl from "@renderer/assets/icon.png";
 
 const { t } = useI18n();
 
+const menuRef = ref<HTMLElement | null>(null);
 const isPlaying = ref(false);
 
 const handleAction = (action: string) => {
@@ -121,6 +96,12 @@ const onPlayingChanged = (_event: Electron.IpcRendererEvent, playing: boolean) =
 
 onMounted(() => {
   window.electronAPI.ipcOn(GlobalEventEnum.TrayPlayingChanged, onPlayingChanged);
+  nextTick(() => {
+    if (menuRef.value) {
+      const { scrollWidth, scrollHeight } = menuRef.value;
+      window.electronAPI.ipcSend(BridgeEnum.TrayMenuResize, scrollWidth, scrollHeight);
+    }
+  });
 });
 
 onBeforeUnmount(() => {
@@ -137,8 +118,7 @@ body,
 }
 
 .tray-menu {
-  padding: 6px;
-  height: 100%;
+  display: inline-block;
   box-sizing: border-box;
 
   &__inner {
@@ -155,6 +135,8 @@ body,
   &__header {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     gap: 8px;
     padding: 8px 10px 6px;
   }
@@ -164,6 +146,10 @@ body,
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+
+    img {
+      border-radius: 4px;
+    }
   }
 
   &__title {

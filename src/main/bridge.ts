@@ -3,7 +3,7 @@ import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain, app } from "electron";
 import { setLocale } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
-import { setTrayPlaying } from "./tray";
+import { setTrayPlaying, resizeTrayMenu } from "./tray";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -78,5 +78,9 @@ export const initBridge = () => {
 
   ipcMain.on(BridgeEnum.TrayQuit, () => {
     app.quit();
+  });
+
+  ipcMain.on(BridgeEnum.TrayMenuResize, (_event, width: number, height: number) => {
+    resizeTrayMenu(width, height);
   });
 };

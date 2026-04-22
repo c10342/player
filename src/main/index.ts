@@ -8,8 +8,10 @@ import { initUpdater } from "./updater";
 import { createWindow } from "./window";
 import { createTray } from "./tray";
 
+let mainWin: BrowserWindow | null = null;
+
 function createPlayerWindow() {
-  createWindow("player", {
+  mainWin = createWindow("player", {
     minWidth: 700,
     minHeight: 500,
     webPreferences: {
@@ -30,8 +32,8 @@ app.whenReady().then(() => {
   initI18n();
   initBridge();
   initUpdater();
-  createTray();
   createPlayerWindow();
+  createTray(mainWin);
 
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createPlayerWindow();
