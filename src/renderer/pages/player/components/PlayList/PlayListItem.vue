@@ -34,11 +34,11 @@
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
 import { CloseOutline, AlertCircleOutline } from "@vicons/ionicons5";
-import { PlayerListItem } from "@renderer/types";
-import { formatFileSize } from "@renderer/utils";
 import { computed } from "vue";
-import { usePlayerStore } from "@renderer/stores";
 import { useI18n } from "vue-i18n";
+import { usePlayerStore } from "../../stores";
+import { formatFileSize } from "../../utils";
+import { PlayerListItem } from "../../types";
 
 const { t } = useI18n();
 

@@ -18,13 +18,14 @@
 import { Icon } from "@vicons/utils";
 import { AddOutline } from "@vicons/ionicons5";
 import PlayList from "../PlayList/PlayList.vue";
-import { addVideoFile } from "@renderer/utils";
-import { usePlayerStore } from "@renderer/stores";
 import { onMounted } from "vue";
-import { useDomResize, usePlayerEvent } from "@renderer/hooks";
-import vlcPlayer from "@renderer/player";
+import { useDomResize } from "@renderer/hooks";
 import { debounce } from "lodash";
 import { useI18n } from "vue-i18n";
+import { usePlayerStore } from "../../stores";
+import { addVideoFile } from "../../utils";
+import vlcPlayer from "../../player";
+import { usePlayerEvent } from "../../hooks";
 
 const { t } = useI18n();
 

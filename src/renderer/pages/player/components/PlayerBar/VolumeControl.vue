@@ -25,7 +25,7 @@
 import { ref } from "vue";
 import { Icon } from "@vicons/utils";
 import { VolumeHigh, VolumeLow, VolumeMute } from "@vicons/ionicons5";
-import vlcPlayer from "@renderer/player";
+import vlcPlayer from "../../player";
 
 // 0-1，但是实际是0-100，需要转换一下
 const volume = ref(1);

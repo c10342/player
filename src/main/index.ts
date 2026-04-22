@@ -1,62 +1,25 @@
-import { app, shell, BrowserWindow } from "electron";
-import { join } from "path";
-import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import icon from "../../resources/icon.png?asset";
+import { app, BrowserWindow } from "electron";
+
+import { electronApp, optimizer } from "@electron-toolkit/utils";
 import { initBridge } from "./bridge";
-import { GlobalEventEnum } from "@share/enum";
 import { initLogger } from "./logger";
-import log from "./logger";
 import { initI18n } from "./i18n";
 import { initUpdater } from "./updater";
+import { createWindow } from "./window";
+import { createTray } from "./tray";
 
-function createWindow(): void {
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+let mainWin: BrowserWindow | null = null;
+
+function createPlayerWindow() {
+  mainWin = createWindow("player", {
     minWidth: 700,
     minHeight: 500,
-    show: false,
-    autoHideMenuBar: true,
-    frame: false,
-    titleBarStyle: "hidden",
-    ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
-      // 关闭沙箱环境
       nodeIntegration: true,
       contextIsolation: false
     }
   });
-
-  mainWindow.on("ready-to-show", () => {
-    mainWindow.show();
-  });
-
-  mainWindow.on("maximize", () => {
-    mainWindow.webContents.send(GlobalEventEnum.MaximizeWindow);
-  });
-  mainWindow.on("unmaximize", () => {
-    mainWindow.webContents.send(GlobalEventEnum.RestoreWindow);
-  });
-  mainWindow.on("minimize", () => {
-    mainWindow.webContents.send(GlobalEventEnum.MinimizeWindow);
-  });
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: "deny" };
-  });
-
-  mainWindow.webContents.on("render-process-gone", (_event, details) => {
-    log.error("Renderer process gone:", details);
-  });
-
-  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-  } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
-  }
 }
 
 app.whenReady().then(() => {
@@ -69,10 +32,11 @@ app.whenReady().then(() => {
   initI18n();
   initBridge();
   initUpdater();
-  createWindow();
+  createPlayerWindow();
+  createTray(mainWin);
 
   app.on("activate", function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createPlayerWindow();
   });
 });
 

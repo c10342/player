@@ -46,5 +46,13 @@ export default {
     installAndRestart: "安裝並重啟",
     downloadUpdate: "下載",
     updateError: "更新失敗：{message}"
+  },
+  tray: {
+    prev: "上一首",
+    play: "播放",
+    pause: "暫停",
+    stop: "停止",
+    next: "下一首",
+    exit: "退出"
   }
 };

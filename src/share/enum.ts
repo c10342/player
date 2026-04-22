@@ -10,7 +10,14 @@ export enum BridgeEnum {
   GetAppVersion = "getAppVersion",
   CheckForUpdate = "checkForUpdate",
   DownloadUpdate = "downloadUpdate",
-  InstallUpdate = "installUpdate"
+  InstallUpdate = "installUpdate",
+  TrayPrev = "trayPrev",
+  TrayNext = "trayNext",
+  TrayTogglePlay = "trayTogglePlay",
+  TrayStop = "trayStop",
+  SetTrayPlaying = "setTrayPlaying",
+  TrayQuit = "trayQuit",
+  TrayMenuResize = "trayMenuResize"
 }
 
 // 全局事件广播
@@ -23,7 +30,8 @@ export enum GlobalEventEnum {
   UpdateNotAvailable = "update:not-available",
   UpdateDownloadProgress = "update:download-progress",
   UpdateDownloaded = "update:downloaded",
-  UpdateError = "update:error"
+  UpdateError = "update:error",
+  TrayPlayingChanged = "tray:playingChanged"
 }
 
 // 语言
