@@ -6,27 +6,27 @@ import vlcPlayer from "../player";
 
 export const usePlayerStore = defineStore("player", () => {
   const playerList = ref<PlayerListItem[]>([
-    {
-      path: "E:\\迅雷下载\\阳光电影dygod.org.大突围.2024.HD.1080P.国语中英双字.mkv",
-      name: "阳光电影dygod.org.大突围.2024.HD.1080P.国语中英双字.mkv",
-      type: ".mkv",
-      size: 2086207073,
-      error: ""
-    },
-    {
-      path: "E:\\aDriver\\【保姆级教学】从零搭建组件库\\8-08.实现树的基本搭建.mp4",
-      name: "8-08.实现树的基本搭建.mp4",
-      type: ".mp4",
-      size: 131622108,
-      error: ""
-    },
-    {
-      path: "E:\\aDriver\\【保姆级教学】从零搭建组件库\\23-23.完善input组件功能.mp4",
-      name: "23-23.完善input组件功能.mp4",
-      type: ".mp4",
-      size: 83412820,
-      error: ""
-    }
+    // {
+    //   path: "E:\\迅雷下载\\阳光电影dygod.org.大突围.2024.HD.1080P.国语中英双字.mkv",
+    //   name: "阳光电影dygod.org.大突围.2024.HD.1080P.国语中英双字.mkv",
+    //   type: ".mkv",
+    //   size: 2086207073,
+    //   error: ""
+    // },
+    // {
+    //   path: "E:\\aDriver\\【保姆级教学】从零搭建组件库\\8-08.实现树的基本搭建.mp4",
+    //   name: "8-08.实现树的基本搭建.mp4",
+    //   type: ".mp4",
+    //   size: 131622108,
+    //   error: ""
+    // },
+    // {
+    //   path: "E:\\aDriver\\【保姆级教学】从零搭建组件库\\23-23.完善input组件功能.mp4",
+    //   name: "23-23.完善input组件功能.mp4",
+    //   type: ".mp4",
+    //   size: 83412820,
+    //   error: ""
+    // }
   ]);
   // 当前正在播放的视频
   const activeId = ref("");
