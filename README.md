@@ -58,3 +58,8 @@ $ npm run generate:icon
 - build/icon.png (512×512)
 - build/icon.ico (Windows 多尺寸图标)
 - resources/icon.png (512×512)
+
+
+## 项目架构文档
+
+[ARCHITECTURE.md](./ARCHITECTURE.md)
