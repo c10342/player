@@ -7,6 +7,7 @@ import { initI18n } from "./i18n";
 import { initUpdater } from "./updater";
 import { createWindow } from "./window";
 import { createTray } from "./tray";
+import { initSingleInstance } from "./singleInstance";
 
 let mainWin: BrowserWindow | null = null;
 
@@ -21,6 +22,11 @@ function createPlayerWindow() {
     }
   });
 }
+
+initSingleInstance(() => {
+  mainWin?.show();
+  mainWin?.focus();
+});
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId("com.electron");
