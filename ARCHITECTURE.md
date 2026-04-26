@@ -2,7 +2,7 @@
 
 ## 一、项目概述
 
-Electron Player 是一款基于 Electron + Vue 3 的桌面视频播放器应用。其核心特点是**不依赖 VLC 自带窗口渲染**，而是通过 FFI（Foreign Function Interface）直接调用 LibVLC 的 C API，将视频帧数据提取到 Canvas 中进行自定义渲染，实现了完全自主可控的视频播放体验。
+Electron Player 是一款基于 Electron + Vue 3 的桌面视频播放器应用。其核心特点是**不依赖 VLC 自带窗口渲染**，而是通过 FFI（Foreign Function Interface）直接调用 LibVLC 的 C API，将视频帧数据提取到 Canvas 中进行自定义渲染，实现了完全自主可控的视频播放体验。应用支持播放列表持久化存储、多语言切换记忆、单实例运行等桌面端特性。
 
 ## 二、技术栈
 
@@ -11,7 +11,8 @@ Electron Player 是一款基于 Electron + Vue 3 的桌面视频播放器应用�
 | **桌面框架** | Electron 31 | 主进程 + 渲染进程架构 |
 | **构建工具** | electron-vite 2.3 | Electron 专用 Vite 构建方案 |
 | **前端框架** | Vue 3.4 (Composition API) | 渲染进程 UI 层 |
-| **状态管理** | Pinia 2 | 播放器状态管理 |
+| **状态管理** | Pinia 2 + 自定义持久化插件 | 播放器状态管理 + electron-store 持久化 |
+| **持久化存储** | electron-store 11 | 用户偏好、播放列表等数据持久化 |
 | **视频引擎** | LibVLC (通过 Koffi FFI) | 原生 C 库直接调用 |
 | **FFI 桥接** | Koffi 2.16 | Node.js 调用 C 动态库 |
 | **国际化** | vue-i18n 11 + i18next 26 | 前端 + 主进程双端国际化 |
@@ -41,6 +42,8 @@ electron-player/
 │   │   ├── window.ts               # 窗口管理
 │   │   ├── tray.ts                 # 系统托盘
 │   │   ├── bridge.ts               # IPC 通信桥接
+│   │   ├── store.ts                # 持久化存储（electron-store）
+│   │   ├── singleInstance.ts       # 单实例锁
 │   │   ├── updater.ts              # 自动更新
 │   │   ├── i18n.ts                 # 主进程国际化
 │   │   └── logger.ts               # 日志初始化
@@ -51,18 +54,21 @@ electron-player/
 │   ├── renderer/                   # 渲染进程
 │   │   ├── assets/styles/          # 全局样式
 │   │   ├── hooks/                  # 全局 Hooks
-│   │   ├── locales/                # 前端 i18n 配置
+│   │   ├── locales/                # 前端 i18n 配置（异步初始化）
+│   │   ├── plugins/                # Pinia 插件
+│   │   │   └── piniaElectronStore.ts  # Pinia → electron-store 持久化插件
 │   │   ├── utils/                  # 全局工具函数
 │   │   └── pages/                  # 多页面入口
 │   │       ├── player/             # 播放器页面
 │   │       │   ├── components/     # UI 组件
 │   │       │   ├── hooks/          # 播放器专用 Hooks
 │   │       │   ├── player/         # VLC 播放器核心封装
-│   │       │   ├── stores/         # 播放器状态管理
+│   │       │   ├── stores/         # 播放器状态管理（含持久化配置）
 │   │       │   ├── types/          # 类型定义
 │   │       │   └── utils/          # 播放器工具函数
 │   │       └── traymenu/           # 托盘菜单页面
 │   └── share/                      # 主进程与渲染进程共享代码
+│       ├── config.ts               # 共享默认配置
 │       ├── enum.ts                 # 枚举常量（Bridge、事件、语言）
 │       ├── type.ts                 # 共享类型定义
 │       └── locales/                # 国际化语言包
@@ -80,6 +86,10 @@ electron-player/
 │  │  Window  │  │  Tray   │  │Bridge│  │Updater│  │I18n │ │
 │  │ Manager  │  │ Manager │  │ IPC  │  │       │  │     │ │
 │  └─────────┘  └─────────┘  └──────┘  └──────┘  └─────┘ │
+│  ┌──────────┐  ┌───────────────┐                        │
+│  │  Store   │  │SingleInstance │                        │
+│  │(persist) │  │   (单实例锁)   │                        │
+│  └──────────┘  └───────────────┘                        │
 └────────────────────────┬────────────────────────────────┘
                          │ IPC (ipcMain / ipcRenderer)
 ┌────────────────────────┼────────────────────────────────┐
@@ -98,13 +108,16 @@ electron-player/
 │  │  ┌──────────┐  ┌──────────┐  ┌───────────────────┐ │ │
 │  │  │   Vue 3  │  │  Pinia   │  │    VlcPlayer      │ │ │
 │  │  │    App   │  │  Store   │  │  (Koffi → libvlc) │ │ │
-│  │  └──────────┘  └──────────┘  └───────────────────┘ │ │
-│  │         │            │               │              │ │
-│  │         └────────────┼───────────────┘              │ │
-│  │                      │                              │ │
-│  │              ┌───────┴───────┐                      │ │
-│  │              │  Canvas 渲染   │                      │ │
-│  │              │  (requestAnim)│                      │ │
+│  │  └──────────┘  └──┬──┬───┘  └───────────────────┘ │ │
+│  │              ┌────┘  │               │              │ │
+│  │              │       │               │              │ │
+│  │   ┌──────────┴──┐   │       ┌───────┴───────┐      │ │
+│  │   │ PiniaPlugin │   │       │  Canvas 渲染   │      │ │
+│  │   │ (持久化存储) │   │       │  (requestAnim)│      │ │
+│  │   └─────────────┘   │       └───────────────┘      │ │
+│  │              ┌──────┴────────┐                      │ │
+│  │              │ electron-store│                      │ │
+│  │              │  (主进程存储)  │                      │ │
 │  │              └───────────────┘                      │ │
 │  └──────────────────────────────────────────────────────┘ │
 │                                                          │
@@ -131,16 +144,16 @@ electron-player/
 
 | 层级 | 职责 | 通信方式 |
 |------|------|----------|
-| **主进程 (Main)** | 窗口管理、系统托盘、文件对话框、自动更新、日志 | ipcMain 接收 / webContents.send 广播 |
+| **主进程 (Main)** | 窗口管理、系统托盘、文件对话框、自动更新、持久化存储、日志 | ipcMain 接收 / webContents.send 广播 |
 | **预加载脚本 (Preload)** | 安全的 IPC 桥接，暴露 `electronAPI` 给渲染进程 | contextBridge |
-| **渲染进程 (Renderer)** | UI 渲染、用户交互、视频帧渲染 | ipcRenderer 发送 / ipcOn 接收 |
+| **渲染进程 (Renderer)** | UI 渲染、用户交互、视频帧渲染、状态持久化 | ipcRenderer 发送 / ipcOn 接收 |
 
 ### 4.2 枚举驱动的 IPC 通信
 
 所有 IPC 通道名通过 `BridgeEnum` 和 `GlobalEventEnum` 两个枚举集中管理：
 
-- **`BridgeEnum`**：渲染进程 → 主进程的请求（如 `maximizeWindow`、`openDialog`）
-- **`GlobalEventEnum`**：主进程 → 渲染进程的广播（如 `window:maximize`、`update:available`）
+- **`BridgeEnum`**：渲染进程 → 主进程的请求（如 `maximizeWindow`、`openDialog`、`getStoreValue`、`setStoreValue`）
+- **`GlobalEventEnum`**：主进程 → 渲染进程的广播（如 `window:maximize`、`update:available`、`window:langChanged`）
 
 这确保了通道名在主进程和渲染进程之间保持一致，避免硬编码字符串带来的错误。
 
@@ -148,7 +161,8 @@ electron-player/
 
 `src/share/` 目录存放主进程和渲染进程共享的代码：
 
-- **枚举定义** (`enum.ts`)：Bridge 通道名、全局事件名、语言枚举
+- **默认配置** (`config.ts`)：共享默认值（如默认语言）
+- **枚举定义** (`enum.ts`)：Bridge 通道名、全局事件名、语言枚举（`LangEnum`）
 - **类型定义** (`type.ts`)：跨进程共享的 TypeScript 类型
 - **国际化语言包** (`locales/`)：中文简繁体、英文翻译
 
@@ -166,6 +180,18 @@ electron-player/
 ### 4.5 无边框窗口 + 自定义 UI
 
 主窗口使用 `frame: false` + `titleBarStyle: "hidden"` 实现无边框，所有窗口控制（最小化、最大化、关闭）通过自定义 `TitleBar` 组件 + IPC 通信实现。标题栏区域通过 CSS `-webkit-app-region: drag` 支持拖拽移动。
+
+### 4.6 单实例运行
+
+通过 Electron 的 `app.requestSingleInstanceLock()` 确保应用只运行一个实例。当用户尝试启动第二个实例时，已有的主窗口会被激活并获得焦点，而非创建新窗口。
+
+### 4.7 状态持久化
+
+项目实现了**跨进程的状态持久化方案**：
+
+- **主进程**：`electron-store` 提供基于 JSON 文件的本地持久化存储
+- **渲染进程**：自定义 Pinia 插件 `piniaElectronStore`，自动将 Store 状态变更通过 IPC 同步到主进程的 electron-store
+- **数据流**：渲染进程 Pinia Store 变更 → IPC → 主进程 electron-store 写入磁盘；应用启动时反向加载
 
 ## 五、核心逻辑实现
 
@@ -229,6 +255,8 @@ requestAnimationFrame 调度渲染
 - `removeCurrentVideo()` — 停止并移除当前视频
 - `removeVideo()` — 移除指定视频（若正在播放则先停止）
 
+**持久化配置**：Store 通过 `persist` 选项声明需要持久化的数据，`piniaElectronStore` 插件会自动将 `playerList` 同步到主进程的 electron-store，应用重启后自动恢复播放列表。
+
 ### 5.3 IPC 通信桥接
 
 **文件**：`src/main/bridge.ts` + `src/preload/api.ts`
@@ -237,8 +265,8 @@ requestAnimationFrame 调度渲染
 
 | 模式 | 方法 | 使用场景 |
 |------|------|----------|
-| **单向通知** | `ipcMain.on` / `ipcRenderer.send` | 窗口控制（最大化/最小化/关闭）、语言切换 |
-| **请求-响应** | `ipcMain.handle` / `ipcRenderer.invoke` | 获取窗口状态、打开文件对话框、获取版本号 |
+| **单向通知** | `ipcMain.on` / `ipcRenderer.send` | 窗口控制、语言切换、存储写入 |
+| **请求-响应** | `ipcMain.handle` / `ipcRenderer.invoke` | 获取窗口状态、文件对话框、版本号、存储读取、获取当前语言 |
 | **主进程广播** | `webContents.send` / `ipcRenderer.on` | 窗口状态变化、更新事件、语言变更通知 |
 
 #### 跨窗口通信
@@ -251,7 +279,44 @@ TrayMenu 渲染进程 ──ipcSend──→ 主进程 ──webContents.send─
    播放/暂停/停止)       排除发送者窗口)          接收并执行)
 ```
 
-### 5.4 系统托盘
+### 5.4 持久化存储
+
+**文件**：`src/main/store.ts` + `src/renderer/plugins/piniaElectronStore.ts`
+
+#### 架构设计
+
+```
+渲染进程 (Pinia Store)
+    │
+    │ watch 深度监听状态变更
+    ▼
+piniaElectronStore 插件
+    │ JSON.parse(JSON.stringify(val))  ← Proxy → 普通对象
+    ▼
+IPC: setStoreValue / getStoreValue
+    │
+    ▼
+主进程 (electron-store)
+    │
+    ▼
+本地 JSON 文件 (%APPDATA%/electron-player/config.json)
+```
+
+#### 存储内容
+
+| 键 | 类型 | 说明 |
+|------|------|------|
+| `lang` | `string` | 用户上次选择的语言（如 `zh-CN`、`en`） |
+| `player.playerList` | `PlayerListItem[]` | 播放列表（视频路径、名称、大小等） |
+
+#### Pinia 插件工作原理
+
+1. **初始化加载**：Pinia Store 创建时，插件通过 `getStoreValue` 从主进程加载已保存的状态，调用 `store.$patch()` 恢复
+2. **变更写入**：通过 `watch` 深度监听 Store 状态变化，自动调用 `setStoreValue` 将变更同步到主进程
+3. **选择性持久化**：Store 可通过 `persist.pick` 指定只持久化部分字段（如只保存 `playerList` 不保存 `activeId`）
+4. **Proxy 序列化处理**：由于 Vue 3 的响应式对象是 Proxy，无法直接通过 Electron IPC 的结构化克隆算法传输，插件通过 `JSON.parse(JSON.stringify())` 将其转为普通对象
+
+### 5.5 系统托盘
 
 **文件**：`src/main/tray.ts`
 
@@ -261,7 +326,7 @@ TrayMenu 渲染进程 ──ipcSend──→ 主进程 ──webContents.send─
 - 窗口失焦自动隐藏，双击托盘图标显示主窗口
 - 播放状态通过 `setTrayPlaying()` 同步到菜单窗口
 
-### 5.5 自动更新
+### 5.6 自动更新
 
 **文件**：`src/main/updater.ts` + `src/renderer/pages/player/components/About/AboutDialog.vue`
 
@@ -273,22 +338,34 @@ TrayMenu 渲染进程 ──ipcSend──→ 主进程 ──webContents.send─
 
 所有状态通过 `GlobalEventEnum` 广播到渲染进程，由 `AboutDialog` 组件展示更新状态。
 
-### 5.6 国际化（i18n）
+### 5.7 国际化（i18n）
 
-项目实现了**双端国际化**：
+项目实现了**双端国际化**，并支持语言偏好持久化：
 
-- **渲染进程**：`vue-i18n` + `createI18n`，在 `createApp` 工具函数中统一注册
-- **主进程**：`i18next`，用于主进程可能需要的翻译
+- **渲染进程**：`vue-i18n` + `createI18n`，在 `initI18n()` 中异步初始化（先从主进程获取上次选择的语言）
+- **主进程**：`i18next`，用于主进程可能需要的翻译，语言设置从 electron-store 读取
 - **语言包**：统一存放在 `src/share/locales/`，支持简体中文、繁体中文、英文
-- **切换流程**：渲染进程调用 `electronAPI.setLocale()` → 主进程 `setLocale()` → 广播 `LocaleChanged` 事件 → 所有窗口更新语言
+- **默认语言**：在 `src/share/config.ts` 中集中配置
+- **切换流程**：渲染进程调用 `changeLang()` → `electronAPI.setLang()` → 主进程 `setLang()` 写入 electron-store → 广播 `LangChanged` 事件 → 所有窗口更新语言
+- **恢复流程**：应用启动时，渲染进程通过 `electronAPI.getLang()` 从主进程 electron-store 读取上次选择的语言，初始化对应的 i18n 实例
 
-### 5.7 日志系统
+### 5.8 日志系统
 
 **文件**：`src/main/logger.ts` + `src/renderer/utils/logger.ts`
 
 - **主进程**：`electron-log/main`，记录到按日期命名的文件，同时输出到控制台和 IPC
 - **渲染进程**：`electron-log/renderer`，通过 IPC 传输到主进程统一处理
 - **全局错误捕获**：主进程 `errorHandler` + 渲染进程 `errorHandler` + `window.error` / `unhandledrejection`
+
+### 5.9 单实例锁
+
+**文件**：`src/main/singleInstance.ts`
+
+通过 `app.requestSingleInstanceLock()` 确保应用只有一个实例运行：
+
+- 首次启动正常创建窗口
+- 后续启动尝试会立即退出（`app.quit()`）
+- 当第二个实例启动时，已有实例的主窗口会被激活并获得焦点
 
 ## 六、UI 组件结构
 
