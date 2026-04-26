@@ -3,11 +3,15 @@ import App from "./App.vue";
 import vlcPlayer from "./player";
 import { createApp } from "@renderer/utils";
 
-const app = createApp(App);
-const pinia = createPinia();
+const init = async () => {
+  const app = await createApp(App);
+  const pinia = createPinia();
 
-app.use(pinia);
-app.mount("#app");
+  app.use(pinia);
+  app.mount("#app");
+};
+
+init();
 
 window.addEventListener("beforeunload", () => {
   vlcPlayer.destroy();

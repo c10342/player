@@ -8,6 +8,7 @@ import { initUpdater } from "./updater";
 import { createWindow } from "./window";
 import { createTray } from "./tray";
 import { initSingleInstance } from "./singleInstance";
+import { initStore } from "./store";
 
 let mainWin: BrowserWindow | null = null;
 
@@ -35,6 +36,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
   initLogger();
+  initStore();
   initI18n();
   initBridge();
   initUpdater();

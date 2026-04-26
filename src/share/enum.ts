@@ -7,6 +7,7 @@ export enum BridgeEnum {
   OpenDialog = "openDialog",
   IsMaximized = "isMaximized",
   SetLocale = "setLocale",
+  GetLocale = "getLocale",
   GetAppVersion = "getAppVersion",
   CheckForUpdate = "checkForUpdate",
   DownloadUpdate = "downloadUpdate",

@@ -1,7 +1,7 @@
 import { BridgeEnum, GlobalEventEnum, LocaleEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain, app } from "electron";
-import { setLocale } from "./i18n";
+import { setLocale, getLocale } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
 import { setTrayPlaying, resizeTrayMenu } from "./tray";
 
@@ -45,6 +45,9 @@ export const initBridge = () => {
   });
   ipcMain.handle(BridgeEnum.GetAppVersion, () => {
     return app.getVersion();
+  });
+  ipcMain.handle(BridgeEnum.GetLocale, () => {
+    return getLocale();
   });
   ipcMain.on(BridgeEnum.CheckForUpdate, () => {
     checkForUpdate();

@@ -39,6 +39,9 @@ const api = {
   [BridgeEnum.GetAppVersion](): Promise<string> {
     return ipcRenderer.invoke(BridgeEnum.GetAppVersion);
   },
+  [BridgeEnum.GetLocale](): Promise<string> {
+    return ipcRenderer.invoke(BridgeEnum.GetLocale);
+  },
   [BridgeEnum.CheckForUpdate](): void {
     ipcRenderer.send(BridgeEnum.CheckForUpdate);
   },
