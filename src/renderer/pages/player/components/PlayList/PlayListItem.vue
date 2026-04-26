@@ -38,7 +38,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { usePlayerStore } from "../../stores";
 import { formatFileSize } from "../../utils";
-import { PlayerListItem } from "../../types";
+import { PlayerListItem } from "@share/type";
 
 const { t } = useI18n();
 

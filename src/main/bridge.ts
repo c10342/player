@@ -4,6 +4,7 @@ import { BrowserWindow, dialog, ipcMain, app } from "electron";
 import { setLang, getLang } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
 import { setTrayPlaying, resizeTrayMenu } from "./tray";
+import { getStore, setStore } from "./store";
 
 export const initBridge = () => {
   // 根据url获取文件名
@@ -48,6 +49,12 @@ export const initBridge = () => {
   });
   ipcMain.handle(BridgeEnum.GetLang, () => {
     return getLang();
+  });
+  ipcMain.handle(BridgeEnum.GetStoreValue, (_event, key: string) => {
+    return getStore(key);
+  });
+  ipcMain.on(BridgeEnum.SetStoreValue, (_event, key: string, value: any) => {
+    setStore(key, value);
   });
   ipcMain.on(BridgeEnum.CheckForUpdate, () => {
     checkForUpdate();

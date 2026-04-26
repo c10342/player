@@ -17,6 +17,8 @@ export enum BridgeEnum {
   TrayTogglePlay = "trayTogglePlay",
   TrayStop = "trayStop",
   SetTrayPlaying = "setTrayPlaying",
+  GetStoreValue = "getStoreValue",
+  SetStoreValue = "setStoreValue",
   TrayQuit = "trayQuit",
   TrayMenuResize = "trayMenuResize"
 }

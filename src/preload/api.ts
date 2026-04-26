@@ -53,6 +53,12 @@ const api = {
   },
   [BridgeEnum.SetTrayPlaying](playing: boolean): void {
     ipcRenderer.send(BridgeEnum.SetTrayPlaying, playing);
+  },
+  [BridgeEnum.GetStoreValue](key: string): Promise<any> {
+    return ipcRenderer.invoke(BridgeEnum.GetStoreValue, key);
+  },
+  [BridgeEnum.SetStoreValue](key: string, value: any): void {
+    ipcRenderer.send(BridgeEnum.SetStoreValue, key, value);
   }
 };
 
