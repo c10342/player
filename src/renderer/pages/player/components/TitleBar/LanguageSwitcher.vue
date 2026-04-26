@@ -28,6 +28,7 @@ import { Icon } from "@vicons/utils";
 import { LanguageOutline } from "@vicons/ionicons5";
 import { useI18n } from "vue-i18n";
 import { LocaleEnum } from "@share/enum";
+import { changeLang } from "@renderer/locales";
 
 const { locale, t } = useI18n();
 
@@ -62,7 +63,7 @@ const onMouseLeave = () => {
 };
 
 const switchLanguage = (lang: string) => {
-  window.electronAPI.setLocale(lang);
+  changeLang(lang);
   showMenu.value = false;
 };
 </script>

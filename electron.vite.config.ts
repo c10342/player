@@ -21,7 +21,7 @@ export default defineConfig({
         "@share": resolve("src/share")
       }
     },
-    plugins: [externalizeDepsPlugin()]
+    plugins: [[externalizeDepsPlugin({ exclude: ["electron-store"] })]]
   },
   preload: {
     resolve: {

@@ -1,21 +1,12 @@
-import i18n from "@renderer/locales";
+import { initI18n } from "@renderer/locales";
 import log from "./logger";
-import { GlobalEventEnum, LocaleEnum } from "@share/enum";
 import { DefineComponent, createApp as createVueApp } from "vue";
 import "../assets/styles/index.scss";
 
-const initLang = async () => {
-  const locale = await window.electronAPI.getLocale();
-  if (locale && Object.values(LocaleEnum).includes(locale as LocaleEnum)) {
-    i18n.global.locale.value = locale as LocaleEnum;
-  }
-};
-
 export const createApp = async (App: DefineComponent<any, any, any>) => {
   const app = createVueApp(App);
+  const i18n = await initI18n();
   app.use(i18n);
-
-  await initLang();
 
   app.config.errorHandler = (err, _instance, info) => {
     log.error("[Vue ErrorHandler]", err, info);
@@ -26,10 +17,6 @@ export const createApp = async (App: DefineComponent<any, any, any>) => {
 
   window.addEventListener("unhandledrejection", (event) => {
     log.error("[Unhandled Rejection]", event.reason);
-  });
-
-  window.electronAPI.ipcOn(GlobalEventEnum.LocaleChanged, (_, locale: string) => {
-    i18n.global.locale.value = locale as LocaleEnum;
   });
 
   return app;
