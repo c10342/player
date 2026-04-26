@@ -6,8 +6,8 @@ export enum BridgeEnum {
   CloseWindow = "closeWindow",
   OpenDialog = "openDialog",
   IsMaximized = "isMaximized",
-  SetLocale = "setLocale",
-  GetLocale = "getLocale",
+  SetLang = "setLang",
+  GetLang = "getLang",
   GetAppVersion = "getAppVersion",
   CheckForUpdate = "checkForUpdate",
   DownloadUpdate = "downloadUpdate",
@@ -26,7 +26,7 @@ export enum GlobalEventEnum {
   MaximizeWindow = "window:maximize",
   MinimizeWindow = "window:minimize",
   RestoreWindow = "window:unmaximize",
-  LocaleChanged = "window:localeChanged",
+  LangChanged = "window:langChanged",
   UpdateAvailable = "update:available",
   UpdateNotAvailable = "update:not-available",
   UpdateDownloadProgress = "update:download-progress",
@@ -36,7 +36,7 @@ export enum GlobalEventEnum {
 }
 
 // 语言
-export enum LocaleEnum {
+export enum LangEnum {
   ZhCN = "zh-CN",
   ZhTW = "zh-TW",
   En = "en"

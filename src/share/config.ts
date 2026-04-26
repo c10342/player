@@ -1,3 +1,3 @@
-import { LocaleEnum } from "./enum";
+import { LangEnum } from "./enum";
 
-export const defaultLang = LocaleEnum.ZhCN;
+export const defaultLang = LangEnum.ZhCN;

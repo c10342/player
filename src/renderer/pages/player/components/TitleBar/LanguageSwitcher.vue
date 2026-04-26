@@ -27,7 +27,7 @@ import { ref, computed } from "vue";
 import { Icon } from "@vicons/utils";
 import { LanguageOutline } from "@vicons/ionicons5";
 import { useI18n } from "vue-i18n";
-import { LocaleEnum } from "@share/enum";
+import { LangEnum } from "@share/enum";
 import { changeLang } from "@renderer/locales";
 
 const { locale, t } = useI18n();
@@ -38,9 +38,9 @@ let hideTimer: ReturnType<typeof setTimeout> | null = null;
 const currentLang = computed(() => locale.value);
 
 const languages = computed(() => [
-  { value: LocaleEnum.ZhCN, label: "简体中文" },
-  { value: LocaleEnum.ZhTW, label: "繁體中文" },
-  { value: LocaleEnum.En, label: "English" }
+  { value: LangEnum.ZhCN, label: "简体中文" },
+  { value: LangEnum.ZhTW, label: "繁體中文" },
+  { value: LangEnum.En, label: "English" }
 ]);
 
 const clearHideTimer = () => {

@@ -33,14 +33,14 @@ const api = {
   [BridgeEnum.OpenDialog](params: OpenDialogParams): Promise<Electron.OpenDialogReturnValue> {
     return ipcRenderer.invoke(BridgeEnum.OpenDialog, params);
   },
-  [BridgeEnum.SetLocale](locale: string): void {
-    ipcRenderer.send(BridgeEnum.SetLocale, locale);
+  [BridgeEnum.SetLang](lang: string): void {
+    ipcRenderer.send(BridgeEnum.SetLang, lang);
   },
   [BridgeEnum.GetAppVersion](): Promise<string> {
     return ipcRenderer.invoke(BridgeEnum.GetAppVersion);
   },
-  [BridgeEnum.GetLocale](): Promise<string> {
-    return ipcRenderer.invoke(BridgeEnum.GetLocale);
+  [BridgeEnum.GetLang](): Promise<string> {
+    return ipcRenderer.invoke(BridgeEnum.GetLang);
   },
   [BridgeEnum.CheckForUpdate](): void {
     ipcRenderer.send(BridgeEnum.CheckForUpdate);

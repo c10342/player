@@ -1,7 +1,7 @@
-import { BridgeEnum, GlobalEventEnum, LocaleEnum } from "@share/enum";
+import { BridgeEnum, GlobalEventEnum, LangEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
 import { BrowserWindow, dialog, ipcMain, app } from "electron";
-import { setLocale, getLocale } from "./i18n";
+import { setLang, getLang } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
 import { setTrayPlaying, resizeTrayMenu } from "./tray";
 
@@ -35,19 +35,19 @@ export const initBridge = () => {
     return dialog.showOpenDialog(params);
   });
   // 设置语言
-  ipcMain.on(BridgeEnum.SetLocale, (_event, locale: string) => {
-    if (Object.values(LocaleEnum).includes(locale as LocaleEnum)) {
-      setLocale(locale);
+  ipcMain.on(BridgeEnum.SetLang, (_event, lang: string) => {
+    if (Object.values(LangEnum).includes(lang as LangEnum)) {
+      setLang(lang);
       for (const win of BrowserWindow.getAllWindows()) {
-        win.webContents.send(GlobalEventEnum.LocaleChanged, locale);
+        win.webContents.send(GlobalEventEnum.LangChanged, lang);
       }
     }
   });
   ipcMain.handle(BridgeEnum.GetAppVersion, () => {
     return app.getVersion();
   });
-  ipcMain.handle(BridgeEnum.GetLocale, () => {
-    return getLocale();
+  ipcMain.handle(BridgeEnum.GetLang, () => {
+    return getLang();
   });
   ipcMain.on(BridgeEnum.CheckForUpdate, () => {
     checkForUpdate();
