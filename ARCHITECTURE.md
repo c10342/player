@@ -209,6 +209,110 @@ electron-player/
 4. **初始化 VLC**：创建 VLC 实例 (`libvlc_new`) → 创建播放器 (`libvlc_media_player_new`) → 设置视频格式 (`libvlc_video_set_format`) → 绑定帧回调 (`libvlc_video_set_callbacks`)
 5. **事件绑定**：获取事件管理器，注册播放/暂停/停止/结束/时间变更/位置变更/时长变更等事件
 
+#### libvlc.dll 函数使用清单
+
+项目通过 Koffi 加载 `libvlc.dll` 后，使用 `lib.func()` 声明 C 函数签名为 JS 可调用的函数。以下按功能分类列出所有使用的 libvlc 函数：
+
+**实例与播放器生命周期**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_new` | `libvlc_instance_t*` | `"void*"` | `int argc, const char* const* argv` | `"int", "void*"` | 创建 LibVLC 实例，传入命令行参数 |
+| `libvlc_release` | `void` | `"void"` | `libvlc_instance_t*` | `"void*"` | 销毁 LibVLC 实例，释放资源 |
+| `libvlc_media_player_new` | `libvlc_media_player_t*` | `"void*"` | `libvlc_instance_t*` | `"void*"` | 创建一个空的媒体播放器实例 |
+| `libvlc_media_player_release` | `void` | `"void"` | `libvlc_media_player_t*` | `"void*"` | 销毁媒体播放器，释放资源 |
+
+**媒体管理**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_media_new_path` | `libvlc_media_t*` | `"void*"` | `libvlc_instance_t*, const char*` | `"void*", "str"` | 从本地文件路径创建媒体对象 |
+| `libvlc_media_release` | `void` | `"void"` | `libvlc_media_t*` | `"void*"` | 释放媒体对象引用计数 |
+| `libvlc_media_player_set_media` | `void` | `"void"` | `libvlc_media_player_t*, libvlc_media_t*` | `"void*", "void*"` | 为播放器绑定或切换媒体 |
+
+**播放控制**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_media_player_play` | `int` | `"int"` | `libvlc_media_player_t*` | `"void*"` | 开始播放，成功返回 0 |
+| `libvlc_media_player_pause` | `void` | `"void"` | `libvlc_media_player_t*` | `"void*"` | 暂停/恢复播放（toggle 语义） |
+| `libvlc_media_player_stop` | `void` | `"void"` | `libvlc_media_player_t*` | `"void*"` | 停止播放（支持异步调用 `.async()`） |
+| `libvlc_media_player_is_playing` | `bool` | `"bool"` | `libvlc_media_player_t*` | `"void*"` | 判断当前是否正在播放 |
+
+**时间与进度**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_media_player_get_time` | `libvlc_time_t` (int64) | `"int64"` | `libvlc_media_player_t*` | `"void*"` | 获取当前播放时间（毫秒） |
+| `libvlc_media_player_get_length` | `libvlc_time_t` (int64) | `"int64"` | `libvlc_media_player_t*` | `"void*"` | 获取媒体总时长（毫秒） |
+| `libvlc_media_player_set_time` | `void` | `"void"` | `libvlc_media_player_t*, libvlc_time_t` | `"void*", "int64"` | 跳转到指定时间位置（毫秒），用于 seek |
+
+**视频帧回调（自定义渲染核心）**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_video_set_format` | `void` | `"void"` | `mp*, const char* chroma, uint w, uint h, uint pitch` | `"void*", "str", "uint32", "uint32", "uint32"` | 设置视频帧格式（像素格式、分辨率、行宽） |
+| `libvlc_video_set_callbacks` | `void` | `"void"` | `mp*, lock_cb, unlock_cb, display_cb, void*` | `"void*", LockCb*, UnlockCb*, DisplayCb*, "void*"` | 注册视频帧回调（Lock/Unlock/Display），实现自定义渲染 |
+
+**事件系统**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_media_player_event_manager` | `libvlc_event_manager_t*` | `"void*"` | `libvlc_media_player_t*` | `"void*"` | 获取播放器的事件管理器 |
+| `libvlc_event_attach` | `int` | `"int"` | `em*, int type, callback, void*` | `"void*", "int", VlcEventCb*, "void*"` | 绑定事件回调到指定事件类型 |
+
+**音量控制**
+
+| C 函数 | C 返回值 | Koffi 返回值映射 | C 参数 | Koffi 参数映射 | 说明 |
+|--------|----------|------------------|--------|----------------|------|
+| `libvlc_audio_get_volume` | `int` | `"int"` | `libvlc_media_player_t*` | `"void*"` | 获取当前音量（0-100），失败返回 -1 |
+| `libvlc_audio_set_volume` | `int` | `"int"` | `libvlc_media_player_t*, int` | `"void*", "int"` | 设置音量（0-100），成功返回 0 |
+
+#### 回调函数定义
+
+视频帧回调和事件回调通过 `koffi.proto()` / `koffi.struct()` 定义函数签名和数据结构：
+
+| 回调名称 | Koffi 定义 | C 签名 | 用途 |
+|----------|------------|--------|------|
+| `LockCb` | `koffi.proto("void* LockCb(void*, void**)")` | `void* (*)(void* opaque, void** planes)` | VLC 写帧前调用，返回帧缓冲区指针 |
+| `UnlockCb` | `koffi.proto("void UnlockCb(void*, void*, void* const*, uint32)")` | `void (*)(void* opaque, void* picture, void* const* planes, uint32)` | VLC 写完一帧后调用，在此复制帧数据 |
+| `DisplayCb` | `koffi.proto("void DisplayCb(void*, void*)")` | `void (*)(void* opaque, void* picture)` | 帧就绪通知（本项目未使用，空操作） |
+| `VlcEventCb` | `koffi.proto("void VlcEventCb(VlcEvent*, void*)")` | `void (*)(VlcEvent* event, void* opaque)` | VLC 事件回调（播放/暂停/时间变更等） |
+
+#### 事件数据结构
+
+| 结构体 | Koffi 定义 | 说明 |
+|--------|------------|------|
+| `VlcEvent` | `koffi.struct("VlcEvent", { type: "int", p_obj: "void*", u: koffi.array("char", 16) })` | VLC 事件结构体，`type` 标识事件类型，`u` 是 union 存放事件数据 |
+| `VlcEventDataTimeChanged` | `koffi.pack("VlcEventDataTimeChanged", { new_time: "int64" })` | 时间变更事件数据（毫秒） |
+| `VlcEventDataPositionChanged` | `koffi.pack("VlcEventDataPositionChanged", { new_position: "float" })` | 位置变更事件数据（0.0~1.0） |
+| `VlcEventDataLengthChanged` | `koffi.pack("VlcEventDataLengthChanged", { new_length: "int64" })` | 时长变更事件数据（毫秒） |
+
+> `VlcEvent.u` 是 C 语言的 union 类型，在内存中与其他字段共享空间。Koffi 无法直接映射 C union，因此用 `koffi.array("char", 16)` 占位 16 字节，再通过 `koffi.decode(event, UNION_OFFSET, StructType)` 在 union 偏移量（16 字节）处解码对应的事件数据结构。
+
+#### C/C++ 类型与 Koffi 类型映射关系
+
+本项目在 Koffi 中使用的 C 类型映射汇总：
+
+| C/C++ 类型 | Koffi 类型字符串 | JS 返回值类型 | 说明 |
+|------------|------------------|---------------|------|
+| `void` | `"void"` | `undefined` | 无返回值 |
+| `int` | `"int"` | `number` | 32 位整数 |
+| `unsigned int` / `uint32_t` | `"uint32"` | `number` | 32 位无符号整数 |
+| `int64_t` / `libvlc_time_t` | `"int64"` | `bigint / number` | 64 位整数（时间戳） |
+| `float` | `"float"` | `number` | 32 位浮点数（播放位置 0~1） |
+| `bool` | `"bool"` | `boolean` | 布尔值 |
+| `char*` (字符串) | `"str"` | `string` | 以 null 结尾的 C 字符串 |
+| `void*` (指针) | `"void*"` | `unknown` (opaque pointer) | 通用指针，VLC 中用于实例/播放器/媒体等句柄 |
+| `void**` (二级指针) | `"void**"` | — | 指向指针的指针，用于输出参数 |
+| `T*` (函数指针) | `koffi.pointer(Proto)` | `function` | 通过 `koffi.proto()` 定义的回调函数指针 |
+| `T*` (结构体指针) | `koffi.pointer(Struct)` | `object` | 通过 `koffi.struct()` 定义的结构体指针 |
+| `char[16]` (固定数组) | `koffi.array("char", 16)` | — | 固定长度字节数组，用于模拟 union 内存布局 |
+| 结构体 | `koffi.struct("Name", {...})` | `object` | 映射 C struct，字段为键值对 |
+| 打包结构体 | `koffi.pack("Name", {...})` | `object` | 无内存对齐的紧凑结构体，用于解析 union 内数据 |
+
+> **指针语义**：VLC 的 C API 大量使用不透明指针（opaque pointer）如 `libvlc_instance_t*`、`libvlc_media_player_t*`、`libvlc_media_t*` 等。在 Koffi 中统一映射为 `"void*"`，JS 端不需要了解内部结构，只需在函数间传递即可。
+
 #### 视频帧渲染流程
 
 ```
