@@ -1,9 +1,10 @@
 import { initI18n } from "@renderer/locales";
-import log from "./logger";
+import log, { initLogger } from "./logger";
 import { DefineComponent, createApp as createVueApp } from "vue";
 import "../assets/styles/index.scss";
 
 export const createApp = async (App: DefineComponent<any, any, any>) => {
+  initLogger();
   const app = createVueApp(App);
   const i18n = await initI18n();
   app.use(i18n);

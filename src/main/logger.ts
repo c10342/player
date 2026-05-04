@@ -1,27 +1,38 @@
-import log from "electron-log/main";
+import electronLog from "electron-log/main";
 import { app } from "electron";
+import { wrapLogFn } from "@share/logger";
+
+const log = {
+  ...electronLog,
+  error: wrapLogFn(electronLog.error.bind(electronLog)),
+  warn: wrapLogFn(electronLog.warn.bind(electronLog)),
+  info: wrapLogFn(electronLog.info.bind(electronLog)),
+  verbose: wrapLogFn(electronLog.verbose.bind(electronLog)),
+  debug: wrapLogFn(electronLog.debug.bind(electronLog)),
+  silly: wrapLogFn(electronLog.silly.bind(electronLog))
+} as typeof electronLog;
 
 export const initLogger = () => {
-  log.initialize({ preload: true });
+  electronLog.initialize({ preload: true });
 
-  log.transports.file.level = "info";
-  log.transports.file.maxSize = 10485760;
+  electronLog.transports.file.level = "info";
+  electronLog.transports.file.maxSize = 10485760;
   const now = new Date();
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
-  log.transports.file.fileName = `${y}-${m}-${d}.log`;
-  log.transports.console.level = "debug";
-  log.transports.ipc.level = "info";
+  electronLog.transports.file.fileName = `${y}-${m}-${d}.log`;
+  electronLog.transports.console.level = "debug";
+  electronLog.transports.ipc.level = "info";
 
-  log.errorHandler.startCatching({
+  electronLog.errorHandler.startCatching({
     showDialog: false,
     onError({ error, errorName, processType }) {
       log.error(`[${processType}] ${errorName}:`, error);
     }
   });
 
-  log.eventLogger.startLogging({
+  electronLog.eventLogger.startLogging({
     level: "warn",
     scope: "electron"
   });
