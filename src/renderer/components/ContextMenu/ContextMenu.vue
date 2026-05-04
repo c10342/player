@@ -68,7 +68,7 @@ const SUBMENU_OFFSET_X = 4;
 const SUBMENU_OFFSET_Y = -4;
 
 const props = defineProps<{
-  options: ContextMenuOptions;
+  options: Required<ContextMenuOptions>;
 }>();
 
 const emit = defineEmits<{

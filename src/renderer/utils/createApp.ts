@@ -2,6 +2,7 @@ import { initI18n } from "@renderer/locales";
 import log, { initLogger } from "./logger";
 import { DefineComponent, createApp as createVueApp } from "vue";
 import "../assets/styles/index.scss";
+import { initContextMenu } from "@renderer/components/ContextMenu/contextMenu";
 
 export const createApp = async (App: DefineComponent<any, any, any>) => {
   initLogger();
@@ -19,6 +20,8 @@ export const createApp = async (App: DefineComponent<any, any, any>) => {
   window.addEventListener("unhandledrejection", (event) => {
     log.error("[Unhandled Rejection]", event.reason);
   });
+
+  initContextMenu();
 
   return app;
 };
