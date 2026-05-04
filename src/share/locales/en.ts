@@ -54,5 +54,11 @@ export default {
     stop: "Stop",
     next: "Next",
     exit: "Exit"
+  },
+  contextMenu: {
+    play: "Play",
+    pause: "Pause",
+    openInFolder: "Show in Folder",
+    remove: "Remove"
   }
 };

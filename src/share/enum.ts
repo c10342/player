@@ -20,7 +20,8 @@ export enum BridgeEnum {
   GetStoreValue = "getStoreValue",
   SetStoreValue = "setStoreValue",
   TrayQuit = "trayQuit",
-  TrayMenuResize = "trayMenuResize"
+  TrayMenuResize = "trayMenuResize",
+  ShowItemInFolder = "showItemInFolder"
 }
 
 // 全局事件广播

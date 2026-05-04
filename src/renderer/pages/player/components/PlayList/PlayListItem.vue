@@ -4,6 +4,7 @@
     :class="[isActive && 'play-list-item--active', hasError && 'play-list-item--error']"
     :title="item.name"
     @dblclick="onSelectVideo"
+    @contextmenu.prevent="onContextMenu"
   >
     <div class="play-list-item__index">
       <span v-if="hasError" class="play-list-item__error-icon">
@@ -33,12 +34,22 @@
 
 <script setup lang="ts">
 import { Icon } from "@vicons/utils";
-import { CloseOutline, AlertCircleOutline } from "@vicons/ionicons5";
+import {
+  CloseOutline,
+  AlertCircleOutline,
+  FolderOpenOutline,
+  TrashOutline,
+  PlayOutline,
+  PauseOutline
+} from "@vicons/ionicons5";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { usePlayerStore } from "../../stores";
 import { formatFileSize } from "../../utils";
 import { PlayerListItem } from "@share/type";
+import { showContextMenu } from "@renderer/components/ContextMenu/contextMenu";
+import { BridgeEnum } from "@share/enum";
+import vlcPlayer from "../../player";
 
 const { t } = useI18n();
 
@@ -57,6 +68,39 @@ const onSelectVideo = () => {
 };
 const onRemoveVideo = () => {
   playerStore.removeVideo(props.item);
+};
+
+const onContextMenu = (e: MouseEvent) => {
+  const isCurrentPlaying = isActive.value && vlcPlayer.isPlaying;
+
+  showContextMenu({
+    x: e.clientX,
+    y: e.clientY,
+    items: [
+      {
+        label: isCurrentPlaying ? t("contextMenu.pause") : t("contextMenu.play"),
+        icon: isCurrentPlaying ? PauseOutline : PlayOutline,
+        action: () => {
+          if (isActive.value) {
+            vlcPlayer.toggle();
+          } else {
+            playerStore.changeCurrentVideo(props.item);
+          }
+        }
+      },
+      {
+        label: t("contextMenu.openInFolder"),
+        icon: FolderOpenOutline,
+        action: () => window.electronAPI[BridgeEnum.ShowItemInFolder](props.item.path)
+      },
+      {
+        label: t("contextMenu.remove"),
+        icon: TrashOutline,
+        divided: true,
+        action: () => playerStore.removeVideo(props.item)
+      }
+    ]
+  });
 };
 </script>
 

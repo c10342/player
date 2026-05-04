@@ -59,6 +59,9 @@ const api = {
   },
   [BridgeEnum.SetStoreValue](key: string, value: any): void {
     ipcRenderer.send(BridgeEnum.SetStoreValue, key, value);
+  },
+  [BridgeEnum.ShowItemInFolder](path: string): void {
+    ipcRenderer.send(BridgeEnum.ShowItemInFolder, path);
   }
 };
 

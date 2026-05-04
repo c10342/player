@@ -1,6 +1,6 @@
 import { BridgeEnum, GlobalEventEnum, LangEnum } from "@share/enum";
 import { OpenDialogParams } from "@share/type";
-import { BrowserWindow, dialog, ipcMain, app } from "electron";
+import { BrowserWindow, dialog, ipcMain, app, shell } from "electron";
 import { setLang, getLang } from "./i18n";
 import { checkForUpdate, downloadUpdate, installUpdate } from "./updater";
 import { setTrayPlaying, resizeTrayMenu } from "./tray";
@@ -92,5 +92,9 @@ export const initBridge = () => {
 
   ipcMain.on(BridgeEnum.TrayMenuResize, (_event, width: number, height: number) => {
     resizeTrayMenu(width, height);
+  });
+
+  ipcMain.on(BridgeEnum.ShowItemInFolder, (_event, path: string) => {
+    shell.showItemInFolder(path);
   });
 };

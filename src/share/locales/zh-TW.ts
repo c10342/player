@@ -54,5 +54,11 @@ export default {
     stop: "停止",
     next: "下一首",
     exit: "退出"
+  },
+  contextMenu: {
+    play: "播放",
+    pause: "暫停",
+    openInFolder: "打開文件所在位置",
+    remove: "移除"
   }
 };
