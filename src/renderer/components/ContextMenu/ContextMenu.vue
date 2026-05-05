@@ -1,71 +1,22 @@
 <template>
   <div class="ctx-menu-root">
-    <div
-      ref="menuRef"
-      class="ctx-menu"
-      :style="{
-        position: 'fixed',
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        minWidth: `${MENU_MIN_WIDTH}px`
-      }"
-    >
-      <template v-for="(item, i) in options.items" :key="i">
-        <div v-if="item.divided" class="ctx-menu__divider" />
-        <div
-          :class="[
-            'ctx-menu__item',
-            item.disabled && 'ctx-menu__item--disabled',
-            item.children?.length && 'ctx-menu__item--has-submenu'
-          ]"
-          @click="onItemClick(item)"
-          @mouseenter="showSubmenu(i, $event)"
-          @mouseleave="hideSubmenu"
-        >
-          <span class="ctx-menu__item-icon">
-            <component :is="item.icon" v-if="item.icon" />
-          </span>
-          <span class="ctx-menu__item-label">{{ item.label }}</span>
-          <span v-if="item.children?.length" class="ctx-menu__item-arrow">▸</span>
-        </div>
-      </template>
-    </div>
-    <div
-      v-if="submenuItems"
-      class="ctx-menu ctx-menu--submenu"
-      :style="submenuStyle"
-      @mouseleave="hideSubmenu"
-    >
-      <template v-for="(item, i) in submenuItems" :key="i">
-        <div v-if="item.divided" class="ctx-menu__divider" />
-        <div
-          :class="[
-            'ctx-menu__item',
-            item.disabled && 'ctx-menu__item--disabled',
-            item.children?.length && 'ctx-menu__item--has-submenu'
-          ]"
-          @click="onItemClick(item)"
-          @mouseenter="() => {}"
-          @mouseleave="hideSubmenu"
-        >
-          <span class="ctx-menu__item-icon">
-            <component :is="item.icon" v-if="item.icon" />
-          </span>
-          <span class="ctx-menu__item-label">{{ item.label }}</span>
-          <span v-if="item.children?.length" class="ctx-menu__item-arrow">▸</span>
-        </div>
-      </template>
+    <div ref="menuRef">
+      <ContextMenuPanel
+        :items="options.items"
+        :is-submenu="false"
+        :left="position.x"
+        :top="position.y"
+        @close="close"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import type { ContextMenuItem, ContextMenuOptions } from "./contextMenu";
-
-const MENU_MIN_WIDTH = 180;
-const SUBMENU_OFFSET_X = 4;
-const SUBMENU_OFFSET_Y = -4;
+import { ref, reactive, provide, onMounted, onBeforeUnmount } from "vue";
+import ContextMenuPanel from "./ContextMenuPanel.vue";
+import type { ContextMenuOptions } from "./contextMenu";
+import { CTX_MENU_TIMER_KEY } from "./contextMenu";
 
 const props = defineProps<{
   options: Required<ContextMenuOptions>;
@@ -77,13 +28,9 @@ const emit = defineEmits<{
 
 const menuRef = ref<HTMLElement | null>(null);
 const position = ref({ x: props.options.x, y: props.options.y });
-const activeSubmenuIndex = ref<number | null>(null);
-const submenuStyle = ref<Record<string, string>>({});
+const timer = reactive({ value: null as ReturnType<typeof setTimeout> | null });
 
-const submenuItems = computed(() => {
-  if (activeSubmenuIndex.value === null) return null;
-  return props.options.items[activeSubmenuIndex.value]?.children ?? null;
-});
+provide(CTX_MENU_TIMER_KEY, timer);
 
 const close = () => {
   emit("close");
@@ -91,14 +38,14 @@ const close = () => {
 
 const adjustPosition = () => {
   requestAnimationFrame(() => {
-    const el = menuRef.value;
-    if (!el) return;
+    const panel = menuRef.value?.querySelector(".ctx-menu") as HTMLElement | null;
+    if (!panel) return;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     let x = position.value.x;
     let y = position.value.y;
-    if (x + el.offsetWidth > vw) x = vw - el.offsetWidth - 4;
-    if (y + el.offsetHeight > vh) y = vh - el.offsetHeight - 4;
+    if (x + panel.offsetWidth > vw) x = vw - panel.offsetWidth - 4;
+    if (y + panel.offsetHeight > vh) y = vh - panel.offsetHeight - 4;
     if (x < 0) x = 4;
     if (y < 0) y = 4;
     position.value = { x, y };
@@ -113,51 +60,6 @@ const handleGlobalClick = (e: MouseEvent) => {
 
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === "Escape") close();
-};
-
-const showSubmenu = (index: number, event: MouseEvent) => {
-  const item = props.options.items[index];
-  if (!item?.children?.length || item.disabled) {
-    activeSubmenuIndex.value = null;
-    return;
-  }
-  activeSubmenuIndex.value = index;
-
-  const target = event.currentTarget as HTMLElement;
-  const rect = target.getBoundingClientRect();
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-
-  const submenuEl = target
-    .closest(".ctx-menu-root")
-    ?.querySelector(".ctx-menu--submenu") as HTMLElement | null;
-  const subWidth = submenuEl?.offsetWidth || 180;
-  const subHeight = submenuEl?.offsetHeight || 100;
-
-  let sx = rect.right + SUBMENU_OFFSET_X;
-  let sy = rect.top + SUBMENU_OFFSET_Y;
-
-  if (sx + subWidth > vw) sx = rect.left - subWidth - SUBMENU_OFFSET_X;
-  if (sy + subHeight > vh) sy = vh - subHeight - 4;
-  if (sy < 0) sy = 4;
-
-  submenuStyle.value = {
-    position: "fixed",
-    left: `${sx}px`,
-    top: `${sy}px`,
-    minWidth: `${MENU_MIN_WIDTH}px`
-  };
-};
-
-const hideSubmenu = () => {
-  activeSubmenuIndex.value = null;
-};
-
-const onItemClick = (item: ContextMenuItem) => {
-  if (item.disabled) return;
-  if (item.children?.length) return;
-  item.action?.();
-  close();
 };
 
 onMounted(() => {

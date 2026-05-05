@@ -1,4 +1,4 @@
-import { createApp, h } from "vue";
+import { createApp, h, type InjectionKey } from "vue";
 import ContextMenuVue from "./ContextMenu.vue";
 
 export interface ContextMenuItem {
@@ -15,6 +15,10 @@ export interface ContextMenuOptions {
   y?: number;
   items: ContextMenuItem[];
 }
+
+export const CTX_MENU_TIMER_KEY: InjectionKey<{
+  value: ReturnType<typeof setTimeout> | null;
+}> = Symbol("ctx-menu-timer");
 
 let lastContextPos = { x: 0, y: 0 };
 
