@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <div class="play-list__body">
+      <div class="play-list__body" @contextmenu.prevent="onContextMenu">
         <PlayListItem
           v-for="(item, index) in playerStore.playerList"
           :key="item.path"
@@ -44,6 +44,7 @@ import { usePlayerStore } from "../../stores";
 import { addVideoFile } from "../../utils";
 import PlayListItem from "./PlayListItem.vue";
 import { useI18n } from "vue-i18n";
+import { showContextMenu } from "@renderer/components/ContextMenu/contextMenu";
 
 const { t } = useI18n();
 
@@ -53,6 +54,18 @@ const playListCollapsed = ref(false);
 
 const onAddVideo = () => {
   addVideoFile();
+};
+
+const onContextMenu = () => {
+  showContextMenu({
+    items: [
+      {
+        label: t("playList.addVideo"),
+        icon: AddOutline,
+        action: () => addVideoFile()
+      }
+    ]
+  });
 };
 </script>
 

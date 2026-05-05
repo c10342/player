@@ -4,7 +4,7 @@
     :class="[isActive && 'play-list-item--active', hasError && 'play-list-item--error']"
     :title="item.name"
     @dblclick="onSelectVideo"
-    @contextmenu.prevent="onContextMenu"
+    @contextmenu.prevent.stop="onContextMenu"
   >
     <div class="play-list-item__index">
       <span v-if="hasError" class="play-list-item__error-icon">
