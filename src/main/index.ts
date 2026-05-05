@@ -16,6 +16,7 @@ function createPlayerWindow() {
   mainWin = createWindow("player", {
     minWidth: 700,
     minHeight: 500,
+    backgroundColor: "#0a0a0c",
     webPreferences: {
       sandbox: false,
       nodeIntegration: true,
